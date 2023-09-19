@@ -1,0 +1,18 @@
+{
+  "name": "graphane",
+  "version": "0.1.0-alpha.1",
+  "description": "Data Visualization Microframework",
+  "author": "Graphery",
+  "license": "MIT",
+  "scripts": {
+    "base:workbench" : "node ./tools/workbench -t ./test/Base/cases -p 7001"
+  },
+  "devDependencies": {
+    "playwright": "^1.38.0",
+    "@playwright/test": "^1.38.0",
+    "commander" : "^11.0.0",
+    "open": "^9.1.0",
+    "ws": "^8.14.1"
+  },
+  "type": "module"
+}
