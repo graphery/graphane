@@ -5,14 +5,16 @@
   "author": "Graphery",
   "license": "MIT",
   "scripts": {
-    "base:workbench" : "node ./tools/workbench -t ./test/Base/cases -p 7001"
+    "base:workbench": "node ./tools/workbench -t ./test/Base/cases -p 7001",
+    "base:test": "playwright test ./test/base/index.test.js --project=base",
+    "lib:test": "playwright test ./test/lib/ --project=lib"
   },
   "devDependencies": {
     "playwright": "^1.38.0",
     "@playwright/test": "^1.38.0",
-    "commander" : "^11.0.0",
+    "commander": "^11.0.0",
     "open": "^9.1.0",
-    "ws": "^8.14.1"
+    "ws": "^8.14.2"
   },
   "type": "module"
 }
