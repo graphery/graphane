@@ -16,12 +16,12 @@ export const SEMICOLON    = ';';
 export const isObject    = (v) => typeof v === OBJECT;
 export const isString    = (v) => typeof v === STRING;
 export const isFunction  = (v) => typeof v === FUNCTION;
-export const isNumber    = (v) => typeof v === NUMBER;
+export const isNumber    = (v) => typeof v === NUMBER && !isNaN(v);
 export const isUndefined = (v) => typeof v === UNDEFINED;
 export const isSymbol    = (v) => typeof v === SYMBOL;
 export const isBoolean   = (v) => typeof v === BOOLEAN;
 export const isArray     = (v) => Array.isArray(v);
-export const isDate      = (v) => v instanceof Date;
+export const isDate      = (v) => v instanceof Date && !isNaN(v);
 export const isNull      = (v) => v === null;
 
 /**
@@ -155,7 +155,7 @@ export function array2attribute (value) {
  * Convert a string into a value number, boolean or string (with "" if quote is true)
  * @private
  * @param {string} str
- * @param {string} type
+ * @param {string} [type]
  * @param {boolean} [quote=false]
  * @return {any}
  */
