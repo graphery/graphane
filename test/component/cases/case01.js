@@ -1,8 +1,8 @@
-export const title       = '1) Simple example'
+export const title       = '1) Web component'
 export const description = `Display an ellipse`;
 
 export async function script () {
-  const { Base, RENDER, define } = await import('/src/base/base.js');
+  const { Base, RENDER, define } = await import('/src/component/base.js');
 
   class MyComponent extends Base {
 

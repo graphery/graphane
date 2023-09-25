@@ -1,8 +1,8 @@
 /**
  *
- * Base class for Graphery web component
+ * Simple class for Graphane web component
  *
- * @module base
+ * @module simple
  * @version 0.0.2
  * @author Pablo Almunia
  *
@@ -13,61 +13,32 @@ import {
 }                    from '../lib/types/index.js';
 import objectObserve from '../lib/observify/object.js';
 import {
-  debounceMethodAsync, posExecution, preCondition
-}                    from '../lib/functions/index.js';
-import {
   equal, clone
 }                    from '../lib/object/index.js';
 
 // Constants
-const COMPONENT_PREFIX = globalThis.GRAPHERY_PREFIX || 'g-';
-const DELAY            = 1;
+const COMPONENT_PREFIX = globalThis.GRAPHANE_PREFIX || 'g-';
 
 // private symbols
 /**
- * Symbol used for define a private context used with `this [ CONTEXT ]`.
+ * Symbol used for defines a private context used with `this [ CONTEXT ]`.
  * @type {symbol}
  */
 const INITIALIZERS = Symbol();
 
 // Public symbols
 /**
- * Symbol used for define a private context used with `this [ CONTEXT ]`.
+ * Symbol used for defines a private context used with `this [ CONTEXT ]`.
  * @type {symbol}
  */
 const CONTEXT    = Symbol();
 /**
- * Symbol used for define the LOCAL DOM CHANGE event handler into the class
+ * Symbol used for defines the LOCAL DOM CHANGE event handler into the class
  * inherited from Simple. This method is called when the Local Dom component is
- * change, includes its attributes.
+ * changed, includes its attributes.
  * @type {symbol}
  */
 const CHANGE     = Symbol();
-/**
- * Symbol used for define the refresh method into the class inherited from Base.
- * This method is called when the component is rendered and when some property
- * is changed and REFRESH is define as pos update action.
- * @type {symbol}
- */
-const REFRESH    = Symbol();
-/**
- * Symbol used for define the render method into the class inherited from Base
- * This method is called when the component is created and when some property
- * is changed and RENDER is define as pos update action.
- * @type {symbol}
- */
-const RENDER     = Symbol();
-/**
- * Symbol used for define the resize method into the class inherited from Base.
- * This method is called when the component is resized.
- * @type {symbol}
- */
-const RESIZE     = Symbol();
-/**
- * Symbol used for define the map with CSS properties info.
- * @type {symbol}
- */
-const CSS_PROPS  = Symbol();
 /**
  * Symbol used as method name for fire an event.
  * @type {symbol}
@@ -180,112 +151,6 @@ class Simple extends HTMLElement {
       event,
       {bubbles : true, cancelable : true, detail, composed}
     ));
-  }
-
-}
-
-/**
- * Base class for Graphery Web Component
- *
- * @fires 'ready'                 - This event fires when the component is ready and its methods and properties are available
- * @fires 'render'                - This event fires when the component is rendered and its visible content is displayed
- * @fires 'refresh'               - This event fires when the component is refreshed, and its visible content is updated
- * @fires 'resize'                - This event fires when the component size is changed
- * @property {boolean} [ready]    - It's true if the component is ready, or false is starting or busy.
- * @property {boolean} [rendered] - It's true if the component is rendered, and its visible content is displayed.
- */
-class Base extends Simple {
-
-  /**
-   * @constructor
-   * @param {boolean} [ready]
-   */
-  constructor (ready) {
-    super();
-
-    this.attachShadow({mode : 'open'});
-    this[CONTEXT].ready    = ready || false;
-    this[CONTEXT].rendered = false;
-
-    if (isUndefined(ready)) {
-      this.ready = true;
-    }
-
-  }
-
-  /**
-   * ready state
-   * @type {boolean}
-   */
-  get ready () {
-    return this[CONTEXT].ready;
-  }
-
-  set ready (value) {
-    const ctx = this[CONTEXT];
-    const pre = ctx.ready;
-    ctx.ready = !!value;
-    if (pre === false && ctx.ready === true) {
-      this[FIRE_EVENT]('ready', {ready : true});
-      if (isFunction(this[RENDER])) {
-        this[RENDER]();
-      }
-    }
-  }
-
-  /**
-   * rendered state
-   * @returns {boolean}
-   */
-  get rendered () {
-    return this[CONTEXT].rendered;
-  }
-
-  set rendered (value) {
-    const ctx    = this[CONTEXT];
-    const pre    = ctx.rendered;
-    ctx.rendered = !!value;
-    if (pre === false && ctx.rendered === true) {
-      this[FIRE_EVENT]('render', {rendered : true});
-    }
-  }
-
-  /**
-   * Connected with the parent DOM
-   *   - Resize observer
-   * @private
-   */
-  connectedCallback () {
-    let reference     = this.getBoundingClientRect();
-    let flexDirection = getComputedStyle(this).flexDirection; // Specific for Icon class
-    const resize      = () => {
-      let {width : currentWidth, height : currentHeight} = this.getBoundingClientRect();
-      let currentFlexDirection                           = getComputedStyle(this).flexDirection;
-      if (currentWidth !== reference.width || currentHeight !== reference.height || currentFlexDirection !== flexDirection) {
-        if (isFunction(this[RESIZE])) {
-          this[RESIZE](
-            currentWidth,
-            currentHeight,
-            currentWidth - reference.width,
-            currentHeight - reference.height
-          );
-        }
-        reference     = {width : currentWidth, height : currentHeight};
-        flexDirection = currentFlexDirection;
-        this[FIRE_EVENT]('resize', reference);
-      }
-      this [CONTEXT]._resizeObserver = window.requestAnimationFrame(resize);
-    };
-    resize();
-  }
-
-  /**
-   * Disconnected of parent DOM
-   *   - Remove resize observer
-   * @private
-   */
-  disconnectedCallback () {
-    window.cancelAnimationFrame(this [CONTEXT]._resizeObserver);
   }
 
 }
@@ -681,96 +546,6 @@ function defineCollection (Class, options) {
 }
 
 /**
- *
- * Property descriptor used into defineProperty
- *
- * @typedef {Object} cssPropertyDescriptor
- * @property {string}  name              - custom property name
- * @property {string}  [syntax='']       - syntax of the custom property
- * @property {string}  [value='']        - initial value
- * @property {boolean} [inherits=false]  - inherit flag
- */
-
-/**
- *
- * Define a CSS property into the class
- *
- * @param {Function} Class            - class to extend
- * @param {cssPropertyDescriptor} def - options into a {@link cssPropertyDescriptor}
- */
-function defineStyleProperty (Class, def) {
-  const definition = Object.assign({syntax : '*', inherits : true}, def);
-  if (definition.name.substring(0, 2) !== '--') {
-    definition.name = `--${ COMPONENT_PREFIX }${ definition.name }`;
-  }
-  if (!Class[CSS_PROPS]) {
-    Class[CSS_PROPS] = new Map();
-  }
-  Class[CSS_PROPS].set(definition.name, definition);
-}
-
-/**
- *
- * Define a Component
- *
- * @param {Function} Class - Class for this custom component
- */
-function defineComponent (Class) {
-
-  // Async call to render method
-  if (isFunction(Class.prototype[RENDER])) {
-    const preRender         = Class.prototype[RENDER];
-    Class.prototype[RENDER] =
-      preCondition(
-        function () {
-          this.rendered = false;
-          return this.ready;
-        },
-        debounceMethodAsync(
-          posExecution(
-            async function () {
-              return preRender.apply(this);
-            },
-            function (result) {
-              this.rendered = result !== false;
-              if (this.rendered && isFunction(this[REFRESH])) {
-                this[REFRESH]();
-              }
-            }
-          ),
-          DELAY
-        )
-      );
-  }
-
-  // Async call to refresh method
-  if (isFunction(Class.prototype[REFRESH])) {
-    const prevRefresh        = Class.prototype[REFRESH];
-    Class.prototype[REFRESH] =
-      preCondition(
-        function (force) {
-          if (force) {
-            this[CONTEXT].rendered = true;
-          }
-          return this.ready && this[CONTEXT].rendered;
-        },
-        debounceMethodAsync(
-          posExecution(
-            async function (...args) {
-              return prevRefresh.apply(this, args);
-            },
-            function () {
-              this[FIRE_EVENT]('refresh');
-            }
-          ),
-          DELAY
-        )
-      );
-  }
-
-}
-
-/**
  * Register the Web Component
  * @param {Function} Class - Class for this custom component
  * @param {string }name    - Tag Name
@@ -787,51 +562,38 @@ function registreComponent (Class, name) {
 /**
  * Define a Base or
  * @param {Function} Class
+ * @param {Object} [def={}]
  * @returns {object}
  */
-function define (Class) {
-  if (Object.getPrototypeOf(Class) === Base) {
-    defineComponent(Class);
-  }
-  const defineObject = {
-    property   : (...properties) => {
-      properties.forEach(property => defineProperty(Class, Object.assign({}, property)));
-      return defineObject;
-    },
-    attribute  : (...attributes) => {
-      attributes.forEach(attribute => defineAttribute(Class, Object.assign({}, attribute)));
-      return defineObject;
-    },
-    style      : (...styles) => {
-      styles.forEach(style => defineStyleProperty(Class, Object.assign({}, style)));
-      return defineObject;
-    },
-    tag        : (name) => {
-      registreComponent(Class, name);
-      return defineObject;
-    },
-    collection : (options) => {
-      defineCollection(Class, options);
-      return defineObject;
-    },
-    extension  : (fn) => {
-      fn.call(defineObject, defineObject, Class)
-      return defineObject
-    }
+function define (Class, def = {}) {
+  def.property  = (...properties) => {
+    properties.forEach(property => defineProperty(Class, Object.assign({}, property)));
+    return def;
   };
-  return defineObject;
+  def.attribute = (...attributes) => {
+    attributes.forEach(attribute => defineAttribute(Class, Object.assign({}, attribute)));
+    return def;
+  };
+  def.tag       = (name) => {
+    registreComponent(Class, name);
+    return def;
+  };
+  def.extension = (fn) => {
+    fn.call(defineObject, defineObject, Class)
+    return def
+  }
+  return def;
 }
-
-Base.RENDER  = RENDER;
-Base.REFRESH = REFRESH;
-Base.CHANGE  = CHANGE;
 
 /**
  * Export
  */
 export {
-  Base as default, Base, Simple,
-  define, defineCollection, registreComponent,
-  RENDER, REFRESH, CHANGE, CONTEXT, RESIZE, COMPONENT_PREFIX,
-  CSS_PROPS, FIRE_EVENT
+  Simple as default,
+  Simple,
+  define,
+  CHANGE,
+  CONTEXT,
+  FIRE_EVENT,
+  COMPONENT_PREFIX
 };

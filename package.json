@@ -5,8 +5,8 @@
   "author": "Graphery",
   "license": "MIT",
   "scripts": {
-    "base:workbench": "node ./tools/workbench -t ./test/Base/cases -p 7001",
-    "base:test": "playwright test ./test/base/index.test.js --project=base",
+    "component:workbench": "node ./tools/workbench -t test/component/cases -p 7001",
+    "component:test": "playwright test test/component/index.test.js --project=base",
     "lib:test": "playwright test ./test/lib/ --project=lib"
   },
   "devDependencies": {

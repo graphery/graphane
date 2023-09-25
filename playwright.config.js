@@ -5,7 +5,7 @@ if (process.argv.includes('--project=base')) {
 }
 
 const webServer = process.env.port ? {
-  command             : `node ./tools/workbench -t ./test/base/cases -p ${ process.env.port } -s`,
+  command             : `node ./tools/workbench -t ./test/component/cases -p ${ process.env.port } -s`,
   url                 : `http://localhost:${ process.env.port }/`,
   reuseExistingServer : !process.env.CI,
 } : undefined;

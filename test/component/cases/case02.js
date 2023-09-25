@@ -2,7 +2,7 @@ export const title       = '2) Attribute reaction'
 export const description = `Display a label`;
 
 export async function script () {
-  const { Base, RENDER, REFRESH, define } = await import('/src/base/base.js');
+  const { Base, RENDER, REFRESH, define } = await import('/src/component/base.js');
 
   class MyComponent extends Base {
     constructor () {
@@ -15,6 +15,7 @@ export async function script () {
         <style>
           :host {
             display: inline-block;
+            cursor:pointer;
           }
         </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
@@ -39,4 +40,4 @@ export async function script () {
 
 export default `
 <g-my-component></g-my-component>
-<p>click the component</p>`;
+<p>click: change the label</p>`;

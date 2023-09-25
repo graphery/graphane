@@ -2,7 +2,7 @@ export const title       = '5) Numeric attribute'
 export const description = `It is a number`;
 
 export async function script () {
-  const { Base, RENDER, REFRESH, define } = await import('/src/base/base.js');
+  const { Base, RENDER, REFRESH, define } = await import('/src/component/base.js');
 
   class MyComponent extends Base {
 
@@ -11,6 +11,7 @@ export async function script () {
         <style>
           :host {
             display: inline-block;
+            cursor: pointer;
           }
         </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
@@ -37,5 +38,5 @@ export async function script () {
 
 export default `
 <g-my-component id="component" value="10"></g-my-component>
-<p>click the component</p>
+<p>click: add 1 to value</p>
 `;

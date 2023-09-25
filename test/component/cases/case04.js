@@ -2,7 +2,7 @@ export const title       = '4) Update attribute and property'
 export const description = `Fire ready, render, update, and refresh events`;
 
 export async function script () {
-  const { Base, RENDER, REFRESH, define } = await import('/src/base/base.js');
+  const { Base, RENDER, REFRESH, define } = await import('/src/component/base.js');
 
   class MyComponent extends Base {
 
@@ -11,6 +11,7 @@ export async function script () {
         <style>
           :host {
             display: inline-block;
+            cursor: pointer;
           }
         </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
@@ -44,5 +45,6 @@ export async function script () {
 
 export default `
 <g-my-component id="component"></g-my-component>
-<p>click the component</p>
+<p>click: change the label by property</p>
+<p>right click: change the label by attribute</p>
 `;
