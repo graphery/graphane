@@ -723,6 +723,7 @@ function defineComponent (Class) {
     Class.prototype[RENDER] =
       preCondition(
         function () {
+          this.rendered = false;
           return this.ready;
         },
         debounceMethodAsync(
@@ -731,11 +732,9 @@ function defineComponent (Class) {
               return preRender.apply(this);
             },
             function (result) {
-              this[CONTEXT].rendered = result !== false;
-              if (this[CONTEXT].rendered) {
-                if (this[REFRESH]) {
-                  this[REFRESH]();
-                }
+              this.rendered = result !== false;
+              if (this.rendered && isFunction(this[REFRESH])) {
+                this[REFRESH]();
               }
             }
           ),
