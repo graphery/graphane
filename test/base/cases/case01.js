@@ -8,6 +8,11 @@ export async function script () {
 
     [ RENDER ] () {
       this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: inline-block;
+          }
+        </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
         </svg>`;
