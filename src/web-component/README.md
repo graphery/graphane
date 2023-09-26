@@ -30,18 +30,19 @@ To inherit from class `Base` you need:
 - Define to `[RENDER]` method, where usually create to graph into the `shadowRoot`.
 - Register the new component with `define(Class).tag('tagname')`;
 
-<!-- example1.html -->
+<!-- case01 -->
 
 ```js
 import { Base, RENDER, define } from '../web-component/base.js';
 
 class MyComponent extends Base {
-  constructor () {
-    super();
-  }
-
   [RENDER] () {
     this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: inline-block;
+          }
+        </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
         </svg>`;
@@ -98,25 +99,30 @@ methods.*
 <!-- example2.html -->
 
 ```js
-  import {
-  Base,
-  RENDER, REFRESH,
-  define
-} from '../web-component/base.js';
+import { Base, RENDER, REFRESH, define } from '../web-component/base.js';
 
 class MyComponent extends Base {
   constructor () {
     super();
-    this.label = 'Hello Graphery'
+    this.label = 'Hello';
   }
 
   [RENDER] () {
     this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: inline-block;
+            cursor:pointer;
+          }
+        </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
           <text x="50%" y="50%" text-anchor="middle" fill="white"
             dy="0.3em" font-size="20"></text>
         </svg>`;
+    this.addEventListener('click', () => {
+      this.label = this.label === 'Hello' ? 'Goodbye' : 'Hello';
+    });
   }
 
   [REFRESH] () {
@@ -125,6 +131,7 @@ class MyComponent extends Base {
 }
 
 define(MyComponent)
+  .property({name : 'label', posUpdate : REFRESH})
   .tag('my-component');
 ```
 
@@ -138,19 +145,59 @@ by which it is happening. In particular, emit the events:
 - `refresh` when the component has updated its content.
 - `update` when the component content is updated (can be launched multiple times).
 
-<!-- example3.html -->
+<!-- case03 -->
 
 ```html
 
 <g-my-new-component id="component"></g-my-new-component>
 <pre id="result"></pre>
-<script>
+<script type="module">
+  import { Base, RENDER, REFRESH, define } from '/src/web-component/base.js';
+
   const result    = document.querySelector('#result');
   const component = document.querySelector('#component');
   component.addEventListener('ready', () => result.innerHTML += 'ready event\n');
   component.addEventListener('render', () => result.innerHTML += 'render event\n');
   component.addEventListener('refresh', () => result.innerHTML += 'refresh event\n');
   component.addEventListener('update', () => result.innerHTML += 'update event\n');
+
+  class MyComponent extends Base {
+
+    [RENDER] () {
+      this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: inline-block;
+            cursor: pointer;
+          }
+        </style>
+        <svg viewBox="0 0 200 100" width="200" height="100">
+          <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
+          <text x="50%" y="50%" text-anchor="middle" fill="white"
+            dy="0.3em" font-size="20"></text>
+        </svg>`;
+      const svg                 = this.shadowRoot.querySelector('svg');
+      svg.addEventListener('click', () => {
+        this.label = this.label === 'Hello' ? 'Goodbye' : 'Hello';
+      });
+      svg.addEventListener('auxclick', (evt) => {
+        evt.preventDefault();
+        this[RENDER]();
+      });
+      svg.addEventListener('contextmenu', (evt) => {
+        evt.preventDefault();
+      });
+    }
+
+    [REFRESH] () {
+      this.shadowRoot.querySelector('text').innerHTML = this.label;
+    }
+  }
+
+  define(MyComponent)
+    .property({name : 'label', value : 'Hello', posUpdate : REFRESH})
+    .tag('my-component');
+
 </script>
 ```
 
@@ -193,25 +240,43 @@ in the format *lowerCamelCase*, that is to say, `my-data` will property mirror `
 In this example we can see how to change the property and the attribute of the component and how it
 launches the event `refresh` automatically.
 
-<!-- example4.html -->
+<!-- case04 -->
 
 ```html
 
+<g-my-component id="component"></g-my-component>
+<p>click: change the label by property</p>
+<p>right click: change the label by attribute</p>
+
 <script type="module">
-  import {
-    Base,
-    RENDER, REFRESH,
-    define
-  } from '../web-component/base.js';
+  import { Base, RENDER, REFRESH, define } from '/src/web-component/base.js';
 
   class MyComponent extends Base {
 
     [RENDER] () {
       this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: inline-block;
+            cursor: pointer;
+          }
+        </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
-          <text x="50%" y="50%" text-anchor="middle" fill="white" dy="0.2em" font-size="20"></text>
+          <text x="50%" y="50%" text-anchor="middle" fill="white"
+            dy="0.3em" font-size="20"></text>
         </svg>`;
+      const svg                 = this.shadowRoot.querySelector('svg');
+      svg.addEventListener('click', () => {
+        this.label = this.label === 'Hello' ? 'Goodbye' : 'Hello';
+      });
+      svg.addEventListener('auxclick', (evt) => {
+        evt.preventDefault();
+        this.setAttribute('label', this.getAttribute('label') === 'Hello' ? 'Goodbye' : 'Hello')
+      });
+      svg.addEventListener('contextmenu', (evt) => {
+        evt.preventDefault();
+      });
     }
 
     [REFRESH] () {
@@ -220,42 +285,9 @@ launches the event `refresh` automatically.
   }
 
   define(MyComponent)
-    .attribute({name : 'label', type : 'string', value : '', posUpdate : REFRESH})
+    .attribute({name : 'label', value : 'Hello', posUpdate : REFRESH})
     .tag('my-component');
-</script>
 
-<g-my-component id="component" label="Hello Graphery"></g-my-component>
-<button id="updateProperty">update by property</button>
-<button id="updateAttribute">update by attribute</button>
-
-<pre id="result"></pre>
-
-<script>
-  const component       = document.querySelector('#component');
-  const result          = document.querySelector('#result');
-  const updateProperty  = document.querySelector('#updateProperty');
-  const updateAttribute = document.querySelector('#updateAttribute');
-
-  component.addEventListener('ready', () => result.innerHTML += 'ready event\n');
-  component.addEventListener('render', () => result.innerHTML += 'render event\n');
-  component.addEventListener('refresh', () => result.innerHTML += 'refresh event\n');
-  component.addEventListener('update', () => result.innerHTML += 'update event\n');
-
-  updateProperty.addEventListener('click', () => {
-    if (component.label === 'Hello Graphery') {
-      component.label = 'Bye bye';
-    } else {
-      component.label = 'Hello Graphery';
-    }
-  });
-
-  updateAttribute.addEventListener('click', () => {
-    if (component.getAttribute('label') === 'Hello Graphery') {
-      component.setAttribute('label', 'Bye bye');
-    } else {
-      component.setAttribute('label', 'Hello Graphery');
-    }
-  });
 </script>
 ```
 
@@ -278,16 +310,16 @@ about [`define().attribute()`](#defineklassattributeattributedescriptor-function
 
 ## Properties without attribute mirror
 
-In some cases we want to define properties without an attribute mirror. In these cases we can use
-the usual mechanisms of the Javascript to create properties
-(with getter/setter or the constructor with `this`), but `Base` offers us the
-function `define().property()` which operates in a manner very similar to
+In some cases, we want to define properties without an attribute mirror. In these cases we can use
+the usual mechanisms of the Javascript to create properties (with getter/setter or the constructor
+with `this`), but `Base` offers us the function `define().property()` which operates in a manner
+very similar to
 `define().attribute()` and that simplifies quite this operation.
 
-<!-- example5.html -->
+<!-- case05.html -->
 
 ```js
-  define(MyComponent)
+define(MyComponent)
   .property({name : 'value', type : 'number', value : 0, posUpdate : REFRESH});
 ```
 
@@ -297,45 +329,52 @@ about [`define().property()`](#defineklasspropertypropertydescriptor-function)
 ## Private information
 
 The data that has been defined by properties and/or attributes has been included in a private
-context that we can access directly by a simple symbol named
-`CONTEXT` includes into `this` (as `this [CONTEXT]`). This shortcut is especially important when we
-don't want a collateral effect when you directly change a property and it's preferable to change the
-internal state of the component.
+context that we can access directly by a simple symbol named `CONTEXT` includes into `this` (
+as `this [CONTEXT]`). This shortcut is especially important when we don't want a collateral effect
+when you directly change a property, and it's preferable to change the internal state of the
+component.
 
-<!-- example6.html -->
+<!-- cas06 -->
 
-```js
-  import {
-  Base,
-  RENDER, REFRESH, CONTEXT,
-  define
-} from '../web-component/base.js';
+```html
+<g-my-component id="component" value="10"></g-my-component>
+<p>click: add 1 to value</p>
 
-class MyComponent extends Base {
-  constructor () {
-    super();
-    const ctx = this [CONTEXT];
-    ctx.value = Math.round(Math.random() * 1000);
-  }
+<script type="module">
+  import { Base, RENDER, REFRESH, CONTEXT, define } from '/src/web-component/base.js';
 
-  [RENDER] () {
-    this.shadowRoot.innerHTML = `
+  class MyComponent extends Base {
+
+    [ RENDER ] () {
+      this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: inline-block;
+            cursor: pointer;
+          }
+        </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
-          <text x="50%" y="50%" text-anchor="middle" fill="white" dy="0.4em" font-size="40"></text>
+          <text x="50%" y="50%" text-anchor="middle" fill="white"
+            dy="0.3em" font-size="20"></text>
         </svg>`;
+      const svg = this.shadowRoot.querySelector('svg');
+      svg.addEventListener('click', () => {
+        this[CONTEXT].value++;
+        this[REFRESH]();          // Update value from CONTEXT don't launch REFRESH
+      });
+    }
+
+    [ REFRESH ] () {
+      this.shadowRoot.querySelector ('text').innerHTML = this[CONTEXT].value;
+    }
   }
 
-  [REFRESH] () {
-    const ctx = this [CONTEXT];
+  define (MyComponent)
+    .attribute({name:'value', type: 'number', value: 0, posUpdate: REFRESH})
+    .tag ('my-component');
 
-    this.shadowRoot.querySelector('text').innerHTML = ctx.value;
-  }
-}
-
-define(MyComponent)
-  .attribute({name : 'value', type : 'number', value : 0, posUpdate : REFRESH})
-  .tag('my-component');
+</script>
 ```
 
 ## Local DOM
@@ -347,62 +386,76 @@ as a mechanism for providing information and configuration to the component.
 In the first place, we can use the usual mechanisms of management of the local DOM,
 like `<slots></slot>`, with and without name, or the methods to handle the content of the local DOM.
 
-<!-- example7.html -->
+<!-- case07 -->
 
-```js
-  import {
-  Base,
-  RENDER, REFRESH, CHANGE,
-  define
-} from '../web-component/base.js';
+```html
+<g-my-component id="component">
+  <label><strong><em>Number</em>:</strong> <span id="num">0</span></label>
+</g-my-component>
+<p>
+  <button id="update">update the slot</button>
+</p>
 
-class MyComponent extends Base {
+<script type="module">
+  import { Base, RENDER, define } from '/src/web-component/base.js';
 
-  [RENDER] () {
-    const text                = this.querySelector('label').innerHTML;
-    this.shadowRoot.innerHTML = `
+  class MyComponent extends Base {
+
+    [ RENDER ] () {
+      this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: inline-block;
+            cursor: pointer;
+          }
+        </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
-          <foreignObject x="0" y="0" width="200" height="100"
+           <foreignObject x="0" y="0" width="200" height="100"
             style="color: white; text-align: center; font-size: 1.8em; line-height: 3.5em;">
             <slot></slot>
           </foreignObject>
         </svg>`;
+    }
+
   }
 
-}
+  define (MyComponent)
+    .tag ('my-component');
 
-define(MyComponent).tag('my-component');
-```
 
-Now, the contents of the local DOM will be inserted automatically into the
-`<slot></slot>`.
+  const component = document.querySelector ('#component');
+  const num       = component.querySelector ('#num');
+  const update    = document.querySelector ('#update');
 
-```html
-
-<g-my-component id="component">
-  <label><b><i>Number</i>:</b> <span id="num">0</span></label>
-</g-my-component>
+  update.addEventListener ('click', () => {
+    num.innerText = parseInt (num.innerText) + 1
+  });
+</script>
 ```
 
 The class `Base` offers us the possibility to observe any change of the local DOM in a basic way. We
 need to import the symbol `CHANGE` and create a method with that symbol as name. This method will be
 invoked every time when is changed the local DOM content.
 
-<!-- example8.html -->
+<!-- case08 -->
 
-```js
-  import {
-  Base,
-  RENDER, CHANGE,
-  define
-} from '../web-component/base.js';
+```html
+<g-my-component id="component">
+  <label><strong><em>Number</em>:</strong> <span id="num">0</span></label>
+</g-my-component>
+<p>
+  <button id="update">update the light DOM</button>
+</p>
 
-class MyComponent extends Base {
+<script type="module">
+  import { Base, RENDER, CHANGE, define } from '/src/web-component/base.js';
 
-  [RENDER] () {
-    const text                = this.querySelector('label').innerHTML;
-    this.shadowRoot.innerHTML = `
+  class MyComponent extends Base {
+
+    [RENDER] () {
+      const text                = this.querySelector('label').innerHTML;
+      this.shadowRoot.innerHTML = `
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
           <foreignObject x="0" y="0" width="200" height="100"
@@ -410,16 +463,27 @@ class MyComponent extends Base {
             ${ text }
           </foreignObject>
         </svg>`;
+    }
+
+    [CHANGE] (mutation) {
+      const foreignObject     = this.shadowRoot.querySelector('foreignObject');
+      const label             = this.querySelector('label');
+      foreignObject.innerHTML = label.innerHTML;
+    }
   }
 
-  [CHANGE] (mutation) {
-    const foreignObject     = this.shadowRoot.querySelector('foreignObject');
-    const label             = this.querySelector('label');
-    foreignObject.innerHTML = label.innerHTML;
-  }
-}
+  define (MyComponent)
+    .tag ('my-component');
 
-define(MyComponent).tag('my-component');
+
+  const component = document.querySelector ('#component');
+  const num       = component.querySelector ('#num');
+  const update    = document.querySelector ('#update');
+
+  update.addEventListener ('click', () => {
+    num.innerText = parseInt (num.innerText) + 1
+  });
+</script>
 ```
 
 ## Resize
@@ -429,20 +493,22 @@ the content to the new size. This management can be easier if we import the symb
 create a new method with this symbol. That method will be invoked when the size of the component has
 changed.
 
-<!-- example10.html -->
+<!-- case09 -->
 
-```js
-  import {
-  Base,
-  RENDER, RESIZE,
-  define
-} from '../web-component/base.js';
+```html
+<div style="height: 300px; width: 300px; resize:both; overflow: hidden; border: 1px dotted black">
+  <g-my-component style="width: 100%; height: auto;" id="component" label="Hello"></g-my-component>
+</div>
+<p>Please resize the box</p>
 
 
-class MyComponent extends Base {
+<script type="module">
+  import { Base, RENDER, RESIZE, define } from '/src/web-component/base.js';
 
-  [RENDER] () {
-    this.shadowRoot.innerHTML = `
+  class MyComponent extends Base {
+
+    [ RENDER ] () {
+      this.shadowRoot.innerHTML = `
         <style>
           :host { display: block;}
         </style>
@@ -452,64 +518,86 @@ class MyComponent extends Base {
             ${ this.label }
           </text>
         </svg>`;
+    }
+
+    [ RESIZE ] (width, height) {
+      const svg = this.shadowRoot.querySelector ('svg');
+      svg.setAttribute ('height', width / 2);
+    }
   }
 
-  [RESIZE] (width, height) {
-    const svg = this.shadowRoot.querySelector('svg');
-    svg.setAttribute('height', width / 2);
-  }
-}
+  define (MyComponent)
+    .attribute ({name : 'label', type : 'string', value : '', posUpdate : RENDER})
+    .tag ('my-component');
 
-define(MyComponent)
-  .attribute({name : 'label', type : 'string', value : '', posUpdate : RENDER})
-  .tag('my-component');
+</script>
 ```
 
 The `[ RESIZE ]` method receive as parameters:
 
-- width - The new width
-- height - The new height
-- widthDiff - the difference between last width and current width
-- heightDiff - the difference between last height and current height
+- `width` - The new width
+- `height` - The new height
+- `widthDiff` - the difference between last width and current width
+- `heightDiff` - the difference between last height and current height
 
 ## CSS Custom property
 
-You can define a CSS Properties with `define().style()`. After this definition is possible to 
-import and use these functions:
+You can define a CSS Properties with `define().style()`. After this definition is possible to import
+and use these functions:
 
-- `getCSSProperties(component)`: Get the list of CSS Properties
+- `getCSSVar(component, name)`: Obtain a CSS var() string with the default value defined
+- `getCSSProperties(component)`: Get the list of CSS Properties Keys
+- `getCSSPropertyDescriptors(component)`: Get an object with the property Descriptors
 - `getCSSPropertyValue(component)`: Get a CSS Property Value  (current or default value)
+- `getCSSProperty(component, name)`: Get a CSS property descriptor by name
 
-<!-- example13.html -->
+<!-- case10 -->
 
-```js
-  import {
-  Base,
-  define,
-  RENDER
-} from '../web-component/base.js';
+```html
 
+<g-my-component id="component"></g-my-component>
+<p>
+  <button id="check">get CSS properties</button>
+</p>
+<pre id="result"></pre>
 
-class MyComponent extends Base {
+<script type="module">
+  import {Base, RENDER, define}                 from '/src/web-component/base.js';
+  import {getCSSVar, getCSSPropertyDescriptors} from '/src/lib/css-props/index.js';
 
-  [RENDER] () {
-    this.shadowRoot.innerHTML = `
+  class MyComponent extends Base {
+
+    [RENDER] () {
+      this.shadowRoot.innerHTML = `
             <style>
             :host {
                 display: block;
                 width: 64px;
                 height: 64px;
-                background-color: ${ this.getCSSProperty('bg-color') };
+                background-color: ${ getCSSVar(this, 'bg-color') };
+                color: ${ getCSSVar(this, 'fg-color') };
             }
             </style>
+            G
         `;
+    }
   }
 
-}
+  define(MyComponent)
+    .style({name : 'bg-color', initialValue : 'red'})
+    .style({name : 'fg-color', initialValue : 'white'})
+    .tag('my-component');
 
-define(MyComponent)
-  .style({name : 'bg-color', syntax : '<color>', initialValue : 'white'})
-  .tag('my-component');
+  const component = document.querySelector('#component');
+  const result    = document.querySelector('#result');
+  const check     = document.querySelector('#check');
+  check.addEventListener('click', () => {
+    const descriptors = getCSSPropertyDescriptors(component);
+    result.innerHTML  = JSON.stringify(descriptors, null, 2).replaceAll('<', '&lt;');
+  });
+
+
+</script>
 ```
 
 The user can define `--g-bg-color` as a CSS variable to define the component background color.
@@ -835,7 +923,6 @@ Property descriptor is used into `defineProperty()` function.
 | `[preUpdate]`      | `function` \| `string` \| `symbol` | Callback or method to call previously to update                    |
 | `[posUpdate]`      | `function` \| `string` \| `symbol` | Callback or method reference to call after update                  |
 | `[posUpdateEvent]` | `string`                           | Event name fired after update                                      |
-
 
 #### define(klass).style(cssPropertyDescriptor) :`function`
 
