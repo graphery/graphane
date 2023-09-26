@@ -5,8 +5,8 @@ import { opendir }      from 'node:fs/promises';
 import { join }         from 'node:path';
 
 const ROOT   = '/';
-const URL    = ROOT + 'test/component/cases/';
-const FOLDER = './test/component/cases/';
+const URL    = ROOT + 'test/web-component/cases/';
+const FOLDER = './test/web-component/cases/';
 
 const dir = await opendir(FOLDER);
 for await (const dirent of dir) {

@@ -2,7 +2,7 @@ export const title       = '4) Update attribute and property'
 export const description = `Fire ready, render, update, and refresh events`;
 
 export async function script () {
-  const { Base, RENDER, REFRESH, define } = await import('/src/component/base.js');
+  const { Base, RENDER, REFRESH, define } = await import('/src/web-component/base.js');
 
   class MyComponent extends Base {
 

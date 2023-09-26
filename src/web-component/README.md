@@ -33,7 +33,7 @@ To inherit from class `Base` you need:
 <!-- example1.html -->
 
 ```js
-import { Base, RENDER, define } from '../component/base.js';
+import { Base, RENDER, define } from '../web-component/base.js';
 
 class MyComponent extends Base {
   constructor () {
@@ -60,7 +60,7 @@ name `g-my-component`:
 <g-my-component></g-my-component>
 ```
 
-In this example we have inserted a simple ellipse with an SVG tag, but Graphery allows any type of
+In this example, we have inserted a simple ellipse with an SVG tag, but Graphery allows any type of
 content to create their graphics, from HTML, to Canvas, passing by the SVG format. Any content
 supported by modern browsers can be inserted inside the Shadow DOM of the component, even other web
 components.
@@ -102,7 +102,7 @@ methods.*
   Base,
   RENDER, REFRESH,
   define
-} from '../component/base.js';
+} from '../web-component/base.js';
 
 class MyComponent extends Base {
   constructor () {
@@ -136,7 +136,7 @@ by which it is happening. In particular, emit the events:
 - `ready` when the component has been instantiated and has run the sti constructor.
 - `render` when the component you've built its basic display.
 - `refresh` when the component has updated its content.
-- `update` when the component content is updated (can be launched multiple times)
+- `update` when the component content is updated (can be launched multiple times).
 
 <!-- example3.html -->
 
@@ -166,7 +166,7 @@ import {
   Base,
   RENDER, REFRESH,
   define
-} from '../component/base.js';
+} from '../web-component/base.js';
 ```
 
 Eleven is the class defined, then we must call this function with the configuration information of
@@ -202,7 +202,7 @@ launches the event `refresh` automatically.
     Base,
     RENDER, REFRESH,
     define
-  } from '../component/base.js';
+  } from '../web-component/base.js';
 
   class MyComponent extends Base {
 
@@ -309,7 +309,7 @@ internal state of the component.
   Base,
   RENDER, REFRESH, CONTEXT,
   define
-} from '../component/base.js';
+} from '../web-component/base.js';
 
 class MyComponent extends Base {
   constructor () {
@@ -354,7 +354,7 @@ like `<slots></slot>`, with and without name, or the methods to handle the conte
   Base,
   RENDER, REFRESH, CHANGE,
   define
-} from '../component/base.js';
+} from '../web-component/base.js';
 
 class MyComponent extends Base {
 
@@ -396,7 +396,7 @@ invoked every time when is changed the local DOM content.
   Base,
   RENDER, CHANGE,
   define
-} from '../component/base.js';
+} from '../web-component/base.js';
 
 class MyComponent extends Base {
 
@@ -422,68 +422,6 @@ class MyComponent extends Base {
 define(MyComponent).tag('my-component');
 ```
 
-### Collection to manage the Local DOM
-
-We can define a collection of elements to be included in the local DOM of our component as a
-mechanism for configuration management:
-
-<!-- example9.html -->
-
-```html
-
-<g-my-component id="component">
-  <g-child value="10"></g-child>
-  <g-child value="20"></g-child>
-</g-my-component>
-```
-
-With the helper function `define().collection()` we can create a property for manage the collection
-of elements in the light DOM. With this function, we'll create a property in our component that
-allows us to view, edit, and add elements without manipulating directly the DOM.
-
-```js
-  import {
-  Base,
-  RENDER, REFRESH, CHANGE,
-  define
-} from '../component/base.js';
-
-class MyComponentData extends Base {
-}
-
-define(MyComponentData)
-  .attribute({name : 'value', type : 'number', value : 0})
-  .tag('data');
-
-class MyComponent extends Base {
-
-  [RENDER] () {
-    this.shadowRoot.innerHTML = `
-        <svg viewBox="0 0 200 100" width="200" height="100">
-          <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
-          <text x="50%" y="50%" text-anchor="middle" fill="white" dy="0.2em" font-size="20"></text>
-        </svg>`;
-  }
-
-  [REFRESH] () {
-    let result = 0;
-    for (let id in this.values) {
-      result += parseInt(this.values[id].value);
-    }
-    const text     = this.shadowRoot.querySelector('text');
-    text.innerHTML = result.toString();
-  }
-
-  [CHANGE] (mutation) {
-    this [REFRESH]();
-  }
-}
-
-define(MyComponent)
-  .collection({name : 'values', tag : 'g-child', properties : ['value']})
-  .tag('my-component');
-```
-
 ## Resize
 
 Sometimes it is important to know when has changed the size of the component to be able to adjust
@@ -498,7 +436,7 @@ changed.
   Base,
   RENDER, RESIZE,
   define
-} from '../component/base.js';
+} from '../web-component/base.js';
 
 
 class MyComponent extends Base {
@@ -536,11 +474,11 @@ The `[ RESIZE ]` method receive as parameters:
 
 ## CSS Custom property
 
-You can define a CSS Properties with `define().style()`. After this definition is possible to use
-the methods:
+You can define a CSS Properties with `define().style()`. After this definition is possible to 
+import and use these functions:
 
-- `this.getCSSProperties()`: Get the list of CSS Properties
-- `this.getCSSPropertyValue`: Get a CSS Property Value  (current or default value)
+- `getCSSProperties(component)`: Get the list of CSS Properties
+- `getCSSPropertyValue(component)`: Get a CSS Property Value  (current or default value)
 
 <!-- example13.html -->
 
@@ -549,7 +487,7 @@ the methods:
   Base,
   define,
   RENDER
-} from '../component/base.js';
+} from '../web-component/base.js';
 
 
 class MyComponent extends Base {
@@ -602,7 +540,7 @@ from a remote server.
   Base,
   RENDER, REFRESH, CONTEXT,
   define
-} from '../component/base.js';
+} from '../web-component/base.js';
 
 
 class MyComponent extends Base {
@@ -660,7 +598,7 @@ from `Simple`, but you cannot use ~~`define().style()`~~.
   Simple,
   define,
   CONTEXT
-} from '../component/simple.js';
+} from './/simple.js';
 
 class MyComponent extends Simple {
 
@@ -707,7 +645,7 @@ define(MyComponent)
 Base class for Graphery Web Component.
 
 ```js
-import { Base } from '../component/base.js';
+import { Base } from '../web-component/base.js';
 
 class X extends Base {
 
@@ -745,7 +683,7 @@ when the component is created and when some property is changed and RENDER is de
 action.
 
 ```js
-import { Base, RENDER } from '../component/base.js';
+import { Base, RENDER } from '../web-component/base.js';
 
 class X extends Base {
   [RENDER] () {
@@ -761,7 +699,7 @@ when the component is rendered and when some property is changed and REFRESH is 
 action.
 
 ```js
-import { Base, REFRESH } from '../component/base.js';
+import { Base, REFRESH } from '../web-component/base.js';
 
 class X extends Base {
   [REFRESH] () {
@@ -777,7 +715,7 @@ when the component is rendered and when some property is changed and REFRESH is 
 action.
 
 ```js
-import { Base, CHANGE } from '../component/base.js';
+import { Base, CHANGE } from '../web-component/base.js';
 
 class X extends Base {
   [CHANGE] (mutations) {
@@ -792,7 +730,7 @@ Symbol used for define the resize method into the class inherited from Base. Thi
 when the component is resized.
 
 ```js
-import { Base, RESIZE } from '../component/base.js';
+import { Base, RESIZE } from '../web-component/base.js';
 
 class X extends Base {
   [RESIZE] (width, height, widthDiff, heightDiff) {
@@ -806,7 +744,7 @@ class X extends Base {
 Symbol used for define a private context used with `this [ CONTEXT ]`.
 
 ```js
-import { Base, CONTEXT } from '../component/base.js';
+import { Base, CONTEXT } from '../web-component/base.js';
 
 class X extends Base {
   constructor () {
@@ -836,7 +774,7 @@ Defines an attribute and its property into the class
 | `attributeDescriptor` | `attributeDescriptor` | options into a `attributeDescriptor` object |
 
 ```js
-import { Base, define } from '../component/base.js';
+import { Base, define } from '../web-component/base.js';
 
 class X extends Base {
 }
@@ -874,7 +812,7 @@ You define a property into the class
 | `propertyDescriptor` | `propertyDescriptor` | options into a `propertyDescriptor` object |
 
 ```js
-import { Base, define } from '../component/base.js';
+import { Base, define } from '../web-component/base.js';
 
 class X extends Base {
 }
@@ -898,20 +836,6 @@ Property descriptor is used into `defineProperty()` function.
 | `[posUpdate]`      | `function` \| `string` \| `symbol` | Callback or method reference to call after update                  |
 | `[posUpdateEvent]` | `string`                           | Event name fired after update                                      |
 
-#### define(klass).collection(options) :`function`
-
-You define a collection from a child custom tag. The collection has this
-structure: `klassObj.<name>.<element_id> = {property: value, property: value, ...}`
-
-`options` must have this properties:
-
-| Member       | Type             | Description                                               |
-|:-------------|:-----------------|:----------------------------------------------------------|
-| `name`       | `string`         | collection name                                           |
-| `tag`        | `string`         | child custom tag observed into the light DOM              |
-| `properties` | `array.<string>` | list of properties names to the includes into each object |
-
-Return a `define object` for method chaining.
 
 #### define(klass).style(cssPropertyDescriptor) :`function`
 
@@ -937,7 +861,7 @@ You define a Custom Component
 | `name` | `string` | Custom tag name, without `g-` prefix |
 
 ```js
-import { Base, define } from '../component/base.js';
+import { Base, define } from '../web-component/base.js';
 
 class X extends Base {
 }
