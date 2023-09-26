@@ -33,7 +33,8 @@ export async function script () {
 
 export default `
 
-<div style="height: 300px; width: 300px; resize:both; overflow: hidden; border: 1px dotted black">
+<div id="container" 
+  style="height: 300px; width: 300px; resize:both; overflow: hidden; border: 1px dotted black">
   <g-my-component style="width: 100%; height: auto;" id="component" label="Hello"></g-my-component>
 </div>
 <p>Please resize the box</p>

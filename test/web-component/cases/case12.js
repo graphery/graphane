@@ -25,6 +25,6 @@ export async function script () {
 
 export default `
 <g-my-component href="#content"></g-my-component>
-<button onclick="document.querySelector('g-my-component').delay=1">load</button>
+<button id="update" onclick="document.querySelector('g-my-component').delay=1">load</button>
 <div id="content"></div>
 `;

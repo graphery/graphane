@@ -9,6 +9,11 @@ export async function script () {
     [RENDER] () {
       const text                = this.querySelector('label').innerHTML;
       this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: inline-block;
+          }
+        </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
           <foreignObject x="0" y="0" width="200" height="100"

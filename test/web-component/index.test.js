@@ -19,11 +19,13 @@ for await (const dirent of dir) {
       await page.goto(`/load.html?case=${ URL }${ dirent.name }`);
       await wait(100);
     });
-    test('compare image', async ({page}) => {
-      const component = page.locator('#case g-my-component');
-      await expect(component).toHaveScreenshot();
-    });
-    if (['case02', 'case03', 'case04', 'case05'].includes(code)) {
+    if (!['case12'].includes(code)) {
+      test('compare image', async ({page}) => {
+        const component = page.locator('#case g-my-component');
+        await expect(component).toHaveScreenshot();
+      });
+    }
+    if (['case02', 'case03', 'case04', 'case05', 'case06'].includes(code)) {
       test('compare image after click', async ({page}) => {
         const component = page.locator('#case g-my-component');
         await component.click();
@@ -33,12 +35,12 @@ for await (const dirent of dir) {
     if (['case03'].includes(code)) {
       test('check events', async ({page}) => {
         const result = page.locator('#case #result');
-        expect(await result.innerText()).toBe(`ready event\nrender event\nrefresh event\n`);
+        await expect(result).toContainText(`ready event\nrender event\nrefresh event\n`);
         const component = page.locator('#case g-my-component');
         await component.click();
-        expect(await result.innerText()).toBe(`ready event\nrender event\nrefresh event\nupdate event\nrefresh event\n`);
+        await expect(result).toContainText(`ready event\nrender event\nrefresh event\nupdate event\nrefresh event\n`);
         await component.click({button : 'right'});
-        expect(await result.innerText()).toBe(`ready event\nrender event\nrefresh event\nupdate event\nrefresh event\nrender event\nrefresh event\n`)
+        await expect(result).toContainText(`ready event\nrender event\nrefresh event\nupdate event\nrefresh event\nrender event\nrefresh event\n`)
       });
     }
     if (['case04'].includes(code)) {
@@ -49,6 +51,39 @@ for await (const dirent of dir) {
         await expect(component).toHaveScreenshot();
         await component.click({button : 'right'});
         await expect(component).toHaveScreenshot();
+      });
+    }
+    if (['case07', 'case08'].includes(code)) {
+      test('compare image after click', async ({page}) => {
+        const button = page.locator('#update');
+        await button.click();
+        const component = page.locator('#case g-my-component');
+        await expect(component).toHaveScreenshot();
+      });
+    }
+    if (['case09'].includes(code)) {
+      test('compare image after resize', async ({page}) => {
+        await page.evaluate(async () => {
+          document.querySelector('#container').style.width = '100px';
+        });
+        const component = page.locator('#case g-my-component');
+        await expect(component).toHaveScreenshot();
+      });
+    }
+    if (['case11'].includes(code)) {
+      test('compare image after wait', async ({page}) => {
+        await wait(3000);
+        const component = page.locator('#case g-my-component');
+        await expect(component).toHaveScreenshot();
+      });
+    }
+    if (['case12'].includes(code)) {
+      test('compare content after load', async ({page}) => {
+        const button = page.locator('#update');
+        await button.click();
+        await wait(3000);
+        const content = page.locator('#content');
+        await expect(content).toContainText('hello Graphane')
       });
     }
 

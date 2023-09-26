@@ -11,7 +11,6 @@ export async function script () {
         <style>
           :host {
             display: inline-block;
-            cursor: pointer;
           }
         </style>
         <svg viewBox="0 0 200 100" width="200" height="100">
