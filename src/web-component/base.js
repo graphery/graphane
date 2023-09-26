@@ -203,14 +203,18 @@ class Base extends Simple {
  * @param {cssPropertyDescriptor} def - options into a {@link cssPropertyDescriptor}
  */
 function defineStyleProperty (Class, def) {
+  if ('value' in def && !('initialValue' in def)) {
+    def.initialValue = def.value;
+  }
   const definition = Object.assign({syntax : '*', inherits : true}, def);
   if (definition.name.substring(0, 2) !== '--') {
     definition.name = `--${ COMPONENT_PREFIX }${ definition.name }`;
   }
   if (!Class[CSS_PROPS]) {
-    Class[CSS_PROPS] = new Map();
+    Class[CSS_PROPS] = {};
   }
-  Class[CSS_PROPS].set(definition.name, definition);
+  Class[CSS_PROPS][definition.name] = definition;
+  console.log(Class[CSS_PROPS])
 }
 
 /**
