@@ -18,6 +18,7 @@ this kind of component and to make easier and more efficient the development of 
 - [CSS Custom property](#css-custom-property)
 - [Manages advanced life cycle](#manages-advanced-life-cycle)
 - [Create component without interface](#create-component-without-interface)
+- [Fire custom events](#fire-custom-events)
 - [Quick reference](#quick-reference)
 
 ## Create a component from Base
@@ -337,6 +338,7 @@ component.
 <!-- cas06 -->
 
 ```html
+
 <g-my-component id="component" value="10"></g-my-component>
 <p>click: add 1 to value</p>
 
@@ -345,7 +347,7 @@ component.
 
   class MyComponent extends Base {
 
-    [ RENDER ] () {
+    [RENDER] () {
       this.shadowRoot.innerHTML = `
         <style>
           :host {
@@ -358,21 +360,21 @@ component.
           <text x="50%" y="50%" text-anchor="middle" fill="white"
             dy="0.3em" font-size="20"></text>
         </svg>`;
-      const svg = this.shadowRoot.querySelector('svg');
+      const svg                 = this.shadowRoot.querySelector('svg');
       svg.addEventListener('click', () => {
         this[CONTEXT].value++;
         this[REFRESH]();          // Update value from CONTEXT don't launch REFRESH
       });
     }
 
-    [ REFRESH ] () {
-      this.shadowRoot.querySelector ('text').innerHTML = this[CONTEXT].value;
+    [REFRESH] () {
+      this.shadowRoot.querySelector('text').innerHTML = this[CONTEXT].value;
     }
   }
 
-  define (MyComponent)
-    .attribute({name:'value', type: 'number', value: 0, posUpdate: REFRESH})
-    .tag ('my-component');
+  define(MyComponent)
+    .attribute({name : 'value', type : 'number', value : 0, posUpdate : REFRESH})
+    .tag('my-component');
 
 </script>
 ```
@@ -389,6 +391,7 @@ like `<slots></slot>`, with and without name, or the methods to handle the conte
 <!-- case07 -->
 
 ```html
+
 <g-my-component id="component">
   <label><strong><em>Number</em>:</strong> <span id="num">0</span></label>
 </g-my-component>
@@ -401,7 +404,7 @@ like `<slots></slot>`, with and without name, or the methods to handle the conte
 
   class MyComponent extends Base {
 
-    [ RENDER ] () {
+    [RENDER] () {
       this.shadowRoot.innerHTML = `
         <style>
           :host {
@@ -420,16 +423,16 @@ like `<slots></slot>`, with and without name, or the methods to handle the conte
 
   }
 
-  define (MyComponent)
-    .tag ('my-component');
+  define(MyComponent)
+    .tag('my-component');
 
 
-  const component = document.querySelector ('#component');
-  const num       = component.querySelector ('#num');
-  const update    = document.querySelector ('#update');
+  const component = document.querySelector('#component');
+  const num       = component.querySelector('#num');
+  const update    = document.querySelector('#update');
 
-  update.addEventListener ('click', () => {
-    num.innerText = parseInt (num.innerText) + 1
+  update.addEventListener('click', () => {
+    num.innerText = parseInt(num.innerText) + 1
   });
 </script>
 ```
@@ -441,6 +444,7 @@ invoked every time when is changed the local DOM content.
 <!-- case08 -->
 
 ```html
+
 <g-my-component id="component">
   <label><strong><em>Number</em>:</strong> <span id="num">0</span></label>
 </g-my-component>
@@ -472,16 +476,16 @@ invoked every time when is changed the local DOM content.
     }
   }
 
-  define (MyComponent)
-    .tag ('my-component');
+  define(MyComponent)
+    .tag('my-component');
 
 
-  const component = document.querySelector ('#component');
-  const num       = component.querySelector ('#num');
-  const update    = document.querySelector ('#update');
+  const component = document.querySelector('#component');
+  const num       = component.querySelector('#num');
+  const update    = document.querySelector('#update');
 
-  update.addEventListener ('click', () => {
-    num.innerText = parseInt (num.innerText) + 1
+  update.addEventListener('click', () => {
+    num.innerText = parseInt(num.innerText) + 1
   });
 </script>
 ```
@@ -496,6 +500,7 @@ changed.
 <!-- case09 -->
 
 ```html
+
 <div style="height: 300px; width: 300px; resize:both; overflow: hidden; border: 1px dotted black">
   <g-my-component style="width: 100%; height: auto;" id="component" label="Hello"></g-my-component>
 </div>
@@ -507,7 +512,7 @@ changed.
 
   class MyComponent extends Base {
 
-    [ RENDER ] () {
+    [RENDER] () {
       this.shadowRoot.innerHTML = `
         <style>
           :host { display: block;}
@@ -520,15 +525,15 @@ changed.
         </svg>`;
     }
 
-    [ RESIZE ] (width, height) {
-      const svg = this.shadowRoot.querySelector ('svg');
-      svg.setAttribute ('height', width / 2);
+    [RESIZE] (width, height) {
+      const svg = this.shadowRoot.querySelector('svg');
+      svg.setAttribute('height', width / 2);
     }
   }
 
-  define (MyComponent)
-    .attribute ({name : 'label', type : 'string', value : '', posUpdate : RENDER})
-    .tag ('my-component');
+  define(MyComponent)
+    .attribute({name : 'label', type : 'string', value : '', posUpdate : RENDER})
+    .tag('my-component');
 
 </script>
 ```
@@ -562,8 +567,8 @@ and use these functions:
 <pre id="result"></pre>
 
 <script type="module">
-  import {Base, RENDER, define}                 from '/src/web-component/base.js';
-  import {getCSSVar, getCSSPropertyDescriptors} from '/src/lib/css-props/index.js';
+  import { Base, RENDER, define }                 from '/src/web-component/base.js';
+  import { getCSSVar, getCSSPropertyDescriptors } from '/src/lib/css-props/index.js';
 
   class MyComponent extends Base {
 
@@ -621,95 +626,89 @@ In this example delays the execution of `[ RENDER ]` until the method asynchrono
 from a remote server.
 
 
-<!-- example11.html -->
+<!-- case11 -->
 
-```js
-  import {
-  Base,
-  RENDER, REFRESH, CONTEXT,
-  define
-} from '../web-component/base.js';
+```html
 
+<g-my-component delay="4"></g-my-component>
 
-class MyComponent extends Base {
+<script type="module">
+  import { Base, RENDER, REFRESH, CONTEXT, define } from '/src/web-component/base.js';
 
-  constructor () {
-    super();
-    this.load();
-  }
+  class MyComponent extends Base {
 
-  async load () {
-    const ctx      = this [CONTEXT];
-    const URL      = `https://httpbin.org/delay/${ ctx.delay }?label=hello%20Graphery`;
-    const response = await fetch(URL);
-    const data     = await response.json();
-    ctx.label      = data.args.label;
-    this[REFRESH](true);
-  }
+    async load () {
+      const ctx      = this [CONTEXT];
+      const URL      = `https://httpbin.org/delay/${ ctx.delay }?label=hello%20Graphane`;
+      const response = await fetch(URL);
+      const data     = await response.json();
+      ctx.label      = data.args.label;
+      this[REFRESH](true);
+    }
 
-  [RENDER] () {
-    this.shadowRoot.innerHTML = `
+    [RENDER] () {
+      this.load();
+      this.shadowRoot.innerHTML = `
         <svg viewBox="0 0 200 100" width="200" height="100">
           <ellipse cx="100" cy="50" rx="100" ry="50" fill="blue"/>
           <text x="50%" y="50%" text-anchor="middle" fill="white" dy="0.2em" font-size="20">loading...
           </text>
         </svg>`;
-    return false;
+      return false;
+    }
+
+    [REFRESH] () {
+      const ctx      = this [CONTEXT];
+      const text     = this.shadowRoot.querySelector('text');
+      text.innerHTML = ctx.label;
+    }
+
   }
 
-  [REFRESH] () {
-    const ctx      = this [CONTEXT];
-    const text     = this.shadowRoot.querySelector('text');
-    text.innerHTML = ctx.label;
-  }
-}
-
-define(MyComponent)
-  .attribute({name : 'delay', type : 'number', value : 1, posUpdate : 'load'})
-  .tag('my-component');
+  define(MyComponent)
+    .attribute({name : 'delay', type : 'number', value : 1, posUpdate : 'load'})
+    .attribute({name : 'label', type : 'string', value : '', posUpdate : REFRESH})
+    .tag('my-component');
+</script>
 ```
 
 ## Create component without the user interface
 
-In some cases, we need to create a Web Component without a user interface, for example, for access
-to data or other kind of configuration. In these cases the `Base` class is too big, and we can
-use `Simple`, a very small Web Component class without life cicle and other features related with
-the user interface.
+In some cases, we need to create a Web Component without a user interface. In these cases the `Base`
+class is too big, and we can use `Simple`, a very small Web Component class without life cicle and
+other features related with the user interface.
 
 You can use `define().attribute()`, `define().property()` and `define().tag()` with classes inherit
 from `Simple`, but you cannot use ~~`define().style()`~~.
 
-<!-- example12.html -->
+<!-- case12 -->
 
-```js
-  import {
-  Simple,
-  define,
-  CONTEXT
-} from './/simple.js';
+```html
+<g-my-component href="#content"></g-my-component>
+<button onclick="document.querySelector('g-my-component').delay=1">load</button>
+<div id="content"></div>
 
-class MyComponent extends Simple {
+<script type="module">
+  import {Simple, CONTEXT, define} from '/src/web-component/simple.js';
 
-  constructor () {
-    super();
-    this.load();
+  class MyComponent extends Simple {
+
+    async load () {
+      const ctx      = this [CONTEXT];
+      const URL      = `https://httpbin.org/delay/${ ctx.delay }?label=hello%20Graphane`;
+      const response = await fetch(URL);
+      const data     = await response.json ();
+      const ref      = document.querySelector (ctx.href);
+      ref.innerHTML  = data.args.label;
+    }
+
   }
 
-  async load () {
-    const ctx      = this [CONTEXT];
-    const URL      = `https://httpbin.org/delay/${ ctx.delay }?label=hello%20Graphery`;
-    const response = await fetch(URL);
-    const data     = await response.text();
-    const ref      = document.querySelector(ctx.ref);
-    ref.innerHTML  = data;
-  }
-
-}
-
-define(MyComponent)
-  .attribute({name : 'delay', type : 'number', value : 1, posUpdate : 'load'})
-  .attribute({name : 'ref', type : 'string', value : ''})
-  .tag('my-component');
+  define (MyComponent)
+    .attribute ({name : 'delay', type : 'number', value : 0, posUpdate : 'load'})
+    .attribute ({name : 'href', type : 'string', value : ''})
+    .tag ('my-component');
+</script>
 ```
 
 ## Quick reference
