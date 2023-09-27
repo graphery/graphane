@@ -123,7 +123,7 @@ function observeMutation () {
 const initialValues = new WeakMap();
 
 /**
- * Simple class for Graphery Web Component
+ * Simple class for Graphane Web Component
  *
  * @fires 'update'  - This event fires when the component is changed
  */

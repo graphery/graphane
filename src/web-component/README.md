@@ -2,7 +2,7 @@
 
 # Base class for Graphane web components
 
-This is the base class for all components of Graphery. This class, and some utilities that includes,
+This is the base class for all components of Graphane. This class, and some utilities that includes,
 allow you to define *Web Components* simplified, hiding some complexities of the construction of
 this kind of component and to make easier and more efficient the development of new components.
 
@@ -54,7 +54,7 @@ define(MyComponent)
   .tag('my-component');
 ```
 
-As a result of executing this code, we can use a new component of Graphery with the
+As a result of executing this code, we can use a new component of Graphane with the
 name `g-my-component`:
 
 ```html
@@ -62,12 +62,12 @@ name `g-my-component`:
 <g-my-component></g-my-component>
 ```
 
-In this example, we have inserted a simple ellipse with an SVG tag, but Graphery allows any type of
+In this example, we have inserted a simple ellipse with an SVG tag, but Graphane allows any type of
 content to create their graphics, from HTML, to Canvas, passing by the SVG format. Any content
 supported by modern browsers can be inserted inside the Shadow DOM of the component, even other web
 components.
 
-**Note*: all components of Graphery beginning with `g-`. This prefix is not must be passed to the
+**Note*: all components of Graphane beginning with `g-`. This prefix is not must be passed to the
 function `define().tag()`.
 
 ## Component life cycle
@@ -222,7 +222,7 @@ the attribute:
 
 ```js
 define(MyComponent)
-  .attribute({name : 'label', type : 'string', value : 'Hello Graphery', posUpdate : REFRESH});
+  .attribute({name : 'label', type : 'string', value : 'Hello Graphane', posUpdate : REFRESH});
 ```
 
 As a result of this call, our component will have an attribute `label` and to property mirror with
@@ -729,7 +729,7 @@ from `Simple`, but you cannot use ~~`define().style()`~~.
 
 ## Base :`class`
 
-Base class for Graphery Web Component.
+Base class for Graphane Web Component.
 
 ```js
 import { Base } from '../web-component/base.js';
@@ -960,7 +960,7 @@ Return a `define object` for method chaining.
 
 ### Simple :`class`
 
-Simple class for Graphery Web Component without the user interface.
+Simple class for Graphane Web Component without the user interface.
 
 ```js
 import { Simple } from '../../component/simple.js';

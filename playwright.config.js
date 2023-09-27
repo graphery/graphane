@@ -1,19 +1,26 @@
 import { defineConfig } from '@playwright/test';
 
-if (process.argv.includes('--project=base')) {
+let options = '';
+
+if (process.argv.includes('--project=web-component')) {
+  process.env.port = '7201';
+  options = '-t ./test/web-component/cases'
+} else if (process.argv.includes('--project=svg')) {
   process.env.port = '7202';
+  options = '-i /src/svg/gsvg.script.js -t test/svg/cases'
 }
 
 const webServer = process.env.port ? {
-  command             : `node ./tools/workbench -t ./test/component/cases -p ${ process.env.port } -s`,
+  command             : `node ./tools/workbench ${ options } -p ${ process.env.port } -s`,
   url                 : `http://localhost:${ process.env.port }/`,
   reuseExistingServer : !process.env.CI,
 } : undefined;
 
 export default defineConfig({
   projects  : [
-    {name : 'base'},
     {name : 'lib'},
+    {name : 'web-component'},
+    {name : 'svg'},
   ],
   testDir       : './test',
   fullyParallel : true,

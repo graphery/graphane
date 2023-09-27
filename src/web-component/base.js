@@ -79,7 +79,7 @@ function updateAttribute (element, attribute, value, asBoolean = false) {
 }
 
 /**
- * Base class for Graphery Web Component
+ * Base class for Graphane Web Component
  *
  * @fires 'ready'                 - This event fires when the component is ready and its methods and properties are available
  * @fires 'render'                - This event fires when the component is rendered and its visible content is displayed
