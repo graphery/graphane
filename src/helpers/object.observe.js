@@ -1,6 +1,6 @@
 import {
   isObject, isNull, isFunction, isDate, isString
-} from '../types/index.js'
+} from './types.js'
 
 /**
  * Observe an object in deep

@@ -1,7 +1,7 @@
 import {
   OBJECT, NUMBER, UNDEFINED,
   isObject, isFunction, isString, isUndefined, isNull
-} from '../types/index.js';
+} from './types.js';
 
 const NOT_EQUAL = false;                            // Return values
 const EQUAL     = true;

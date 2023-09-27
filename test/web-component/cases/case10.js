@@ -3,7 +3,7 @@ export const description = `CSS properties and related functions`;
 
 export async function script () {
   const {Base, RENDER, define}                 = await import('/src/web-component/base.js');
-  const {getCSSVar, getCSSPropertyDescriptors} = await import('/src/lib/css-props/index.js');
+  const {getCSSVar, getCSSPropertyDescriptors} = await import('/src/helpers/cssprops.js');
 
   class MyComponent extends Base {
 

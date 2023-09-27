@@ -10,11 +10,11 @@
 import {
   str2value, toCamel, isUndefined, isFunction, isObject, isString, isNull,
   NUMBER, BOOLEAN, OBJECT, ARRAY, EMPTY_STRING,
-}                    from '../lib/types/index.js';
-import objectObserve from '../lib/observify/object.js';
+}                    from '../helpers/types.js';
+import objectObserve from '../helpers/object.observe.js';
 import {
   equal, clone
-}                    from '../lib/object/index.js';
+}                    from '../helpers/objects.js';
 
 // Constants
 const COMPONENT_PREFIX = globalThis.GRAPHANE_PREFIX || 'g-';

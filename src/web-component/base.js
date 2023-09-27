@@ -14,13 +14,13 @@ import {
   CONTEXT,
   FIRE_EVENT,
   COMPONENT_PREFIX
-}                    from './simple.js';
+} from './simple.js';
 import {
   isUndefined, isFunction, isNull, EMPTY_STRING,
-}                    from '../lib/types/index.js';
+} from '../helpers/types.js';
 import {
   debounceMethodAsync, posExecution, preCondition
-}                    from '../lib/functions/index.js';
+} from '../helpers/functions.js';
 
 // Constants
 const DELAY = 1;

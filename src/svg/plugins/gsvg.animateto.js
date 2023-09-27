@@ -1,4 +1,4 @@
-import { isObject, isString, isFunction, isArray } from '../../lib/types/index.js';
+import { isObject, isString, isFunction, isArray } from '../../helpers/types.js';
 
 const SVG       = 'SVG';
 const ANIMATE   = 'animate';
