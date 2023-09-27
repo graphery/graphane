@@ -9,13 +9,15 @@
     "component:test": "playwright test test/web-component/index.test.js --project=web-component",
     "svg:workbench": "node ./tools/workbench -i /src/svg/gsvg.script.js -t test/svg/cases -p 7002",
     "svg:test": "playwright test test/svg/index.test.js --project=svg",
-    "lib:test": "playwright test ./test/lib/ --project=lib"
+    "lib:test": "playwright test ./test/lib/ --project=lib",
+    "test": "concurrently \"npm run component:test\" \"npm run svg:test\""
   },
   "devDependencies": {
-    "playwright": "^1.38.1",
     "@playwright/test": "^1.38.1",
     "commander": "^11.0.0",
+    "concurrently": "^8.2.1",
     "open": "^9.1.0",
+    "playwright": "^1.38.1",
     "ws": "^8.14.2"
   },
   "type": "module"
