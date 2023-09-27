@@ -7,7 +7,13 @@ if (process.argv.includes('--project=web-component')) {
   options = '-t ./test/web-component/cases'
 } else if (process.argv.includes('--project=svg')) {
   process.env.port = '7202';
-  options = '-i /src/svg/gsvg.script.js -t test/svg/cases'
+  options = '-i /src/svg/gsvg.script.js ' +
+            '-t test/svg/cases'
+} else if (process.argv.includes('--project=svg.animateto')) {
+  process.env.port = '7203';
+  options = '-i /src/svg/gsvg.script.js' +
+            '-i /src/svg/plugins/gsvg.animateto.script.js ' +
+            '-t test/svg/plugins/animateto/cases'
 }
 
 const webServer = process.env.port ? {
@@ -21,6 +27,7 @@ export default defineConfig({
     {name : 'lib'},
     {name : 'web-component'},
     {name : 'svg'},
+    {name : 'svg.animateto'},
   ],
   testDir       : './test',
   fullyParallel : true,
