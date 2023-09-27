@@ -5,12 +5,12 @@
   "author": "Graphane",
   "license": "MIT",
   "scripts": {
-    "component:workbench": "node ./tools/workbench -t test/web-component/cases -p 7001",
-    "component:test": "playwright test test/web-component/index.test.js --project=web-component",
+    "web-component:workbench": "node ./tools/workbench -t test/web-component/cases -p 7001",
+    "web-component:test": "playwright test test/web-component/index.test.js --project=web-component",
     "svg:workbench": "node ./tools/workbench -i /src/svg/gsvg.script.js -t test/svg/cases -p 7002",
     "svg:test": "playwright test test/svg/index.test.js --project=svg",
     "lib:test": "playwright test ./test/lib/ --project=lib",
-    "test": "concurrently \"npm run component:test\" \"npm run svg:test\""
+    "test": "concurrently \"npm run web-component:test\" \"npm run svg:test\""
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",
