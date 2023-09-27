@@ -10,15 +10,17 @@
     "workbench:svg.animateto": "node ./tools/workbench -l gSVG.animateTo -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.animateto.script.js -t test/svg/plugins/animateto/cases -p 7003",
     "workbench:svg.debug": "node ./tools/workbench -l gSVG.debug -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.debug.script.js -t test/svg/plugins/debug/cases -p 7004",
     "workbench:svg.keep.aspect": "node ./tools/workbench -l gSVG.keep.aspect -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.keep.aspect.script.js -t test/svg/plugins/keep.aspect/cases -p 7005",
-    "workbench:svg.observe.resize": "node ./tools/workbench -l gSVG.keep.aspect -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.observe.resize.script.js -t test/svg/plugins/observe.resize/cases -p 7006",
-    "test": "concurrently \"npm run test:lib\" \"npm run test:web-component\" \"npm run test:svg\" \"npm run test:svg.animateto\" \"npm run test:svg.debug\" \"npm run test:svg.keep.aspect\"",
+    "workbench:svg.observe.resize": "node ./tools/workbench -l gSVG.observe.resize -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.observe.resize.script.js -t test/svg/plugins/observe.resize/cases -p 7006",
+    "workbench:svg.observe.style": "node ./tools/workbench -l gSVG.observe.style -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.observe.style.script.js -t test/svg/plugins/observe.style/cases -p 7007",
+    "test": "concurrently -m 3 npm:test:*",
     "test:lib": "playwright test ./test/lib/ --project=lib",
     "test:web-component": "playwright test test/web-component/index.test.js --project=web-component",
     "test:svg": "playwright test test/svg/index.test.js --project=svg",
     "test:svg.animateto": "playwright test test/svg/plugins/animateto/index.test.js --project=svg.animateto",
     "test:svg.debug": "playwright test test/svg/plugins/debug/index.test.js --project=svg.debug",
     "test:svg.keep.aspect": "playwright test test/svg/plugins/keep.aspect/index.test.js --project=svg.keep.aspect",
-    "test:svg.observe.resize": "playwright test test/svg/plugins/observe.resize/index.test.js --project=svg.observe.resize"
+    "test:svg.observe.resize": "playwright test test/svg/plugins/observe.resize/index.test.js --project=svg.observe.resize",
+    "test:svg.observe.style": "playwright test test/svg/plugins/observe.style/index.test.js --project=svg.observe.style"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",
