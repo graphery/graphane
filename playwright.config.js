@@ -19,6 +19,11 @@ if (process.argv.includes('--project=web-component')) {
   options          = '-i /src/svg/gsvg.script.js ' +
                      '-i /src/svg/plugins/gsvg.debug.script.js ' +
                      '-t test/svg/plugins/debug/cases';
+} else if (process.argv.includes('--project=svg.keep.aspect')) {
+  process.env.port = '7205';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.keep.aspect.script.js ' +
+                     '-t test/svg/plugins/keep.aspect/cases';
 }
 
 const webServer = process.env.port ? {
@@ -35,6 +40,7 @@ export default defineConfig({
     {name : 'svg'},
     {name : 'svg.animateto'},
     {name : 'svg.debug'},
+    {name : 'svg.keep.aspect'},
   ],
   testDir       : './test',
   fullyParallel : true,
