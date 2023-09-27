@@ -308,9 +308,9 @@ const methodWrapper = (element, prop, parentWrapper, parentProp) => {
     }
     // Set value as attribute
     if (value !== 0 && !value) {
-      element?.removeAttribute(propNormalized);
+      element?.removeAttribute && element.removeAttribute(propNormalized);
     } else {
-      element?.setAttribute(propNormalized, isBoolean(value) ? '' : String(args));
+      element?.setAttribute && element.setAttribute(propNormalized, isBoolean(value) ? '' : String(args));
     }
     return parentWrapper;
   };
