@@ -11,8 +11,10 @@
     "svg:test": "playwright test test/svg/index.test.js --project=svg",
     "svg.animateto:workbench": "node ./tools/workbench -l gSVG.animateTo -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.animateto.script.js -t test/svg/plugins/animateto/cases -p 7003",
     "svg.animateto:test": "playwright test test/svg/plugins/animateto/index.test.js --project=svg.animateto",
+    "svg.debug:workbench": "node ./tools/workbench -l gSVG.debug -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.debug.script.js -t test/svg/plugins/debug/cases -p 7004",
+    "svg.debug:test": "playwright test test/svg/plugins/debug/index.test.js --project=svg.debug",
     "lib:test": "playwright test ./test/lib/ --project=lib",
-    "test": "concurrently \"npm run web-component:test\" \"npm run svg:test\" \"npm run svg.animateto:test\""
+    "test": "concurrently \"npm run web-component:test\" \"npm run svg:test\" \"npm run svg.animateto:test\" \"npm run svg.debug:test\""
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",
