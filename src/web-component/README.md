@@ -568,7 +568,7 @@ and use these functions:
 
 <script type="module">
   import { Base, RENDER, define }                 from '/src/web-component/base.js';
-  import { getCSSVar, getCSSPropertyDescriptors } from '/src/helpers/cssprops.js';
+  import { getCSSVar, getCSSPropertyDescriptors } from '/src/web-component/cssprops.js';
 
   class MyComponent extends Base {
 

@@ -1,4 +1,4 @@
-import { CSS_PROPS, COMPONENT_PREFIX } from '../web-component/base.js';
+import { CSS_PROPS, COMPONENT_PREFIX } from './base.js';
 
 const buildName   = (name) => /^--/.test(name) ? name : `--${ COMPONENT_PREFIX }${ name }`;
 
