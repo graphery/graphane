@@ -579,7 +579,7 @@ function define (Class, def = {}) {
     return def;
   };
   def.extension = (fn) => {
-    fn.call(defineObject, defineObject, Class)
+    fn.call(def, def, Class)
     return def
   }
   return def;
