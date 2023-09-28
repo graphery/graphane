@@ -2,48 +2,52 @@ import { defineConfig } from '@playwright/test';
 
 let options = '';
 
-if (process.argv.includes('--project=web-component')) {
+if (process.argv.includes('--project=template')) {
+  process.env.port = '7200';
+  options          = '-i /src/component/template.js ' +
+                     '-t test/component/cases';
+} else if (process.argv.includes('--project=core')) {
   process.env.port = '7201';
-  options          = '-t ./test/web-component/cases';
+  options          = '-t ./test/core/cases';
 } else if (process.argv.includes('--project=svg')) {
   process.env.port = '7202';
-  options          = '-i /src/svg/gsvg.script.js ' +
-                     '-t test/svg/cases';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-t test/lib/cases';
 } else if (process.argv.includes('--project=svg.animateto')) {
   process.env.port = '7203';
-  options          = '-i /src/svg/gsvg.script.js ' +
-                     '-i /src/svg/plugins/gsvg.animateto.script.js ' +
-                     '-t test/svg/plugins/animateto/cases';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/lib/plugins/gsvg.animateto.script.js ' +
+                     '-t test/lib/plugins/animateto/cases';
 } else if (process.argv.includes('--project=svg.debug')) {
   process.env.port = '7204';
-  options          = '-i /src/svg/gsvg.script.js ' +
-                     '-i /src/svg/plugins/gsvg.debug.script.js ' +
-                     '-t test/svg/plugins/debug/cases';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/lib/plugins/gsvg.debug.script.js ' +
+                     '-t test/lib/plugins/debug/cases';
 } else if (process.argv.includes('--project=svg.keep.aspect')) {
   process.env.port = '7205';
-  options          = '-i /src/svg/gsvg.script.js ' +
-                     '-i /src/svg/plugins/gsvg.keep.aspect.script.js ' +
-                     '-t test/svg/plugins/keep.aspect/cases';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/lib/plugins/gsvg.keep.aspect.script.js ' +
+                     '-t test/lib/plugins/keep.aspect/cases';
 } else if (process.argv.includes('--project=svg.observe.resize')) {
   process.env.port = '7206';
-  options          = '-i /src/svg/gsvg.script.js ' +
-                     '-i /src/svg/plugins/gsvg.observe.resize.script.js ' +
-                     '-t test/svg/plugins/observe.resize/cases';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/lib/plugins/gsvg.observe.resize.script.js ' +
+                     '-t test/lib/plugins/observe.resize/cases';
 } else if (process.argv.includes('--project=svg.observe.style')) {
   process.env.port = '7207';
-  options          = '-i /src/svg/gsvg.script.js ' +
-                     '-i /src/svg/plugins/gsvg.observe.style.script.js ' +
-                     '-t test/svg/plugins/observe.style/cases';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/lib/plugins/gsvg.observe.style.script.js ' +
+                     '-t test/lib/plugins/observe.style/cases';
 } else if (process.argv.includes('--project=svg.template.engine')) {
   process.env.port = '7208';
-  options          = '-i /src/svg/gsvg.script.js ' +
-                     '-i /src/svg/plugins/gsvg.template.engine.script.js ' +
-                     '-t test/svg/plugins/template.engine/cases';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/lib/plugins/gsvg.template.engine.script.js ' +
+                     '-t test/lib/plugins/template.engine/cases';
 } else if (process.argv.includes('--project=svg.shapes')) {
   process.env.port = '7209';
-  options          = '-i /src/svg/gsvg.script.js ' +
-                     '-i /src/svg/plugins/gsvg.shapes.script.js ' +
-                     '-t test/svg/plugins/shapes/cases';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/lib/plugins/gsvg.shapes.script.js ' +
+                     '-t test/lib/plugins/shapes/cases';
 }
 
 const webServer = process.env.port ? {
@@ -56,7 +60,8 @@ const webServer = process.env.port ? {
 export default defineConfig({
   projects      : [
     {name : 'helpers'},
-    {name : 'web-component'},
+    {name : 'core'},
+    {name : 'template'},
     {name : 'svg'},
     {name : 'svg.animateto'},
     {name : 'svg.debug'},
