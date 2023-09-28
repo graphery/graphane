@@ -60,12 +60,8 @@ const webServer = process.env.port ? {
 export default defineConfig({
   projects      : [
     {name : 'helpers'},
-<<<<<<< HEAD
-    {name : 'web-component'},
-=======
     {name : 'core'},
     {name : 'template'},
->>>>>>> feature/import-graphery
     {name : 'svg'},
     {name : 'svg.animateto'},
     {name : 'svg.debug'},
