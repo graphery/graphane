@@ -34,6 +34,11 @@ if (process.argv.includes('--project=web-component')) {
   options          = '-i /src/svg/gsvg.script.js ' +
                      '-i /src/svg/plugins/gsvg.observe.style.script.js ' +
                      '-t test/svg/plugins/observe.style/cases';
+} else if (process.argv.includes('--project=svg.template.engine')) {
+  process.env.port = '7208';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.template.engine.script.js ' +
+                     '-t test/svg/plugins/template.engine/cases';
 }
 
 const webServer = process.env.port ? {
@@ -53,6 +58,7 @@ export default defineConfig({
     {name : 'svg.keep.aspect'},
     {name : 'svg.observe.resize'},
     {name : 'svg.observe.style'},
+    {name : 'svg.template.engine'},
   ],
   testDir       : './test',
   fullyParallel : true,

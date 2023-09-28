@@ -12,6 +12,7 @@
     "workbench:svg.keep.aspect": "node ./tools/workbench -l gSVG.keep.aspect -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.keep.aspect.script.js -t test/svg/plugins/keep.aspect/cases -p 7005",
     "workbench:svg.observe.resize": "node ./tools/workbench -l gSVG.observe.resize -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.observe.resize.script.js -t test/svg/plugins/observe.resize/cases -p 7006",
     "workbench:svg.observe.style": "node ./tools/workbench -l gSVG.observe.style -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.observe.style.script.js -t test/svg/plugins/observe.style/cases -p 7007",
+    "workbench:svg.template.engine": "node ./tools/workbench -l gSVG.template.engine -i /src/svg/gsvg.script.js -i /src/svg/plugins/gsvg.template.engine.script.js -t test/svg/plugins/template.engine/cases -p 7008",
     "test": "concurrently -m 1 npm:test:*",
     "test:helpers": "playwright test ./test/helpers/ --project=helpers",
     "test:web-component": "playwright test test/web-component/index.test.js --project=web-component",
@@ -20,7 +21,8 @@
     "test:svg.debug": "playwright test test/svg/plugins/debug/index.test.js --project=svg.debug",
     "test:svg.keep.aspect": "playwright test test/svg/plugins/keep.aspect/index.test.js --project=svg.keep.aspect",
     "test:svg.observe.resize": "playwright test test/svg/plugins/observe.resize/index.test.js --project=svg.observe.resize",
-    "test:svg.observe.style": "playwright test test/svg/plugins/observe.style/index.test.js --project=svg.observe.style"
+    "test:svg.observe.style": "playwright test test/svg/plugins/observe.style/index.test.js --project=svg.observe.style",
+    "test:svg.template.engine": "playwright test test/svg/plugins/template.engine/index.test.js --project=svg.template.engine"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",

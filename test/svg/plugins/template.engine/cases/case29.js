@@ -2,7 +2,7 @@ export const title       = '29) g-bind:d with shape plugin';
 export const description = 'g-bind:d with shape plugin';
 
 export async function script () {
-  await gSVG.install('/src/svg/plugins/shapes/src/svg.shapes.js');
+  await gSVG.install('/src/svg/plugins/gsvg.shapes.js');
   const svg = gSVG(document.querySelector('#svg'));
   svg.render();
 }

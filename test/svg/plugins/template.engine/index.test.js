@@ -1,13 +1,13 @@
-import { test, expect } from '../../../../node_modules/@playwright/test/index.mjs';
-import getName          from '../../../../../tools/playwright-helper/getname.mjs';
+import { test, expect } from '@playwright/test';
+import getName          from '../../../../tools/playwright-helper/getname.js';
 import { opendir }      from 'node:fs/promises';
 import { join }         from 'node:path';
 
-const ROOT          = '/src/svg/plugins/template.engine';
-const IMPORT_LIB    = '/src/svg/lib/build/gsvg.js';
-const IMPORT_PLUGIN = ROOT + '/build/svg.template.engine.js';
-const URL           = ROOT + '/test/cases/';
-const FOLDER        = './test/cases/';
+const ROOT          = '/src/svg';
+const IMPORT_LIB    = ROOT + '/gsvg.script.js';
+const IMPORT_PLUGIN = ROOT + '/plugins/gsvg.template.engine.script.js';
+const URL           = '/test/svg/plugins/template.engine/cases/';
+const FOLDER        = './test/svg/plugins/template.engine/cases/';
 
 const results = {
   case01 : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <rect x="10" y="10" width="80" height="80" fill="red"></rect> </svg>`,
