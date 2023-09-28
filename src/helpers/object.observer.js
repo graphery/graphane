@@ -10,6 +10,7 @@ import {
  */
 
 const cache = new WeakSet();
+let ignore  = false;
 
 /**
  * Observe an object modifications
@@ -17,7 +18,7 @@ const cache = new WeakSet();
  * @param {Function} callback
  * @returns {Object}
  */
-export const objectObserve = (object, callback) => {
+export const objectObserver = (object, callback) => {
 
   return (function observe (obj) {
     if (cache.has(obj)) {
@@ -34,12 +35,12 @@ export const objectObserve = (object, callback) => {
         if (isFunction(value) &&
             isDate(target) &&
             isString(prop) &&
-            prop.substring(0,3) === 'set' &&
+            prop.substring(0, 3) === 'set' &&
             isFunction(callback)
         ) {
-          value = function(...args) {
+          value = function (...args) {
             const ret = Reflect.get(target, prop).apply(target, args);
-            !objectObserve.IGNORE && callback(object);
+            !ignore && callback(object);
             return ret;
           }
         }
@@ -52,12 +53,12 @@ export const objectObserve = (object, callback) => {
         } else {
           ret = Reflect.set(target, prop, value);
         }
-        !objectObserve.IGNORE && isFunction(callback) && callback(object);
+        !ignore && isFunction(callback) && callback(object);
         return ret;
       },
       deleteProperty (target, prop) {
         let ret = Reflect.deleteProperty(target, prop);
-        !objectObserve.IGNORE && isFunction(callback) && callback(object);
+        !ignore && isFunction(callback) && callback(object);
         return ret;
       }
     });
@@ -66,6 +67,7 @@ export const objectObserve = (object, callback) => {
   })(object);
 };
 
-objectObserve.IGNORE = false
+objectObserver.stop  = () => ignore = true;
+objectObserver.start = () => ignore = false;
 
-export default objectObserve;
+export default objectObserver;

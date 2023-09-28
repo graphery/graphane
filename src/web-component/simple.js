@@ -10,11 +10,11 @@
 import {
   str2value, toCamel, isUndefined, isFunction, isObject, isString, isNull,
   NUMBER, BOOLEAN, OBJECT, ARRAY, EMPTY_STRING,
-}                    from '../helpers/types.js';
-import objectObserve from '../helpers/object.observe.js';
+}                     from '../helpers/types.js';
+import objectObserver from '../helpers/object.observer.js';
 import {
   equal, clone
-}                    from '../helpers/objects.js';
+}                     from '../helpers/objects.js';
 
 // Constants
 const COMPONENT_PREFIX = globalThis.GRAPHANE_PREFIX || 'g-';
@@ -418,9 +418,9 @@ function definePropertySet (property) {
 
     // Schema normalization
     if (property.schema) {
-      objectObserve.IGNORE = true;
+      objectObserver.stop();
       value                = property.schema.normalize(value);
-      objectObserve.IGNORE = false;
+      objectObserver.start();
     }
 
     // Is it change?
@@ -472,7 +472,7 @@ function definePropertyGet (property) {
           return !!ctx[property.name];
         case OBJECT:
         case ARRAY:
-          return objectObserve(
+          return objectObserver(
             ctx[property.name] || (property.type === OBJECT ? {} : []),
             obj => definePropertySet(property).call(this, obj)
           );
@@ -509,7 +509,7 @@ function defineCollection (Class, options) {
             element[property];
         });
       });
-      return objectObserve(result, (obj) => {
+      return objectObserver(result, (obj) => {
         this[name] = obj;
       });
     },
