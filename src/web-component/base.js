@@ -14,13 +14,13 @@ import {
   CONTEXT,
   FIRE_EVENT,
   COMPONENT_PREFIX
-}                    from './simple.js';
+} from './simple.js';
 import {
   isUndefined, isFunction, isNull, EMPTY_STRING,
-}                    from '../lib/types/index.js';
+} from '../helpers/types.js';
 import {
   debounceMethodAsync, posExecution, preCondition
-}                    from '../lib/functions/index.js';
+} from '../helpers/functions.js';
 
 // Constants
 const DELAY = 1;
@@ -79,7 +79,7 @@ function updateAttribute (element, attribute, value, asBoolean = false) {
 }
 
 /**
- * Base class for Graphery Web Component
+ * Base class for Graphane Web Component
  *
  * @fires 'ready'                 - This event fires when the component is ready and its methods and properties are available
  * @fires 'render'                - This event fires when the component is rendered and its visible content is displayed

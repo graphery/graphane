@@ -10,11 +10,11 @@
 import {
   str2value, toCamel, isUndefined, isFunction, isObject, isString, isNull,
   NUMBER, BOOLEAN, OBJECT, ARRAY, EMPTY_STRING,
-}                    from '../lib/types/index.js';
-import objectObserve from '../lib/observify/object.js';
+}                     from '../helpers/types.js';
+import objectObserver from '../helpers/object.observer.js';
 import {
   equal, clone
-}                    from '../lib/object/index.js';
+}                     from '../helpers/objects.js';
 
 // Constants
 const COMPONENT_PREFIX = globalThis.GRAPHANE_PREFIX || 'g-';
@@ -123,7 +123,7 @@ function observeMutation () {
 const initialValues = new WeakMap();
 
 /**
- * Simple class for Graphery Web Component
+ * Simple class for Graphane Web Component
  *
  * @fires 'update'  - This event fires when the component is changed
  */
@@ -418,9 +418,9 @@ function definePropertySet (property) {
 
     // Schema normalization
     if (property.schema) {
-      objectObserve.IGNORE = true;
+      objectObserver.stop();
       value                = property.schema.normalize(value);
-      objectObserve.IGNORE = false;
+      objectObserver.start();
     }
 
     // Is it change?
@@ -472,7 +472,7 @@ function definePropertyGet (property) {
           return !!ctx[property.name];
         case OBJECT:
         case ARRAY:
-          return objectObserve(
+          return objectObserver(
             ctx[property.name] || (property.type === OBJECT ? {} : []),
             obj => definePropertySet(property).call(this, obj)
           );
@@ -509,7 +509,7 @@ function defineCollection (Class, options) {
             element[property];
         });
       });
-      return objectObserve(result, (obj) => {
+      return objectObserver(result, (obj) => {
         this[name] = obj;
       });
     },

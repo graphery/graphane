@@ -1,19 +1,70 @@
 import { defineConfig } from '@playwright/test';
 
-if (process.argv.includes('--project=base')) {
+let options = '';
+
+if (process.argv.includes('--project=web-component')) {
+  process.env.port = '7201';
+  options          = '-t ./test/web-component/cases';
+} else if (process.argv.includes('--project=svg')) {
   process.env.port = '7202';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-t test/svg/cases';
+} else if (process.argv.includes('--project=svg.animateto')) {
+  process.env.port = '7203';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.animateto.script.js ' +
+                     '-t test/svg/plugins/animateto/cases';
+} else if (process.argv.includes('--project=svg.debug')) {
+  process.env.port = '7204';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.debug.script.js ' +
+                     '-t test/svg/plugins/debug/cases';
+} else if (process.argv.includes('--project=svg.keep.aspect')) {
+  process.env.port = '7205';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.keep.aspect.script.js ' +
+                     '-t test/svg/plugins/keep.aspect/cases';
+} else if (process.argv.includes('--project=svg.observe.resize')) {
+  process.env.port = '7206';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.observe.resize.script.js ' +
+                     '-t test/svg/plugins/observe.resize/cases';
+} else if (process.argv.includes('--project=svg.observe.style')) {
+  process.env.port = '7207';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.observe.style.script.js ' +
+                     '-t test/svg/plugins/observe.style/cases';
+} else if (process.argv.includes('--project=svg.template.engine')) {
+  process.env.port = '7208';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.template.engine.script.js ' +
+                     '-t test/svg/plugins/template.engine/cases';
+} else if (process.argv.includes('--project=svg.shapes')) {
+  process.env.port = '7209';
+  options          = '-i /src/svg/gsvg.script.js ' +
+                     '-i /src/svg/plugins/gsvg.shapes.script.js ' +
+                     '-t test/svg/plugins/shapes/cases';
 }
 
 const webServer = process.env.port ? {
-  command             : `node ./tools/workbench -t ./test/component/cases -p ${ process.env.port } -s`,
+  command             : `node ./tools/workbench ${ options } -p ${ process.env.port }`,
   url                 : `http://localhost:${ process.env.port }/`,
+  timeout             : 120000,
   reuseExistingServer : !process.env.CI,
 } : undefined;
 
 export default defineConfig({
-  projects  : [
-    {name : 'base'},
-    {name : 'lib'},
+  projects      : [
+    {name : 'helpers'},
+    {name : 'web-component'},
+    {name : 'svg'},
+    {name : 'svg.animateto'},
+    {name : 'svg.debug'},
+    {name : 'svg.keep.aspect'},
+    {name : 'svg.observe.resize'},
+    {name : 'svg.observe.style'},
+    {name : 'svg.template.engine'},
+    {name : 'svg.shapes'},
   ],
   testDir       : './test',
   fullyParallel : true,
