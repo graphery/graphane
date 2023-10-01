@@ -201,12 +201,6 @@ Sessionx.vim
 # Persistent undo
 [._]*.un~
 
-### Dist
-dist/
-
-### storybook
-storybook-static/
-
 ### Proof of Concept
 poc/
 
