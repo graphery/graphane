@@ -115,7 +115,7 @@ test.describe(name, () => {
     expect(str2value('\'a\'', undefined, true)).toBe('"a"',);
     expect(str2value('true')).toBe(true,);
     expect(str2value('true', 'boolean')).toBe(true,);
-    expect(str2value('true', undefined, true) === true,);
+    expect(str2value('true', undefined)).toBe(true);
     expect(str2value('false')).toBe(false,);
     expect(str2value('false', 'boolean')).toBe(false,);
     expect(str2value('false', undefined, true)).toBe(false,);
@@ -130,11 +130,13 @@ test.describe(name, () => {
 
   test('isLikeObject', () => {
     expect(isLikeObject(`{a: 1, b: true, c: "c"}`)).toBe(true);
+    expect(isLikeObject(`{\r\n\ta: 1,\r\n\tb: true,\r\n\tc: 'c'}`)).toBe(true);
     expect(isLikeObject('{')).toBe(false);
     expect(isLikeObject('[]')).toBe(false);
   });
   test('isLikeArray', () => {
     expect(isLikeArray('[1,true,["c"]]')).toBe(true);
+    expect(isLikeArray('[\r\n1,\r\ntrue,\r\n[\r\n\t"c"\r\n\t]\r\n]\r\n')).toBe(true);
     expect(isLikeArray('[')).toBe(false);
     expect(isLikeArray('{}')).toBe(false);
   });
