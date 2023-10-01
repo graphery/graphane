@@ -5,7 +5,7 @@ export function script() {
   const component        = document.querySelector('g-template');
   const alternativeImage = '/test/component/template/assets/check.svg';
   document.querySelector('#run').addEventListener('click', () => {
-    component.src = alternativeImage;
+    component.svgSrc = alternativeImage;
   });
 }
 

@@ -13,4 +13,4 @@ export function script () {
   }, 1000);
 }
 
-export default `<g-template src="/test/component/template/assets/image.svg" style="width: 200px; height: 200px;"></g-template>`;
+export default `<g-template svg-src="/test/component/template/assets/image.svg" style="width: 200px; height: 200px;"></g-template>`;

@@ -13,5 +13,5 @@ export function script () {
 }
 
 export default `<div style="width: 100px; height: 100px; overflow-y: scroll; overflow-x: hidden; border: 1px solid grey; text-align: center">
-  <g-template src="/test/component/template/assets/check.svg" viewport-ratio="1" style="width: 50px; margin-top: 120px;"></g-template>
+  <g-template svg-src="/test/component/template/assets/check.svg" viewport-ratio="1" style="width: 50px; margin-top: 120px;"></g-template>
 </div>`

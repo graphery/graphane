@@ -1,4 +1,4 @@
-export const title       = '23) render with svg and g-data and g-methods';
+export const title       = '23) render with svg and scripts data and methods';
 export const description = `Use the render template with svg, script type="data", and g-methods`;
 
 export default `<g-template>

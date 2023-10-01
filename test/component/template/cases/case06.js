@@ -4,7 +4,7 @@ export const description = 'Create a g-template from JS.';
 export function script () {
   const div              = document.querySelector('div#content');
   const component        = document.createElement('g-template');
-  component.src          = "/test/component/template/assets/image.svg";
+  component.svgSrc          = "/test/component/template/assets/image.svg";
   component.style.width  = '200px';
   component.style.height = '200px';
   component.addEventListener('render', () => {

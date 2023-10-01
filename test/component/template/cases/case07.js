@@ -6,7 +6,7 @@ export function script () {
   component.addEventListener('error', (evt) => {
     document.querySelector('#result').innerHTML = evt.detail;
   });
-  component.src = "/src/g-template/test/assets/unknown.svg";
+  component.svgSrc = "/src/g-template/test/assets/unknown.svg";
 }
 
 export default `<g-template ></g-template>

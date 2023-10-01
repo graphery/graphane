@@ -1,6 +1,6 @@
 import {
   Base, define,
-  RENDER, CONTEXT, FIRE_EVENT, CHANGE
+  RENDER, CONTEXT, FIRE_EVENT
 }               from '../core/base.js';
 import {
   STRING, OBJECT, isString, jsStr2obj, funcStr2obj, csvStr2obj, isLikeObject, isLikeArray
@@ -52,8 +52,8 @@ export default class Template extends Base {
     this.#svg             = null;
     ctx.content.innerHTML = '';
 
-    if (ctx.src) {
-      ctx.content.innerHTML = await this.#fetch(ctx.src);
+    if (ctx.svgSrc) {
+      ctx.content.innerHTML = await this.#fetch(ctx.svgSrc);
     } else {
       const template = this.querySelector('template')?.content || this.querySelector(SVG);
       if (template) {
@@ -200,7 +200,7 @@ export default class Template extends Base {
 // Define the component
 define(Template)
   .extension(viewport)
-  .attribute({name : 'src', type : STRING, value : '', posUpdate : RENDER})
+  .attribute({name : 'svg-src', type : STRING, value : '', posUpdate : RENDER})
   .attribute({name : 'data', type : OBJECT, value : [], posUpdate : UPDATE})
   .attribute({name : 'data-src', type : STRING, posUpdate : RENDER})
   .property({name : 'methods', type : OBJECT, value : {}, posUpdate : UPDATE})

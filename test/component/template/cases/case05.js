@@ -6,10 +6,10 @@ export function script () {
   const initSrc   = '/test/component/template/assets/image.svg';
   const altSrc    = '/test/component/template/assets/check.svg';
   document.querySelector('#run').addEventListener('click', () => {
-    component.src = component.src === initSrc ? altSrc : initSrc;
+    component.svgSrc = component.svgSrc === initSrc ? altSrc : initSrc;
   });
   component.addEventListener('render', () => {
-    if (component.src === altSrc) {
+    if (component.svgSrc === altSrc) {
       component.svg.fill('green');
     } else {
       component.svg.fill('red');
@@ -17,6 +17,6 @@ export function script () {
   })
 }
 
-export default `<g-template src="/test/component/template/assets/image.svg" style="width: 200px; height: 200px;"></g-template>
+export default `<g-template svg-src="/test/component/template/assets/image.svg" style="width: 200px; height: 200px;"></g-template>
 <button id="run">Change the content</button>
 `;
