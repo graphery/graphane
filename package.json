@@ -26,7 +26,17 @@
     "test:gsvg.observe.resize": "playwright test test/lib/plugins/observe.resize/index.test.js --project=svg.observe.resize",
     "test:gsvg.observe.style": "playwright test test/lib/plugins/observe.style/index.test.js --project=svg.observe.style",
     "test:gsvg.template.engine": "playwright test test/lib/plugins/template.engine/index.test.js --project=svg.template.engine",
-    "test:gsvg.shapes": "playwright test test/lib/plugins/shapes/index.test.js --project=svg.shapes"
+    "test:gsvg.shapes": "playwright test test/lib/plugins/shapes/index.test.js --project=svg.shapes",
+    "build": "concurrently -m 1 npm:build:*",
+    "build:template": "node ./tools/packer/index.js ./src/component/template.js ./dist/component/template.js ./package.json",
+    "build:gsvg": "node ./tools/packer/index.js ./src/lib/gsvg.script.js ./dist/lib/gsvg.js ./package.json",
+    "build:gsvg.animateto": "node ./tools/packer/index.js ./src/lib/plugins/gsvg.animateto.script.js ./dist/lib/plugins/gsvg.animateto.js",
+    "build:gsvg.debug": "node ./tools/packer/index.js ./src/lib/plugins/gsvg.debug.script.js ./dist/lib/plugins/gsvg.debug.js",
+    "build:gsvg.keep.aspect":  "node ./tools/packer/index.js ./src/lib/plugins/gsvg.keep.aspect.script.js ./dist/lib/plugins/gsvg.keep.aspect.js",
+    "build:gsvg.observe.resize": "node ./tools/packer/index.js ./src/lib/plugins/gsvg.observe.resize.script.js ./dist/lib/plugins/gsvg.observe.resize.js",
+    "build:gsvg.observe.style":  "node ./tools/packer/index.js ./src/lib/plugins/gsvg.observe.style.script.js ./dist/lib/plugins/gsvg.observe.style.js",
+    "build:gsvg.template.engine": "node ./tools/packer/index.js ./src/lib/plugins/gsvg.template.engine.script.js ./dist/lib/plugins/gsvg.template.engine.js",
+    "build:gsvg.shapes":  "node ./tools/packer/index.js ./src/lib/plugins/gsvg.shapes.script.js ./dist/lib/plugins/gsvg.shapes.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.1",
@@ -34,7 +44,9 @@
     "concurrently": "^8.2.1",
     "open": "^9.1.0",
     "playwright": "^1.38.1",
-    "ws": "^8.14.2"
+    "ws": "^8.14.2",
+    "esbuild": "^0.19.4",
+    "esprima-next": "^5.8.4"
   },
   "type": "module"
 }
