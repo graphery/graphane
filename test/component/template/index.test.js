@@ -36,6 +36,15 @@ for await (const dirent of dir) {
         await expect(show).toHaveScreenshot()
       });
     }
+    if (['case29', 'case30', 'case31', 'case32'].includes(code)) {
+      test('compare image after run action', async ({page}) => {
+        const run = page.locator('g-template', { hasText: 'click' });
+        await run.click();
+        await wait(500);
+        const show = page.locator('#case g-template');
+        await expect(show).toHaveScreenshot()
+      });
+    }
 
     if ('case07' === code) {
       test('compare message', async ({page}) => {

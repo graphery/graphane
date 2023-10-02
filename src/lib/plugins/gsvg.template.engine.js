@@ -116,20 +116,21 @@ defineDirective({
   alias    : '@',
   argument : true,
   execute (gObject, {expression, argument : event, data, evalExpression}) {
-    let handler     = evalExpression(expression, data);
     gObject[EVENTS] = gObject[EVENTS] || {};
-    const manager   = gObject[EVENTS][event];
-    if (isFunction(handler)) {
-      if (manager && !manager.has(handler)) {
-        gObject.removeEventListener(event, [...manager.values()][0]);
+    const manager   = gObject[EVENTS][event] = gObject[EVENTS][event] || new Map();
+    if (manager.has(expression)) {
+      gObject.removeEventListener(event, manager[expression]);
+    }
+    const wrapper = function (evt) {
+      let handler = evalExpression(expression, data);
+      if (isFunction(handler)) {
+        handler.call(this, evt);
       }
-      const wrapper = (evt) => handler.call(gObject, evt);
-      gObject.addEventListener(event, wrapper);
-      gObject[EVENTS][event] = new Map();
-      gObject[EVENTS][event].set(handler, wrapper);
-      if (event === 'load') {
-        gObject.dispatchEvent(new Event('load'));
-      }
+    }
+    gObject.addEventListener(event, wrapper);
+    manager.set(expression, wrapper);
+    if (event === 'load') {
+      gObject.dispatchEvent(new Event('load'));
     }
   }
 });
