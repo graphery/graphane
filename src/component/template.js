@@ -9,6 +9,7 @@ import viewport from "../core/viewport.js";
 import gSVG     from '../lib/gsvg.js';
 import animateTo from '../lib/plugins/gsvg.animateto.js';
 import render    from '../lib/plugins/gsvg.template.engine.js';
+import { debounceMethod } from "../helpers/functions.js";
 
 gSVG.install(animateTo)
     .install(render);
@@ -196,6 +197,8 @@ export default class Template extends Base {
   }
 
 }
+
+Template.prototype.update = debounceMethod(Template.prototype.update, 1)
 
 // Define the component
 define(Template)
