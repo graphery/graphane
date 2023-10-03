@@ -124,7 +124,7 @@ defineDirective({
     const wrapper = function (evt) {
       let handler = evalExpression(expression, data);
       if (isFunction(handler)) {
-        handler.call(this, evt);
+        handler.call(gObject, evt);
       }
     }
     gObject.addEventListener(event, wrapper);
