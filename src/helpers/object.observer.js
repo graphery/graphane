@@ -1,6 +1,6 @@
 import {
   isObject, isNull, isFunction, isDate, isString
-} from './types.js'
+} from './types.js';
 
 /**
  * Observe an object in deep
@@ -19,7 +19,9 @@ let ignore  = false;
  * @returns {Object}
  */
 export const objectObserver = (object, callback) => {
-
+  if (!isFunction(callback)) {
+    return object;
+  }
   return (function observe (obj) {
     if (cache.has(obj)) {
       return obj;
@@ -53,12 +55,12 @@ export const objectObserver = (object, callback) => {
         } else {
           ret = Reflect.set(target, prop, value);
         }
-        !ignore && isFunction(callback) && callback(object);
+        !ignore && callback(object);
         return ret;
       },
       deleteProperty (target, prop) {
         let ret = Reflect.deleteProperty(target, prop);
-        !ignore && isFunction(callback) && callback(object);
+        !ignore && callback(object);
         return ret;
       }
     });
