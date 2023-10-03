@@ -119,16 +119,16 @@ defineDirective({
     gObject[EVENTS] = gObject[EVENTS] || {};
     const manager   = gObject[EVENTS][event] = gObject[EVENTS][event] || new Map();
     if (manager.has(expression)) {
-      gObject.removeEventListener(event, manager[expression]);
+      gObject.removeEventListener(event, manager.get(expression));
     }
-    const wrapper = function (evt) {
+    const handler = function (evt) {
       let handler = evalExpression(expression, data);
       if (isFunction(handler)) {
         handler.call(gObject, evt);
       }
-    }
-    gObject.addEventListener(event, wrapper);
-    manager.set(expression, wrapper);
+    };
+    gObject.addEventListener(event, handler);
+    manager.set(expression, handler);
     if (event === 'load') {
       gObject.dispatchEvent(new Event('load'));
     }
