@@ -271,7 +271,8 @@ export function jsStr2obj (str) {
 
 export function funcStr2obj (str, $) {
   return (new Function('$', `${ str };let ___$$$ret = {};${
-    [...str.matchAll(/\s*function\s*(\w*)/gm)].map(x =>
-      `if (typeof ${ x[1] } === 'function') ___$$$ret.${ x[1] } = ${ x[1] };`).join('')
+    [...str.matchAll(/\s*function\s*(\w+)/gm)]
+      .map(x => `if (typeof ${ x[1] } === 'function') ___$$$ret.${ x[1] } = ${ x[1] };`)
+      .join('')
   } return ___$$$ret;`))($);
 }

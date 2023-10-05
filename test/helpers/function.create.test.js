@@ -57,4 +57,25 @@ test.describe(name, () => {
     expect(calc.div()).toBe(4/6);
   });
 
+  test('get functions with anonymous', () => {
+    const code = `
+      const x = function x2 () { }; 
+      const y = function () { }; 
+      const z = Array(2).fill(0).map(function () {
+           return 1 
+         }); 
+      function check() { 
+         return z; 
+      }`;
+    const test   = getFunctions({}, code);
+    expect(typeof test).toBe('object');
+    expect(typeof test.x).toBe('undefined');
+    expect(typeof test.y).toBe('undefined');
+    expect(typeof test.z).toBe('undefined');
+    expect(typeof test.check).toBe('function');
+    expect(test.check()).toEqual([1,1]);
+  });
+
+
+
 });

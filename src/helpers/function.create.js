@@ -1,5 +1,5 @@
 const cache          = new Map();
-const functionRegExp = /^\s*function\s*(\w*)/gm;
+const functionRegExp = /\s*function\s*(\w+)/gm;
 
 export function createFunction (args, code) {
   const key = `${ args.join(',') } ${ code }`;
@@ -13,7 +13,7 @@ export function createFunction (args, code) {
 
 export function getFunctions (globals, code) {
   const names = [...code.matchAll(functionRegExp)].map(x => x[1]);
-  const fn    = createFunction(Object.keys(globals), `${ code }
+  const fn    = createFunction(Object.keys(globals), `${ code };
   
     return {${ names.map(n => `${ n }: typeof ${ n } === 'function' ? ${ n } : undefined`) }};
   `);

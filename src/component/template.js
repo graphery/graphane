@@ -1,15 +1,16 @@
 import {
   Base, define,
   RENDER, CONTEXT, FIRE_EVENT
-}               from '../core/base.js';
+}                         from '../core/base.js';
 import {
-  STRING, OBJECT, isString, jsStr2obj, funcStr2obj, csvStr2obj, isLikeObject, isLikeArray
-}               from '../helpers/types.js';
-import viewport from "../core/viewport.js";
-import gSVG     from '../lib/gsvg.js';
-import animateTo from '../lib/plugins/gsvg.animateto.js';
-import render    from '../lib/plugins/gsvg.template.engine.js';
+  STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray
+}                         from '../helpers/types.js';
+import viewport           from "../core/viewport.js";
+import gSVG               from '../lib/gsvg.js';
+import animateTo          from '../lib/plugins/gsvg.animateto.js';
+import render             from '../lib/plugins/gsvg.template.engine.js';
 import { debounceMethod } from "../helpers/functions.js";
+import { getFunctions }   from "../helpers/function.create.js";
 
 gSVG.install(animateTo)
     .install(render);
@@ -87,7 +88,7 @@ export default class Template extends Base {
   async #loadMethods () {
     const content = await this.#loadScript('methods');
     if (content) {
-      this [CONTEXT].methods = funcStr2obj(content, this);
+      this [CONTEXT].methods = getFunctions({$ : this}, content);
     }
   }
 

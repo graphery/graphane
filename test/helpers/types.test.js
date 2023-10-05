@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import {
   isObject, isString, isFunction, isNumber, isUndefined, isSymbol, isBoolean, isArray, isDate,
   isNull, array2attribute, attribute2array, attribute2arrayObject, attribute2object,
-  object2attribute, str2value, isLikeArray, isLikeObject, csvStr2obj, jsStr2obj, funcStr2obj
+  object2attribute, str2value, isLikeArray, isLikeObject, csvStr2obj, jsStr2obj
 } from '../../src/helpers/types.js';
 
 const name = 'lib.types';
@@ -153,19 +153,6 @@ test.describe(name, () => {
   test('jsStr2obj', () => {
     const str = `[{a:1,b:2,c:3},{a:'d',b:'e',c:'f;'}]`;
     expect(jsStr2obj(str)).toStrictEqual([{a : 1, b : 2, c : 3}, {a : 'd', b : 'e', c : 'f;'}])
-  });
-
-  test('funcStr2obj', () => {
-    const str = `
-    function test() {
-      return $.a * 2;
-    }
-    `;
-    const $   = {a : 10};
-    const l   = funcStr2obj(str, $);
-    expect(l.test()).toBe(20);
-    $.a = 20;
-    expect(l.test()).toBe(40);
   });
 
 });
