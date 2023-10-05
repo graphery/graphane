@@ -8,7 +8,7 @@
 - The `g-on` directive support expressions.
 - The `g-on` directive support lazy load methods.
 - Template attribute `src` renamed as `svg-src`.
-- Fixed a bug with anonymous functions into script type method.
+- Fixed a bug with anonymous functions into script type methods.
 - Fixed a bug with several updates of `$.data`.
 - Fixed a bug with remove previous event listener in `g-on`. 
 - Fixed a bug when data has line return in windows format.

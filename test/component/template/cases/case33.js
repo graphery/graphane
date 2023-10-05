@@ -1,9 +1,9 @@
-export const title       = '33) load event';
-export const description = `Use the load event and init() method for build a circle`;
+export const title       = '33) init event';
+export const description = `Use the init event a method for build a circle`;
 
 export default `
 <g-template>
-  <svg viewBox="0 0 100 100" g-on:load="init()">
+  <svg viewBox="0 0 100 100" g-on:init="init()">
   </svg>
   <script type="methods">
     function init() {
