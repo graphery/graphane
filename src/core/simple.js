@@ -483,68 +483,6 @@ function definePropertyGet (property) {
   };
 }
 
-
-/**
- *
- * Define a collection from a child custom tag. The collection has this structure:
- * ClassObj.<name>.<element_id> = {property: value, property: value, ...}
- *
- * @param {Function} Class              - class when the new property is created
- * @param {Object} options
- * @return {void}
- */
-function defineCollection (Class, options) {
-  const {name, tag, properties} = options;
-  defProp(Class.prototype, name, {
-    get () {
-      const result = {};
-      this.querySelectorAll(tag).forEach(element => {
-        if (!element.id) {
-          element.id = '_' + Math.random().toString(36).substr(2);
-        }
-        result[element.id] = {};
-        properties.forEach(property => {
-          result[element.id][property] = isUndefined(element[property]) ?
-            element.getAttribute(property) :
-            element[property];
-        });
-      });
-      return objectObserver(result, (obj) => {
-        this[name] = obj;
-      });
-    },
-    set (obj) {
-      const ids = [];
-      for (let id of Object.keys(obj)) {
-        ids.push(id);
-        let element = this.querySelector(`#${ id }`);
-        if (!element) {
-          element    = document.createElement(tag);
-          element.id = id;
-          properties.forEach(property => {
-            if (!isUndefined(obj[id][property])) {
-              element[property] = obj[id][property];
-            }
-          });
-          this.appendChild(element);
-          continue;
-        }
-        properties.forEach(property => {
-          if (!isUndefined(obj[id][property]) &&
-              obj[id][property] !== element[property]) {
-            element[property] = obj[id][property];
-          }
-        });
-      }
-      for (let element of this.querySelectorAll(tag)) {
-        if (ids.indexOf(element.id) === -1) {
-          element.parentNode.removeChild(element);
-        }
-      }
-    }
-  });
-}
-
 /**
  * Register the Web Component
  * @param {Function} Class - Class for this custom component
