@@ -7,6 +7,7 @@ import { Operations }     from '../../helpers/array.operations.js';
 import { clone }          from '../../helpers/objects.js';
 import animateToPlugin    from './gsvg.animateto.js';
 
+const INIT       = Symbol();
 const CLONED     = Symbol();
 const CLONES     = Symbol();
 const TEMPLATE   = Symbol();
@@ -129,8 +130,9 @@ defineDirective({
     };
     gObject.addEventListener(event, handler);
     manager.set(expression, handler);
-    if (event === 'load') {
-      gObject.dispatchEvent(new Event('load'));
+    if (event === 'init' && !gObject[INIT]) {
+      gObject[INIT] = true;
+      gObject.dispatchEvent(new Event('init'));
     }
   }
 });

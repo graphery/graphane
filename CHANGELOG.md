@@ -2,6 +2,7 @@
 
 ## 0.1.0-alpha.2 (xx/xx/2023)
 
+- Remove event 'load' and added event 'init' than is launch only one way per element
 - The event handler called from `g-on` recibe as this the SVG element wrapped by the gSVG library. 
 - The `g-on` directive support to call methods with and without parameters.
 - The `g-on` directive support expressions.
