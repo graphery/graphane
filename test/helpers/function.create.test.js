@@ -76,6 +76,22 @@ test.describe(name, () => {
     expect(test.check()).toEqual([1,1]);
   });
 
+  test('get functions with confused names', () => {
+    const code = `
+       // the function check
+       function functionCheck () {
+       }
+       function _check$ () {
+       }
+       function checkѿ(){
+       }
+    `;
+    const test   = getFunctions({}, code);
+    expect(typeof test.check).toBe('undefined');
+    expect(typeof test.functionCheck).toBe('function');
+    expect(typeof test._check$).toBe('function');
+    expect(typeof test.checkѿ).toBe('function');
+  });
 
 
 });

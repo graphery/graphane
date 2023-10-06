@@ -1,5 +1,5 @@
 const cache          = new Map();
-const functionRegExp = /\s*function\s*(\w+)/gm;
+const functionRegExp = /\s*function\s+([\w$_-\uFFFF]+)\s*\(/gmu;
 
 export function createFunction (args, code) {
   const key = `${ args.join(',') } ${ code }`;
