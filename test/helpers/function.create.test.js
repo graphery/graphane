@@ -78,6 +78,9 @@ test.describe(name, () => {
 
   test('get functions with confused names', () => {
     const code = `
+       /*
+       function 0check (invalid)
+       */
        // the function check
        function functionCheck () {
        }
