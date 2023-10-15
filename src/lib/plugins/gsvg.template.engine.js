@@ -74,7 +74,7 @@ defineDirective({
       $ : {
         ...data.$,
         d : argument === 'd' ? gObject.$d : undefined,
-        animate (value, duration = 200, delay = 0) {
+        animate (value, duration = 400, delay = 0) {
           gObject.animateTo({[argument] : value}, {duration, delay});
         }
       },
