@@ -31,6 +31,8 @@ const results = {
   case09_after : '<svg viewBox="0,0,100,100" width="100" height="100"><line x1="90" y1="10" x2="10" y2="90" stroke="black"></line></svg>',
   case10       : '<svg viewBox="0,0,100,100" width="100" height="100"><line x1="10" y1="10" x2="10" y2="90" stroke="black"></line></svg>',
   case10_after : '<svg viewBox="0,0,100,100" width="100" height="100"><line x1="90" y1="10" x2="10" y2="90" stroke="black"></line></svg>',
+  case11       : '<svg viewBox="0,0,100,100" width="100" height="100"><rect x="0" y="0" width="40" height="40" fill="black"></rect></svg>',
+  case11_after : '<svg viewBox="0,0,100,100" width="100" height="100"><rect x="0" y="0" width="40" height="40" fill="black"></rect></svg>',
 }
 
 const dir = await opendir(FOLDER);
