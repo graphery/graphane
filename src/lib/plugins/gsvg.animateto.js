@@ -16,6 +16,7 @@ const DEG_TYPES = [ROTATE, 'skewX', 'skewY'];
 const DEG       = 'deg';
 const PX        = 'px';
 const MS        = 'ms';
+const exception = ['width', 'height'];
 
 /**
  * The reduced-motion flag
@@ -78,7 +79,7 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     for (let keyframe of originalKeyframes) {
       const normalized = Object.assign({}, keyframe);
       for (let key in normalized) {
-        if (!(key in computedStyle)) {
+        if (!(key in computedStyle) || exception.includes(key)) {
           alternativeKeys.add(key);
         } else if (key === D) {
           normalized.d = `${ PATH }("${ normalized.d }")`
