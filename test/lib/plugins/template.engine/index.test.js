@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import getName          from '../../../../tools/playwright-helper/getname.js';
+import wait             from "../../../../tools/playwright-helper/wait.js";
 import { opendir }      from 'node:fs/promises';
 import { join }         from 'node:path';
 
@@ -38,6 +39,10 @@ const results = {
   case26: `<svg id="svg" viewBox="0 0 400 200" width="200" height="100"> <g> <rect y="0" height="200" width="38" fill="#00D800" x="0" style="visibility: inherit;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="40" style="visibility: inherit;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="80" style="visibility: inherit;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="120" style="visibility: inherit;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="160" style="visibility: inherit;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="200" style="visibility: hidden;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="240" style="visibility: hidden;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="280" style="visibility: hidden;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="320" style="visibility: hidden;"> </rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="360" style="visibility: hidden;"> </rect> </g> <defs> <rect g-if="value > col" :x="col * 40" y="0" height="200" width="38" fill="#00D800"> </rect> </defs> </svg>`,
   case30: `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <g transform="translate(0, 25)" style="visibility: inherit;"> <circle cx="20" cy="20" r="20" fill="red"></circle> <g transform="translate(0, 30)" style="visibility: hidden;"> <circle cx="20" cy="20" r="20" fill="blue"></circle> </g> </g> <g transform="translate(50, 25)" style="visibility: hidden;"> <circle cx="20" cy="20" r="20" fill="orange"></circle> <g transform="translate(0, 30)" style="visibility: inherit;"> <circle cx="20" cy="20" r="20" fill="violet"></circle> </g> </g> </svg>`,
   case31: `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="20" cy="20" fill="red"></circle> <circle cx="40" cy="40" fill="blue"></circle> <circle cx="60" cy="60" fill="green"></circle> <circle cx="80" cy="80" fill="orange"></circle> </svg>`,
+  case32: `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="20" cy="20" fill="red"></circle> <circle cx="40" cy="40" fill="blue"></circle> <circle cx="60" cy="60" fill="green"></circle> <circle cx="80" cy="80" fill="orange"></circle> </svg>`,
+  case33: `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="20" cy="20" r="20" fill="red"></circle> <circle cx="40" cy="40" r="20" fill="blue"></circle> <circle cx="60" cy="60" r="20" fill="green"></circle> <circle cx="80" cy="80" r="20" fill="orange"></circle> </svg>`,
+  case34: `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="20" cy="20" fill="red"></circle> <circle cx="40" cy="40" fill="blue"></circle> <circle cx="60" cy="60" fill="green"></circle> <circle cx="80" cy="80" fill="orange"></circle> </svg>`,
+  case35: `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="20" cy="20" fill="red"></circle> <circle cx="40" cy="40" fill="blue"></circle> <circle cx="60" cy="60" fill="green"></circle> <circle cx="80" cy="80" fill="orange"></circle> </svg>`,
 }
 
 const dir = await opendir(FOLDER);
@@ -58,11 +63,12 @@ for await (const dirent of dir) {
       });
     }
 
-    if (! ['case31'].includes(code)) {
-      test('compare image', async ({page}) => {
-        const show = page.locator('svg');
-        await expect(show).toHaveScreenshot()
-      });
-    }
+    test('compare image', async ({page}) => {
+      if (! ['case31','case32','case33','case34','case35'].includes(code)) {
+        await wait(3000);
+      }
+      const show = page.locator('svg');
+      await expect(show).toHaveScreenshot()
+    });
   });
 }

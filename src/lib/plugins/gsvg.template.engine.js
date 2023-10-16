@@ -74,8 +74,15 @@ defineDirective({
       $ : {
         ...data.$,
         d : argument === 'd' ? gObject.$d : undefined,
-        animate (value, duration = 400, delay = 0) {
-          gObject.animateTo({[argument] : value}, {duration, delay});
+        dynamic (value, duration = 200, delay = 0) {
+          gObject.animateTo(
+            (isArray(value) ? value : [value]).map(v =>
+              isObject(v) ?
+                {[argument]: v.value, offset: v.offset} :
+                {[argument]: v}
+            ),
+            {duration, delay}
+          );
         }
       },
     }
