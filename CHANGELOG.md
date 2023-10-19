@@ -1,9 +1,9 @@
 # Change Log
 
-## 0.1.0-alpha.2 (xx/xx/2023)
+## 0.1.0-alpha.2 (18/10/2023)
 
 - Renamed `$.animate()` to `$.dynamic()` in `g-bind` directive.
-- Added support for keyframes in `$.dynamic()`.
+- Added support for keyframes in `$.dynamic()`.s
 - Removed event 'load' and added event 'init' than is launch only one way per template.
 - The event handler called from `g-on` recibe as this the SVG element wrapped by the gSVG library. 
 - The `g-on` directive support to call methods with and without parameters.
