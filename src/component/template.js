@@ -181,7 +181,7 @@ export default class Template extends Base {
       const ctx       = this [CONTEXT];
       const renderCtx = {
         ...ctx.methods,
-        data : ctx.data,
+        data : ctx.methods.data ? ctx.methods.data(ctx.data) : ctx.data,
         $    : {config : ctx.config, svg : this.#svg}
       };
       this.#svg.render(renderCtx);

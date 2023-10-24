@@ -2,6 +2,8 @@
 
 ## 0.1.0-alpha.3 (xx/xx/2023)
 
+- Added special function `data()` in `script type="method"` for normalize and transform data before
+  the rendering.
 - Added direction to arc shape function.
 
 ## 0.1.0-alpha.2 (18/10/2023)
