@@ -8,6 +8,7 @@
 - Created a general export for core, and a packaging process for publication.
 - Added named export in core/viewport.
 - Moved CSS_PROP from constructor to prototype in core.
+- Updated develop dependencies.
 
 ## 0.1.0-alpha.2 (18/10/2023)
 
