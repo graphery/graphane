@@ -28,6 +28,7 @@
     "test:gsvg.template.engine": "playwright test test/lib/plugins/template.engine/index.test.js --project=svg.template.engine",
     "test:gsvg.shapes": "playwright test test/lib/plugins/shapes/index.test.js --project=svg.shapes",
     "build": "concurrently -m 1 npm:build:*",
+    "build:core": "node ./tools/packer/index.js -m ./src/core/index.js ./dist/core/index.js ./package.json",
     "build:template": "node ./tools/packer/index.js ./src/component/template.js ./dist/component/template.js ./package.json",
     "build:gsvg": "node ./tools/packer/index.js ./src/lib/gsvg.script.js ./dist/lib/gsvg.js ./package.json",
     "build:gsvg.animateto": "node ./tools/packer/index.js ./src/lib/plugins/gsvg.animateto.script.js ./dist/lib/plugins/gsvg.animateto.js",
