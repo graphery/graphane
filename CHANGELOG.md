@@ -5,6 +5,9 @@
 - Added special function `data()` in `script type="method"` for normalize and transform data before
   the rendering.
 - Added direction to arc shape function.
+- Created a general export for core, and a packaging process for publication.
+- Added named export in core/viewport.
+- Moved CSS_PROP from constructor to prototype in core.
 
 ## 0.1.0-alpha.2 (18/10/2023)
 
