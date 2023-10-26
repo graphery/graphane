@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.1.0-alpha.3 (26/10/2023)
+
+- Added special function `data()` in `script type="method"` for normalize and transform data before
+  the rendering.
+- Created export for core.
+- Added named export in core-viewport.
+- Moved CSS_PROP from constructor to prototype in core.
+- Added direction to `d.arc()` shape plugin.
+- Updated develop dependencies.
+
 ## 0.1.0-alpha.2 (18/10/2023)
 
 - Renamed `$.animate()` to `$.dynamic()` in `g-bind` directive.

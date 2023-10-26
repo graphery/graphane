@@ -30,13 +30,14 @@ function polar2cartesian (centerX, centerY, radius, angleDegrees) {
  * @param {number} radius
  * @param {number} startAngle
  * @param {number} endAngle
+ * @param {number} [direction=1]
  * @return {string}
  */
-function arc (x, y, radius, startAngle, endAngle) {
-  const start        = polar2cartesian(x, y, radius, endAngle);
-  const end          = polar2cartesian(x, y, radius, startAngle);
+function arc (x, y, radius, startAngle, endAngle, direction = 1) {
+  const start        = polar2cartesian(x, y, radius, startAngle);
+  const end          = polar2cartesian(x, y, radius, endAngle);
   const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
-  return `M${ start.x },${ start.y }A${ radius },${ radius },0,${ largeArcFlag },0,${ end.x },${ end.y }`;
+  return `M${ start.x },${ start.y }A${ radius },${ radius },0,${ largeArcFlag },${ direction },${ end.x },${ end.y }`;
 }
 
 /**

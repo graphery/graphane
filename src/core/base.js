@@ -32,25 +32,25 @@ const DELAY = 1;
  * is changed and REFRESH is defined as pos update action.
  * @type {symbol}
  */
-const REFRESH    = Symbol();
+const REFRESH   = Symbol();
 /**
  * Symbol used for defines the render method into the class inherited from Base
  * This method is called when the component is created and when some property
  * is changed and RENDER is define as pos update action.
  * @type {symbol}
  */
-const RENDER     = Symbol();
+const RENDER    = Symbol();
 /**
  * Symbol used for defines the resize method into the class inherited from Base.
  * This method is called when the component is resized.
  * @type {symbol}
  */
-const RESIZE     = Symbol();
+const RESIZE    = Symbol();
 /**
  * Symbol used for defines the map with CSS properties info.
  * @type {symbol}
  */
-const CSS_PROPS  = Symbol();
+const CSS_PROPS = Symbol();
 
 /**
  * Update an attribute into the HTML
@@ -191,8 +191,9 @@ class Base extends Simple {
  * @typedef {Object} cssPropertyDescriptor
  * @property {string}  name              - custom property name
  * @property {string}  [syntax='']       - syntax of the custom property
- * @property {string}  [value='']        - initial value
- * @property {boolean} [inherits=false]  - inherit flag
+ * @property {string}  [initialValue=''] - initial value
+ * @property {string}  [value='']        - initial value (alias)
+ * @property {boolean} [inherits=false]  - inherit
  */
 
 /**
@@ -203,18 +204,18 @@ class Base extends Simple {
  * @param {cssPropertyDescriptor} def - options into a {@link cssPropertyDescriptor}
  */
 function defineStyleProperty (Class, def) {
-  if ('value' in def && !('initialValue' in def)) {
-    def.initialValue = def.value;
+  const definition = {
+    name         : def.name.substring(0, 2) === '--' ?
+      def.name :
+      `--${ COMPONENT_PREFIX }${ def.name }`,
+    initialValue : def.initialValue ?? def.value ?? '',
+    syntax       : def.syntax ?? '*',
+    inherits     : def.inherits ?? true
+  };
+  if (!Class.prototype[CSS_PROPS]) {
+    Class.prototype[CSS_PROPS] = {};
   }
-  const definition = Object.assign({syntax : '*', inherits : true}, def);
-  if (definition.name.substring(0, 2) !== '--') {
-    definition.name = `--${ COMPONENT_PREFIX }${ definition.name }`;
-  }
-  if (!Class[CSS_PROPS]) {
-    Class[CSS_PROPS] = {};
-  }
-  Class[CSS_PROPS][definition.name] = definition;
-  console.log(Class[CSS_PROPS])
+  Class.prototype[CSS_PROPS][definition.name] = definition;
 }
 
 /**
@@ -287,7 +288,7 @@ function defineComponent (Class) {
 function define (Class) {
   defineComponent(Class);
   const def = defineSimple(Class, {
-    style      : (...styles) => {
+    style : (...styles) => {
       styles.forEach(style => defineStyleProperty(Class, Object.assign({}, style)));
       return def;
     }

@@ -27,7 +27,7 @@ export function getCSSPropertyValue (component, cssProps, name) {
  * @returns {Map}            - List of CSS properties
  */
 export function getCSSPropertyDescriptors (component) {
-  return component.constructor[CSS_PROPS] || {};
+  return component[CSS_PROPS] || {};
 }
 
 /**
