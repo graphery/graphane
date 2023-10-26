@@ -13,7 +13,6 @@ npm install
 npx playwright install
 ```
 
-
 ## Authors and acknowledgment
 
 This project is created by Graphane.
