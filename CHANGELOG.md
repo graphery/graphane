@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.0-alpha.4 (xx/xx/2023)
+
+- Renamed `g-template` as `g-composer`.
+
 ## 0.1.0-alpha.3 (26/10/2023)
 
 - Added special function `data()` in `script type="method"` for normalize and transform data before

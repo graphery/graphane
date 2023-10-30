@@ -2,10 +2,10 @@ import { defineConfig } from '@playwright/test';
 
 let options = '';
 
-if (process.argv.includes('--project=template')) {
+if (process.argv.includes('--project=composer')) {
   process.env.port = '7200';
-  options          = '-i /src/component/template.js ' +
-                     '-t test/component/cases';
+  options          = '-i /src/component/composer.js ' +
+                     '-t test/component/composer/cases';
 } else if (process.argv.includes('--project=core')) {
   process.env.port = '7201';
   options          = '-t ./test/core/cases';
@@ -61,7 +61,7 @@ export default defineConfig({
   projects      : [
     {name : 'helpers'},
     {name : 'core'},
-    {name : 'template'},
+    {name : 'composer'},
     {name : 'svg'},
     {name : 'svg.animateto'},
     {name : 'svg.debug'},
