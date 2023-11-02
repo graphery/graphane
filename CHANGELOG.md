@@ -2,7 +2,10 @@
 
 ## 0.1.0-alpha.4 (xx/xx/2023)
 
-- Renamed `g-template` as `g-composer`.
+- Renamed `g-template` as `g-composer`!
+- Redesign plugin model!
+
+BREAKING CHANGES 
 
 ## 0.1.0-alpha.3 (26/10/2023)
 
