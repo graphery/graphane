@@ -17,7 +17,7 @@ const readonlyProp = new Set();
  * @param {string} prop
  * @returns {boolean}
  */
-const directAccess = (prop) => prop[0] === '_' || isSymbol(prop) || ['el','gSVG'].includes(prop);
+const directAccess = (prop) => prop[0] === '_' || isSymbol(prop) || ['el', 'gSVG'].includes(prop);
 
 /**
  * Check the instance
@@ -225,11 +225,11 @@ const wrapper = (element) => {
         if (prop === '$d') {
           let content  = '';
           const dProxy = new Proxy(
-						{},
+            {},
             {
               get (_target, command) {
                 return (...args) => {
-                  if (command === Symbol.toPrimitive)  {
+                  if (command === Symbol.toPrimitive) {
                     return content
                   }
                   const d = pathD(proxy, command, args);
@@ -310,7 +310,9 @@ const methodWrapper = (element, prop, parentWrapper, parentProp) => {
     if (value !== 0 && !value) {
       element?.removeAttribute && element.removeAttribute(propNormalized);
     } else {
-      element?.setAttribute && element.setAttribute(propNormalized, isBoolean(value) ? '' : String(args));
+      element?.setAttribute && element.setAttribute(propNormalized, isBoolean(value) ?
+        '' :
+        String(args));
     }
     return parentWrapper;
   };
@@ -420,7 +422,6 @@ gSVG.extend = (plugin) => {
 
 const setup = {
   install      : install,
-  installAsync : installAsync,
   extendConstructor (extension) {
     Object.assign(gSVG, extension);
   },
@@ -442,24 +443,18 @@ const setup = {
 
 /**
  * gSVG.install - load new plugins
- * @param {Function|string} plugin
+ * @param {Function|{svg: Function}} plugin
  * @return {gSVG|Promise}
  */
 function install (plugin) {
-  if (isString(plugin)) {
-    return installAsync(plugin);
+  if (isFunction(plugin)) {
+    plugin(setup);
+  } else if (isFunction(plugin?.svg)) {
+    plugin.svg(setup);
   }
-  plugin(setup);
   return gSVG;
 }
 
 gSVG.install = install;
-
-async function installAsync (source) {
-  const plugin = (await import(source)).default;
-  return install(plugin)
-}
-
-gSVG.installAsync = installAsync;
 
 export default gSVG;

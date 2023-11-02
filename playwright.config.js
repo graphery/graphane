@@ -13,41 +13,41 @@ if (process.argv.includes('--project=composer')) {
   process.env.port = '7202';
   options          = '-i /src/lib/gsvg.script.js ' +
                      '-t test/lib/cases';
-} else if (process.argv.includes('--project=svg.animateto')) {
+} else if (process.argv.includes('--project=animateto')) {
   process.env.port = '7203';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-i /src/lib/plugins/gsvg.animateto.script.js ' +
-                     '-t test/lib/plugins/animateto/cases';
-} else if (process.argv.includes('--project=svg.debug')) {
+                     '-i /src/plugins/animateto.script.js ' +
+                     '-t test/plugins/animateto/cases';
+} else if (process.argv.includes('--project=debug')) {
   process.env.port = '7204';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-i /src/lib/plugins/gsvg.debug.script.js ' +
-                     '-t test/lib/plugins/debug/cases';
-} else if (process.argv.includes('--project=svg.keep.aspect')) {
+                     '-i /src/plugins/debug.script.js ' +
+                     '-t test/plugins/debug/cases';
+} else if (process.argv.includes('--project=keep.aspect')) {
   process.env.port = '7205';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-i /src/lib/plugins/gsvg.keep.aspect.script.js ' +
-                     '-t test/lib/plugins/keep.aspect/cases';
-} else if (process.argv.includes('--project=svg.observe.resize')) {
+                     '-i /src/plugins/keep.aspect.script.js ' +
+                     '-t test/plugins/keep.aspect/cases';
+} else if (process.argv.includes('--project=observe.resize')) {
   process.env.port = '7206';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-i /src/lib/plugins/gsvg.observe.resize.script.js ' +
-                     '-t test/lib/plugins/observe.resize/cases';
-} else if (process.argv.includes('--project=svg.observe.style')) {
+                     '-i /src/plugins/observe.resize.script.js ' +
+                     '-t test/plugins/observe.resize/cases';
+} else if (process.argv.includes('--project=observe.style')) {
   process.env.port = '7207';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-i /src/lib/plugins/gsvg.observe.style.script.js ' +
-                     '-t test/lib/plugins/observe.style/cases';
-} else if (process.argv.includes('--project=svg.template.engine')) {
+                     '-i /src/plugins/observe.style.script.js ' +
+                     '-t test/plugins/observe.style/cases';
+} else if (process.argv.includes('--project=template.engine')) {
   process.env.port = '7208';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-i /src/lib/plugins/gsvg.template.engine.script.js ' +
-                     '-t test/lib/plugins/template.engine/cases';
-} else if (process.argv.includes('--project=svg.shapes')) {
+                     '-i /src/plugins/template.engine.script.js ' +
+                     '-t test/plugins/template.engine/cases';
+} else if (process.argv.includes('--project=shapes')) {
   process.env.port = '7209';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-i /src/lib/plugins/gsvg.shapes.script.js ' +
-                     '-t test/lib/plugins/shapes/cases';
+                     '-i /src/plugins/shapes.script.js ' +
+                     '-t test/plugins/shapes/cases';
 }
 
 const webServer = process.env.port ? {
@@ -63,13 +63,13 @@ export default defineConfig({
     {name : 'core'},
     {name : 'composer'},
     {name : 'svg'},
-    {name : 'svg.animateto'},
-    {name : 'svg.debug'},
-    {name : 'svg.keep.aspect'},
-    {name : 'svg.observe.resize'},
-    {name : 'svg.observe.style'},
-    {name : 'svg.template.engine'},
-    {name : 'svg.shapes'},
+    {name : 'animateto'},
+    {name : 'debug'},
+    {name : 'keep.aspect'},
+    {name : 'observe.resize'},
+    {name : 'observe.style'},
+    {name : 'template.engine'},
+    {name : 'shapes'},
   ],
   testDir       : './test',
   fullyParallel : true,

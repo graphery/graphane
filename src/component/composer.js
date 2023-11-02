@@ -1,16 +1,16 @@
 import {
   Base, define,
   RENDER, CONTEXT, FIRE_EVENT
-}                         from '../core/base.js';
+}                                 from '../core/base.js';
 import {
   STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray
-}                         from '../helpers/types.js';
-import viewport           from "../core/viewport.js";
-import gSVG               from '../lib/gsvg.js';
-import animateTo          from '../lib/plugins/gsvg.animateto.js';
-import render             from '../lib/plugins/gsvg.template.engine.js';
-import { debounceMethod } from "../helpers/functions.js";
-import { getFunctions }   from "../helpers/function.create.js";
+}                                 from '../helpers/types.js';
+import viewport                   from "../core/viewport.js";
+import gSVG                       from '../lib/gsvg.js';
+import { svgPlugin as animateTo } from '../plugins/animateto.js';
+import { svgPlugin as render }    from '../plugins/template.engine.js';
+import { debounceMethod }         from "../helpers/functions.js";
+import { getFunctions }           from "../helpers/function.create.js";
 
 gSVG.install(animateTo)
     .install(render);
@@ -43,8 +43,7 @@ export default class Composer extends Base {
     for (let plugin of plugins) {
       const src = plugin.getAttribute('src');
       if (src) {
-        const lib = (await import(src)).default;
-        gSVG.install(lib);
+        gSVG.install((await import(src))?.svgPlugin);
       }
     }
   }
