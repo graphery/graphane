@@ -8,6 +8,7 @@ const NS           = 'http://www.w3.org/2000/svg';
 const SVG          = 'svg';
 const PATH         = 'path';
 const D            = 'd';
+const TRANSFORM    = 'transform';
 const cache        = new WeakMap();
 const readonlyProp = new Set();
 
@@ -199,20 +200,24 @@ const wrapper = (element) => {
             return wrapped[prop].call(proxy, ...args);
           }
         }
-        // Special case <path d=""/>
-        if (prop === D && element.tagName.toLowerCase() === PATH) {
+        // Special cases path d="" and transform=""
+        if (
+          (prop === D && element.tagName.toLowerCase() === PATH) ||
+          prop === TRANSFORM
+        ) {
           let content  = element.getAttribute(D) || '';
+          const processor = prop === D ? pathD : elTransform;
           const dProxy = new Proxy(
             (arg) => {
               preCall(proxy, prop, [arg])
               return isString(arg) ?
-                element.setAttribute(D, arg) || proxy :
-                element.getAttribute(D)
+                element.setAttribute(prop, arg) || proxy :
+                element.getAttribute(prop)
             },
             {
               get (_target, command) {
                 return (...args) => {
-                  content += pathD(proxy, command, args);
+                  content += processor(proxy, command, args);
                   element?.setAttribute(prop, content);
                   return dProxy;
                 };
@@ -221,9 +226,10 @@ const wrapper = (element) => {
           );
           return dProxy;
         }
-        // Special case <path g-bind:d=""/>
-        if (prop === '$d') {
+        // Special cases g-bind:d="" and g-bind:transport=""
+        if (prop === '$d' || prop === '$transform') {
           let content  = '';
+          const processor = prop === '$d' ? pathD : elTransform;
           const dProxy = new Proxy(
             {},
             {
@@ -232,8 +238,7 @@ const wrapper = (element) => {
                   if (command === Symbol.toPrimitive) {
                     return content
                   }
-                  const d = pathD(proxy, command, args);
-                  content += d;
+                  content += processor(proxy, command, args);
                   return dProxy;
                 };
               }
@@ -388,6 +393,17 @@ const pathD = (wrapped, prop, args) => {
 }
 
 /**
+ * elTransform
+ * @param {Object} wrapped
+ * @param {string} prop
+ * @param {Array} args
+ */
+const elTransform = (wrapped, prop, args) => {
+  preCall(wrapped, `transform.${ prop }`, args);
+  return `${ prop }(${ args.join(COMA) })`
+}
+
+/**
  * @typedef {function} gSVG
  */
 
@@ -421,7 +437,7 @@ gSVG.extend = (plugin) => {
 }
 
 const setup = {
-  install      : install,
+  install : install,
   extendConstructor (extension) {
     Object.assign(gSVG, extension);
   },
