@@ -1,10 +1,12 @@
+const round = (n) => Math.round(n * 100) / 100;
+
 /**
  * Convert an angle from degrees to radians
  * @param {number} degrees
  * @returns {number}
  */
 function degrees2radians (degrees) {
-  return ((degrees - 90) * Math.PI) / 180.0;
+  return ((degrees - 90) * Math.PI) / 180;
 }
 
 /**
@@ -18,8 +20,8 @@ function degrees2radians (degrees) {
 function polar2cartesian (centerX, centerY, radius, angleDegrees) {
   const angleRadians = degrees2radians(angleDegrees);
   return {
-    x : centerX + radius * Math.cos(angleRadians),
-    y : centerY + radius * Math.sin(angleRadians)
+    x : round(centerX + radius * Math.cos(angleRadians)),
+    y : round(centerY + radius * Math.sin(angleRadians))
   };
 }
 
@@ -28,16 +30,24 @@ function polar2cartesian (centerX, centerY, radius, angleDegrees) {
  * @param {number} x
  * @param {number} y
  * @param {number} radius
- * @param {number} startAngle
- * @param {number} endAngle
- * @param {number} [direction=1]
+ * @param {number} start
+ * @param {number} grades
  * @return {string}
  */
-function arc (x, y, radius, startAngle, endAngle, direction = 1) {
-  const start        = polar2cartesian(x, y, radius, startAngle);
-  const end          = polar2cartesian(x, y, radius, endAngle);
-  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
-  return `M${ start.x },${ start.y }A${ radius },${ radius },0,${ largeArcFlag },${ direction },${ end.x },${ end.y }`;
+function arc (x, y, radius, start, grades) {
+  start                 = Math.abs(start) >= 360 ? start % 360 : start;
+  grades                = Math.abs(grades) > 360 ? grades % 360 : grades;
+  let end               = start + grades;
+  const dir             = grades > 0 ? 1 : 0;
+  const largeArcFlag    = Math.abs(end - start) <= 180 ? 0 : 1;
+  const startNormalized = start < 0 ? (360 + start) % 360 : start;
+  let endNormalized     = grades < 0 ? (360 + end) % 360 : end;
+  if (endNormalized === 360) {
+    endNormalized = 359.9
+  }
+  const startPoint = polar2cartesian(x, y, radius, startNormalized);
+  const endPoint   = polar2cartesian(x, y, radius, endNormalized);
+  return `M${ startPoint.x },${ startPoint.y }A${ radius },${ radius },0,${ largeArcFlag },${ dir },${ endPoint.x },${ endPoint.y }`;
 }
 
 /**

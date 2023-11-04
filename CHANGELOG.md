@@ -2,10 +2,15 @@
 
 ## 0.1.0-alpha.4 (xx/xx/2023)
 
-- Renamed `g-template` as `g-composer`!
-- Redesign plugin model!
+BREAKING CHANGES:
 
-BREAKING CHANGES 
+- Renamed `g-template` as `g-composer`.
+- Redesign plugin model.
+
+OTHERS:
+
+- Optimized shape plugin SVG Length with two decimals.
+- Refactored `arc()` shape plugin. 
 
 ## 0.1.0-alpha.3 (26/10/2023)
 

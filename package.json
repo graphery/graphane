@@ -25,8 +25,8 @@
     "test:plugin.keep.aspect": "playwright test test/plugins/keep.aspect/index.test.js --project=keep.aspect",
     "test:plugin.observe.resize": "playwright test test/plugins/observe.resize/index.test.js --project=observe.resize",
     "test:plugin.observe.style": "playwright test test/plugins/observe.style/index.test.js --project=observe.style",
-    "test:plugin.template.engine": "playwright test test/plugins/template.engine/index.test.js --project=template.engine",
     "test:plugin.shapes": "playwright test test/plugins/shapes/index.test.js --project=shapes",
+    "test:plugin.template.engine": "playwright test test/plugins/template.engine/index.test.js --project=template.engine",
     "build": "concurrently -m 1 npm:build:*",
     "build:core": "node ./tools/packer/index.js -m ./src/core/index.js ./dist/core/index.js ./package.json",
     "build:composer": "node ./tools/packer/index.js src/component/composer.js ./dist/component/composer.js ./package.json",
@@ -44,8 +44,8 @@
     "build:plugin.keep.aspect.script": "node ./tools/packer/index.js -m src/plugins/keep.aspect.js ./dist/script/plugins/gsvg.keep.aspect.js",
     "build:plugin.observe.resize.script": "node ./tools/packer/index.js -m src/plugins/observe.resize.js ./dist/script/plugins/gsvg.observe.resize.js",
     "build:plugin.observe.style.script": "node ./tools/packer/index.js -m src/plugins/observe.style.js ./dist/script/plugins/gsvg.observe.style.js",
-    "build:plugin.template.engine.script": "node ./tools/packer/index.js -m src/plugins/template.engine.js ./dist/script/plugins/gsvg.template.engine.js",
-    "build:plugin.shapes.script": "node ./tools/packer/index.js -m src/plugins/shapes.js ./dist/script/plugins/gsvg.shapes.js"
+    "build:plugin.shapes.script": "node ./tools/packer/index.js -m src/plugins/shapes.js ./dist/script/plugins/gsvg.shapes.js",
+    "build:plugin.template.engine.script": "node ./tools/packer/index.js -m src/plugins/template.engine.js ./dist/script/plugins/gsvg.template.engine.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.39.0",

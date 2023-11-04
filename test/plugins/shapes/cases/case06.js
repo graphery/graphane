@@ -7,7 +7,7 @@ export function script () {
   const svg  = gSVG().viewBox('0 0 200 200').width(200)
   svg.add('circle').fill('red').cx(75).cy(100).r(50);
   const path = svg.add('path').fill('none').stroke_width(1).stroke('black').id('path');
-  path.d.arc(75, 100, 60, -120, 60, 0);
+  path.d.arc(75, 100, 60, 240, 60);
   svg.add('text')
      .add('textPath').href(path.ref()).method('align').content('testing the path');
   svg.attachTo(div);
