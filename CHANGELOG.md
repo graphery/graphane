@@ -9,8 +9,10 @@ BREAKING CHANGES:
 
 OTHERS:
 
-- Optimized shape plugin SVG Length with two decimals.
-- Refactored `arc()` shape plugin. 
+- Added support to transform pseudo functions as `transform.scale().translate()`.
+- Improve support to path d pseudo functions as `d.M().L()`.
+- Redesign and refactored `d.arc()` in shape plugin.
+- Optimized shape plugin lengths with only two decimals.
 
 ## 0.1.0-alpha.3 (26/10/2023)
 
