@@ -16,19 +16,6 @@ const UNKNOWN    = 'unknown';
 const LABEL      = 'Graphane SVG Template Engine:';
 const directives = [];
 
-const TRANSFORM_CONVERSION = (keys) =>
-  keys.reduce((obj, name) => {
-    obj[name] = (...args) => `${ name }(${ args.join(',') }) `;
-    return obj
-  }, {})
-const TRANSFORM_ATTRIBUTES = ['transform', 'gradientTransform', 'patternTransform'];
-const TRANSFORM_FUNCTIONS  = TRANSFORM_CONVERSION(
-  ['matrix', 'matrix3d', 'perspective', 'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ',
-   'scale', 'scale3d', 'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'translate',
-   'translate3d', 'translateX', 'translateY', 'translateZ']
-);
-
-
 /**
  * g-context
  * Directive that sets the content of an element to the result of the given expression, especially
@@ -70,16 +57,9 @@ defineDirective({
   execute (gObject, {expression, argument, data, evalExpression}) {
     const context = {
       ...data,
-      ...(TRANSFORM_ATTRIBUTES.includes(argument) ? TRANSFORM_FUNCTIONS : {}),
-      $ : {
+      $  : {
         ...data.$,
-        d : argument === 'd' ? gObject.$d : undefined,
         dynamic (value, duration = 200, delay = 0) {
-          console.log(            (isArray(value) ? value : [value]).map(v =>
-            isObject(v) && 'offset' in v ?
-              {[argument] : v.value, offset : v.offset} :
-              {[argument] : v}
-          ));
           gObject.animateTo(
             (isArray(value) ? value : [value]).map(v =>
               isObject(v) && 'offset' in v ?
@@ -90,7 +70,11 @@ defineDirective({
           );
         }
       },
-    }
+      $$ :
+        argument === 'd' ? gObject.$d :
+          argument === 'transform' ? gObject.$transform :
+            undefined
+    };
     const value   = evalExpression(expression, context);
     if (argument === 'class') {
       if (isArray(value)) {
@@ -113,7 +97,7 @@ defineDirective({
       return;
     }
     if (!isUndefined(value)) {
-      gObject[argument](argument === 'd' ? '' + value : value);
+      gObject[argument](argument === 'd' || argument === 'transform' ? '' + value : value);
     }
   }
 });
@@ -303,11 +287,11 @@ function evalForExpression (code, data, each, final) {
     right                  = right.trim();
     const value            = evalExpression(right, data) || [];
     const {iterator, type} = toArray(value);
-    if (type === OBJECT && left[0] !== '[') {
+    if (type === OBJECT && !left.startsWith('[')) {
       left = `[${ left.replace(/(^\()|(\)$)/g, '') }]`;
     }
     const variables    = getVariables(left);
-    const args         = left[0] !== '(' ? `(${ left })` : left;
+    const args         = !left.startsWith('(') ? `(${ left })` : left;
     const dataKeys     = Object.keys(data);
     const codeFunction = `
       ${ iteratorName }.forEach(${ args } => {
