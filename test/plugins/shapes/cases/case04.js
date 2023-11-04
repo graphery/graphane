@@ -5,10 +5,10 @@ export function script () {
   const div  = document.querySelector('#show');
   const code = document.querySelector('#result');
   const svg  = gSVG().viewBox('0 0 200 500').width(200).height(200)
-  svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, -85, 0)
-  svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 5, 90)
-  svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 95, 180)
-  svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 185, 270)
+  svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 50, 0)
+  svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 60, 90)
+  svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 70, 180)
+  svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 80, 270)
   svg.attachTo(div);
   code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
 }

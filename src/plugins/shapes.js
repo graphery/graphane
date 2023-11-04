@@ -30,11 +30,11 @@ function polar2cartesian (centerX, centerY, radius, angleDegrees) {
  * @param {number} x
  * @param {number} y
  * @param {number} radius
- * @param {number} start
  * @param {number} grades
+ * @param {number} [start=0]
  * @return {string}
  */
-function arc (x, y, radius, start, grades) {
+function arc (x, y, radius, grades, start = 0) {
   start                 = Math.abs(start) >= 360 ? start % 360 : start;
   grades                = Math.abs(grades) > 360 ? grades % 360 : grades;
   let end               = start + grades;
