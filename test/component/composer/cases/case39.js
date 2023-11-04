@@ -1,4 +1,4 @@
-export const title       = '38) shape plugin';
+export const title       = '39) shape plugin';
 export const description = `Add shape plugin`;
 
 export default `<g-composer>
