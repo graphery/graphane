@@ -1,4 +1,4 @@
-const round = (n) => Math.round(n * 100) / 100;
+const round = (n) => Math.round(n * 10000) / 10000;
 
 /**
  * Convert an angle from degrees to radians
@@ -35,16 +35,15 @@ function polar2cartesian (centerX, centerY, radius, angleDegrees) {
  * @return {string}
  */
 function arc (x, y, radius, grades, start = 0) {
+  console.log('arc', ...arguments);
   start                 = Math.abs(start) >= 360 ? start % 360 : start;
   grades                = Math.abs(grades) > 360 ? grades % 360 : grades;
+  grades                = Math.abs(grades) === 360 ? grades > 0 ? 359.9 : -359.9 : grades;
   let end               = start + grades;
   const dir             = grades > 0 ? 1 : 0;
   const largeArcFlag    = Math.abs(end - start) <= 180 ? 0 : 1;
   const startNormalized = start < 0 ? (360 + start) % 360 : start;
-  let endNormalized     = grades < 0 ? (360 + end) % 360 : end;
-  if (endNormalized === 360) {
-    endNormalized = 359.9
-  }
+  let endNormalized     = end < 0 ? (360 + end) % 360 : end;
   const startPoint = polar2cartesian(x, y, radius, startNormalized);
   const endPoint   = polar2cartesian(x, y, radius, endNormalized);
   return `M${ startPoint.x },${ startPoint.y }A${ radius },${ radius },0,${ largeArcFlag },${ dir },${ endPoint.x },${ endPoint.y }`;
@@ -56,21 +55,14 @@ function arc (x, y, radius, grades, start = 0) {
  * @param {number} y
  * @param {number} radius
  * @param {number} width
- * @param {number} startAngle
- * @param {number} endAngle
+ * @param {number} grades
+ * @param {number} [start=0]
  * @returns {string}
  */
-function barArc (x, y, radius, width, startAngle, endAngle) {
-  const externalStart = polar2cartesian(x, y, radius, endAngle);
-  const externalEnd   = polar2cartesian(x, y, radius, startAngle);
-  const internalStart = polar2cartesian(x, y, radius - width, startAngle);
-  const internalEnd   = polar2cartesian(x, y, radius - width, endAngle);
-  const flag          = endAngle - startAngle <= 180 ? '0' : '1';
-  return `M${ externalStart.x },${ externalStart.y }` +
-         `A${ radius },${ radius },0,${ flag },0,${ externalEnd.x },${ externalEnd.y }` +
-         `L${ internalStart.x },${ internalStart.y }` +
-         `A${ radius - width },${ radius - width },0,${ flag },1,${ internalEnd.x },${ internalEnd.y }` +
-         `Z`;
+function barArc (x, y, radius, width, grades, start = 0 ) {
+  const sup = arc(x, y, radius + (width / 2), grades, start );
+  const inf = arc(x, y, radius - (width / 2), -grades, start + grades );
+  return sup + `L` + inf.substring(1) + `Z`;
 }
 
 /**
