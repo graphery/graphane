@@ -101,20 +101,20 @@ function regularPolygon (cx, cy, r, sides, start = 0) {
 
 /**
  * create a star shape with a path (no with a svg polygon)
- * @param {number} cx    - center x
- * @param {number} cy    - center y
- * @param {number} r1    - external radius
- * @param {number} r2    - internal radius
- * @param {number} n     - sides
- * @param {number} [a=0] - initial angle
+ * @param {number} cx        - center x
+ * @param {number} cy        - center y
+ * @param {number} r1        - external radius
+ * @param {number} r2        - internal radius
+ * @param {number} sides     - sides
+ * @param {number} [start=0] - initial angle
  */
-function star (cx, cy, r1, r2, n, a = 0) {
-  const angle = 360 / n;
+function star (cx, cy, r1, r2, sides, start = 0) {
+  const angle = 360 / sides;
   let path    = '';
-  for (let i = 0; i < n; i++) {
-    const external = polar2cartesian(cx, cy, r1, (angle * i) + a);
+  for (let i = 0; i < sides; i++) {
+    const external = polar2cartesian(cx, cy, r1, (angle * i) + start);
     path += `${ i ? 'L' : 'M' }${ external.x },${ external.y }`;
-    const internal = polar2cartesian(cx, cy, r2, (angle * i) + a + (angle / 2));
+    const internal = polar2cartesian(cx, cy, r2, (angle * i) + start + (angle / 2));
     path += `L${ internal.x },${ internal.y }`;
   }
   path += 'Z';
