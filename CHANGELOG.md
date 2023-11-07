@@ -1,5 +1,17 @@
 # Change Log
 
+## 0.1.0-alpha.4 (xx/xx/2023)
+
+- BREAKING CHANGE: Renamed `g-template` as `g-composer`! 
+- BREAKING CHANGE: Redesign the plugin model!
+- Added support to `transform` pseudo functions as `transform.scale().translate()`.
+- Improve support to path `d` pseudo functions as `d.M().L()`.
+- Refactored `d.regularPolygon()` in shape plugin.
+- Redesign and refactored `d.arc()` in shape plugin.
+- Redesign and refactored `d.barArc()` in shape plugin.
+- Added `d.circleSlice()` to shape plugin.
+- Optimized shape plugin lengths with only four decimals.
+
 ## 0.1.0-alpha.3 (26/10/2023)
 
 - Added special function `data()` in `script type="method"` for normalize and transform data before
