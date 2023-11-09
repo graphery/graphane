@@ -358,6 +358,7 @@ function render (context = {}) {
       rawData : clone(context.data),
     } : {}
   });
+  this.dispatchEvent(new Event('render'));
 }
 
 
