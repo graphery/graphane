@@ -9,7 +9,7 @@ export function script () {
      .x(10).y(10).width(90).height(90)
      .transform('translate(30,30) scale(0.3, 0.3)');
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>
