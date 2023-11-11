@@ -3,12 +3,17 @@ import {
   isSymbol, isObject, isString, isUndefined, isFunction, isBoolean, isNull
 } from '../helpers/types.js';
 
-const NAME         = 'gSVGObject';
-const NS           = 'http://www.w3.org/2000/svg';
-const SVG          = 'svg';
-const PATH         = 'path';
-const D            = 'd';
-const TRANSFORM    = 'transform';
+const NAME                    = 'gSVGObject';
+const NS                      = 'http://www.w3.org/2000/svg';
+const SVG                     = 'svg';
+const PATH                    = 'path';
+const D                       = 'd';
+const TRANSFORM               = 'transform';
+const APPEND_CHILD            = 'appendChild';
+const INSERT_BEFORE           = 'insertBefore';
+const INSERT_ADJACENT_ELEMENT = 'insertAdjacentElement';
+const ATTACH                  = 'attach';
+
 const cache        = new WeakMap();
 const readonlyProp = new Set();
 
@@ -68,12 +73,46 @@ const createWrap = (tag) =>
  * @returns {string}
  */
 const alias = (prop) => ({
-  content  : 'innerHTML',
-  source   : 'outerHTML',
-  parent   : 'parentElement',
-  next     : 'nextElementSibling',
-  previous : 'previousElementSibling'
+  content   : 'innerHTML',
+  source    : 'outerHTML',
+  parent    : 'parentElement',
+  next      : 'nextElementSibling',
+  previous  : 'previousElementSibling',
+  add       : APPEND_CHILD,
+  addBefore : INSERT_BEFORE
 })[prop] || prop;
+
+/**
+ * Return a wrapped method for append element operations
+ * @param {string} method
+ * @returns {function|null}
+ */
+const appendMethods = (method) => {
+  return ['append', 'before', 'after',
+          APPEND_CHILD, INSERT_BEFORE, INSERT_ADJACENT_ELEMENT].includes(method) ?
+    function (...params) {
+      debugger;
+      const a = [];
+      const b = [];
+      const c = [];
+      if (method === INSERT_ADJACENT_ELEMENT) {
+        a.push(params[0]);
+        b.push(createWrap(params[1]));
+      } else if (method === INSERT_BEFORE) {
+        b.push(createWrap(params[0]));
+        c.push(params[1] || this.firstChild || null);
+      } else {
+        b.push(...params.map(createWrap))
+      }
+      if (!b.every(el => el?._el)) {
+        return b[0];
+      }
+      this[method](...[...a, ...b.map(el => el ? el._el : el), ...c]);
+      b.forEach(el => el._el.dispatchEvent(new Event(ATTACH)));
+      return b.length > 1 ? b : b[0];
+    } :
+    null;
+}
 
 
 /**
@@ -103,30 +142,6 @@ class GSVGObject {
   }
 
   /**
-   * @param {gSVGObject|Object|string} tag
-   * @returns {gSVGObject}
-   */
-  add (tag) {
-    let r = createWrap(tag);
-    if (r) {
-      this._el.appendChild(r._el);
-    }
-    return r;
-  }
-
-  /**
-   * @param {gSVGObject|Object|string} tag
-   * @returns {gSVGObject}
-   */
-  addBefore (tag) {
-    let r = createWrap(tag);
-    if (r) {
-      this._el.insertBefore(r._el, this._el.firstChild || null);
-    }
-    return r;
-  }
-
-  /**
    * @param {string|Object} tag
    * @returns {gSVGObject}
    */
@@ -138,6 +153,7 @@ class GSVGObject {
       ) :
       document.querySelector(tag);
     r.appendChild(this._el);
+    this._el.dispatchEvent(new Event(ATTACH));
     return this;
   }
 
@@ -168,6 +184,15 @@ class GSVGObject {
    */
   url () {
     return `url(${ this.ref() })`;
+  }
+
+  parents () {
+    const result = [];
+    let el       = this;
+    while (el = el.parentElement()) {
+      result.push(el);
+    }
+    return result;
   }
 
 }
@@ -205,9 +230,9 @@ const wrapper = (element) => {
           (prop === D && element.tagName.toLowerCase() === PATH) ||
           prop === TRANSFORM
         ) {
-          let content  = element.getAttribute(D) || '';
+          let content     = element.getAttribute(D) || '';
           const processor = prop === D ? pathD : elTransform;
-          const dProxy = new Proxy(
+          const dProxy    = new Proxy(
             (arg) => {
               preCall(proxy, prop, [arg])
               return isString(arg) ?
@@ -228,9 +253,9 @@ const wrapper = (element) => {
         }
         // Special cases g-bind:d="" and g-bind:transport=""
         if (prop === '$d' || prop === '$transform') {
-          let content  = '';
+          let content     = '';
           const processor = prop === '$d' ? pathD : elTransform;
-          const dProxy = new Proxy(
+          const dProxy    = new Proxy(
             {},
             {
               get (_target, command) {
@@ -246,12 +271,13 @@ const wrapper = (element) => {
           );
           return dProxy;
         }
-        prop = alias(prop);
+        prop     = alias(prop);
         // Return the element method
-        if (isFunction(element[prop])) {
+        const fn = appendMethods(prop) || element[prop];
+        if (isFunction(fn)) {
           return (...args) => {
             preCall(proxy, prop, args);
-            const result = element[prop].call(element, ...args);
+            const result = fn.call(element, ...args);
             return (
               isUndefined(result) ?
                 proxy :
