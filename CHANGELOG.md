@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.1.0-alpha.5 (xx/xx/2023)
+
+- Added `render` event when the engine processes the template.
+- Added `attach` event when an element is added to the SVG.
+
 ## 0.1.0-alpha.4 (08/11/2023)
 
 - BREAKING CHANGE: Renamed `g-template` as `g-composer`!
