@@ -91,7 +91,6 @@ const appendMethods = (method) => {
   return ['append', 'before', 'after',
           APPEND_CHILD, INSERT_BEFORE, INSERT_ADJACENT_ELEMENT].includes(method) ?
     function (...params) {
-      debugger;
       const a = [];
       const b = [];
       const c = [];
@@ -186,6 +185,10 @@ class GSVGObject {
     return `url(${ this.ref() })`;
   }
 
+  /**
+   * gSVGObject.parents()
+   * @returns {[{object}]}
+   */
   parents () {
     const result = [];
     let el       = this;
@@ -193,6 +196,14 @@ class GSVGObject {
       result.push(el);
     }
     return result;
+  }
+
+  /**
+   * gSVGObject.parents()
+   * @returns {object}
+   */
+  top () {
+    return this.parents().pop();
   }
 
 }

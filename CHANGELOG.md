@@ -4,6 +4,7 @@
 
 - Added `render` event when the engine processes the template.
 - Added `attach` event when an element is added to the SVG.
+- Added the `.parents()` method to the gSVG library to obtain an array with all the parent elements.
 
 ## 0.1.0-alpha.4 (08/11/2023)
 
