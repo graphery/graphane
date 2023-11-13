@@ -237,7 +237,6 @@ const wrapper = (element) => {
         }
         // Special cases 'd' and 'transform'
         if ([D, TRANSFORM, '$' + D, '$' + TRANSFORM].includes(prop)) {
-          debugger;
           let content   = '';
           let directive = prop[0] === '$';
           if (directive) {
@@ -447,18 +446,6 @@ export function gSVG (el) {
  * @type {function({Object}) : boolean}
  */
 gSVG.isWrapped = isWrapped;
-
-/**
- * gSVG.extend
- * @param {Function} plugin
- * @return {gSVG}
- */
-gSVG.extend = (plugin) => {
-  console.warn('gSVG.extend() for old plugin is deprecated. ' +
-               'Please, use gSVG.install() for new plugins.')
-  plugin(gSVG, GSVGObject);
-  return gSVG;
-}
 
 const setup = {
   install : install,
