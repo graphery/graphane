@@ -2,9 +2,13 @@
 
 ## 0.1.0-alpha.5 (xx/xx/2023)
 
+- BREAKING CHANGE: the `d` attribute is reset when the `.d` object is obtained.
 - Added `render` event when the engine processes the template.
 - Added `attach` event when an element is added to the SVG.
-- Added the `.parents()` method to the gSVG library to obtain an array with all the parent elements.
+- Added `.parents()` method to the SVG library to obtain an array with all the parent elements.
+- Added `.top()` method to the SVG library to obtain the top parent element.
+- Refactored `.add()` and `.addBefore()` methods.
+- Fixed debug plugin with new `.add()` and `.addBefore()` methods.
 
 ## 0.1.0-alpha.4 (08/11/2023)
 
@@ -33,7 +37,7 @@
 - Renamed `$.animate()` to `$.dynamic()` in `g-bind` directive.
 - Added support for keyframes in `$.dynamic()`.s
 - Removed event 'load' and added event 'init' than is launch only one way per template.
-- The event handler called from `g-on` recibe as this the SVG element wrapped by the gSVG library. 
+- The event handler called from `g-on` recibe as this the SVG element wrapped by the gSVG library.
 - The `g-on` directive support to call methods with and without parameters.
 - The `g-on` directive support expressions.
 - The `g-on` directive support lazy load methods.
@@ -41,7 +45,7 @@
 - Added support for function names with unicode characters into script type methods.
 - Fixed a bug with anonymous functions into script type methods.
 - Fixed a bug with several updates of `$.data`.
-- Fixed a bug with remove previous event listener in `g-on`. 
+- Fixed a bug with remove previous event listener in `g-on`.
 - Fixed a bug when data has line return with Windows format.
 - Fixed a bug with `height` and `width` values and `animateTo()`.
 
