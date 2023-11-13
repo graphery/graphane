@@ -241,7 +241,7 @@ const wrapper = (element) => {
           (prop === D && element.tagName.toLowerCase() === PATH) ||
           prop === TRANSFORM
         ) {
-          let content     = element.getAttribute(D) || '';
+          let content     = '';
           const processor = prop === D ? pathD : elTransform;
           const dProxy    = new Proxy(
             (arg) => {
@@ -282,9 +282,9 @@ const wrapper = (element) => {
           );
           return dProxy;
         }
-        prop     = alias(prop);
+        const altProp     = alias(prop);
         // Return the element method
-        const fn = appendMethods(prop) || element[prop];
+        const fn = appendMethods(altProp) || element[altProp];
         if (isFunction(fn)) {
           return (...args) => {
             preCall(proxy, prop, args);
@@ -297,7 +297,7 @@ const wrapper = (element) => {
           };
         }
         // Return the wrapped method
-        return methodWrapper(element, prop, proxy);
+        return methodWrapper(element, altProp, proxy);
       }
     }
   );
