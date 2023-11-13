@@ -8,7 +8,8 @@ export function script () {
   const div      = document.querySelector('div#show');
   const code     = document.querySelector('#result');
   const el       = div.querySelector('svg');
-  code.innerHTML = gSVG(el).source().replace(/</g, '&lt;');
+  const svg = gSVG(el);
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `

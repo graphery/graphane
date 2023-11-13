@@ -5,15 +5,18 @@ export function script () {
   const div    = document.querySelector('#show');
   const button = document.querySelector('#change');
   const code   = document.querySelector('#result');
-  const svg    = gSVG().viewBox('0 0 100 100').width(200).height(200)
+  const svg    = gSVG().viewBox('0 0 100 100').width(100).height(100)
                        .style.border('1px solid black');
+  svg.add('line').x1(0).x2(100).y1(0).y2(100).stroke('lightgrey').stroke_width(1);
+  svg.add('line').x1(100).x2(0).y1(0).y2(100).stroke('lightgrey').stroke_width(1);
   const text   = svg.add('text').x(10).y(50).content('hello word')
+                    .dominant_baseline('middle')
                     .style.fontFamily('sans-serif').style.fontSize('14px');
   text.keepAspect(true);
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
-  svg.resizeObserver((current, prev) => {
-    code.innerHTML  = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
+  svg.addEventListener('resize', () => {
+    code.innerHTML  = sourceFormat(svg.source());
   });
   button.addEventListener('click', () => {
     if (svg.width() === 200) {

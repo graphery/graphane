@@ -9,7 +9,7 @@ export function script () {
   document.querySelector('#change').addEventListener('input', function () {
     svg.render({title: this.value});
   })
-  document.querySelector('#result').innerHTML = svg.source().replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 
 }
 

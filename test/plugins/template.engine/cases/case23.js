@@ -7,7 +7,7 @@ export function script () {
     viewBox: '0 0 100 100',
     data : ['red', 'green', 'blue', 'orange']
   });
-  document.querySelector('#result').innerHTML = svg.source().replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 
 export default `<svg id="svg" 

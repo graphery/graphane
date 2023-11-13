@@ -8,7 +8,7 @@ export function script () {
   const svg  = gSVG().viewBox(0, 0, 100, 100).width(100).height(100);
   const line = svg.add('rect').x(0).y(0).width(40).height(40).fill('black');
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
   run.addEventListener('click', () => {
     line.animateTo(
       [
@@ -20,7 +20,7 @@ export function script () {
       ],
       {duration : 2000},
       () => code.innerHTML = 'moving...',
-      () => code.innerHTML = div.innerHTML.replace(/</g, "&lt;")
+      () => code.innerHTML = sourceFormat(svg.source())
     );
   });
 }

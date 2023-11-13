@@ -16,7 +16,7 @@ export function script () {
       {val: 9},
       {val: 10}
   ]});
-  document.querySelector('#result').innerHTML = svg.source().replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 
 export default `<svg viewBox="0 0 350 200" id="svg" style="width: 350px; height: 200px">

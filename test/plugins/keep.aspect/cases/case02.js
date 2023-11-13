@@ -8,34 +8,37 @@ export function script () {
                        .width('100%').height('100%');
   const gLines = svg.add('g').style.stroke('#c0c0c0');
   const gText  = svg.add('g').style.stroke('none')
-                    .style.fontFamily('sans-serif').style.fontSize(10);
+                    .style.fontFamily('sans-serif').style.fontSize(7);
   for (let column = 0; column < 10; column++) {
     gLines.add('line')
           .x1((column * 20) + 1).x2((column * 20) + 1)
           .y1(1).y2(201)
-          .keepAspect();
+          .keepAspect('stroke');
     for (let row = 0; row < 10; row++) {
       if (column === 0) {
         gLines.add('line')
               .x1(1).x2(201)
               .y1((row * 20) + 1).y2((row * 20) + 1)
-              .keepAspect();
+              .keepAspect('stroke');
       }
-      gText.add('text')
-           .text_anchor('middle').alignment_baseline('middle')
-           .x((column * 20) + 12).y((row * 20) + 12)
-           .content((row * 10) + column + 1)
-           .keepAspect();
+      const n    = (row * 10) + column + 1;
+      const text = gText.add('text')
+                        .text_anchor('middle').alignment_baseline('middle')
+                        .x((column * 20) + 12).y((row * 20) + 12)
+                        .content(n);
+      if (n % 2 === 0) {
+        text.keepAspect();
+      }
     }
   }
   gLines.add('line')
         .x1(201).x2(201)
         .y1(1).y2(201)
-        .keepAspect();
+        .keepAspect('stroke');
   gLines.add('line')
         .x1(1).x2(201)
         .y1(201).y2(201)
-        .keepAspect();
+        .keepAspect('stroke');
   svg.attachTo(div);
   document.querySelector('#change').addEventListener('click', () => {
     div.style.width  = (Number.parseInt(div.style.width) + 20) + 'px';
@@ -45,7 +48,15 @@ export function script () {
     div.style.width  = (Number.parseInt(div.style.width) - 20) + 'px';
     div.style.height = (Number.parseInt(div.style.height) - 20) + 'px';
   });
+  const result   = document.querySelector('#result');
+  result.innerHTML = sourceFormat(svg.source());
+  svg.addEventListener('resize', () => {
+    result.innerHTML  = sourceFormat(svg.source());
+  });
 }
 
-export default `<div id="show" style="width:300px; height: 300px"></div>
-<button id="change">up size</button> <button id="minus">down size</button> <script type="module">`;
+export default `
+<div id="show" style="width:300px; height: 300px"></div>
+<button id="change">up size</button> <button id="minus">down size</button>
+<pre id="result"></pre>
+`;

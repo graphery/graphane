@@ -13,7 +13,7 @@ export function script () {
   svg.add('rect').x(10).y(10).width(80).height(80)
      .clip_path(clipPath.url());
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

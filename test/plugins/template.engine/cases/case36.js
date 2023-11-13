@@ -6,7 +6,7 @@ export function script () {
   svg.render({data: [
     0,1,2,3,4,5,6,7,8,9,10
   ]});
-  document.querySelector('#result').innerHTML = svg.source().replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 
 export default `<svg viewBox="0 0 350 200" id="svg" style="width: 350px; height: 200px">

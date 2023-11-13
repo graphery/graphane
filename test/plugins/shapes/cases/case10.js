@@ -28,9 +28,7 @@ export function script () {
   });
 
   svg.attachTo(div);
-  document.querySelector('#result').innerHTML = svg.source()
-                                                   .replace(/(<\w)/g, "\n$1")
-                                                   .replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

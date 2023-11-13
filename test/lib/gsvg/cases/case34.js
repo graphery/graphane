@@ -21,7 +21,7 @@ export function script () {
     );
   });
   svg.add('g').test().fill('red');
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

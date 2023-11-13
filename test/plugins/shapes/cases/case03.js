@@ -10,7 +10,7 @@ export function script () {
   svg.add('path').d.barArc(100, 250, 95, 30, 85, 95)
   svg.add('path').d.barArc(100, 250, 95, 40, -85, 270)
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

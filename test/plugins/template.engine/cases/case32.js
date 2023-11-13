@@ -9,7 +9,7 @@ export function script () {
     time3 : 1200,
     time4 : 1600,
   });
-  document.querySelector('#result').innerHTML = svg.source().replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">

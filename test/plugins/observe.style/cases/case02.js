@@ -11,13 +11,13 @@ export function script () {
                      .style.stroke('black').style.stroke_width(10);
   svg.add('line').x1(10).y1(90).x2(90).y2(10).stroke('black').stroke_width(10);
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
   line1.styleObserver(['stroke'], (style) => {
     check.innerHTML = style.stroke.current === 'rgb(255, 0, 0)' ? 'ok' : '...';
   });
   button.addEventListener('click', () => {
     line1.style.stroke(line1.style.stroke() === 'black' ? 'red' : 'black');
-    code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+    code.innerHTML = sourceFormat(svg.source());
   });
 }
 
