@@ -21,7 +21,6 @@ function sourceFormat (source) {
         i += 2;
       }
       command = current;
-      console.log(command);
     }
     n++;
   }
