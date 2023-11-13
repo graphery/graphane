@@ -245,12 +245,13 @@ const wrapper = (element) => {
           const processor = prop === D ? pathD : elTransform;
           const dProxy    = new Proxy(
             (arg) => {
-              preCall(proxy, prop, [arg])
-              isUndefined(arg) ?
-                element.getAttribute(prop) :
-                arg ?
-                  element.setAttribute(prop, arg) :
-                  element.removeAttribute(prop);
+              preCall(proxy, prop, [arg]);
+              if (isUndefined(arg)) {
+                return element.getAttribute(prop);
+              }
+              arg ?
+                element.setAttribute(prop, arg) :
+                element.removeAttribute(prop);
               return proxy;
             },
             {

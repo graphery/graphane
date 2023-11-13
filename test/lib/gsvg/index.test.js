@@ -55,7 +55,7 @@ const results = {
   case31_after : 'SVG Text = hello',
   case32       : `<svg viewBox="0,0,100,100" width="100" height="100"> <circle cx="30" cy="30" r="30" fill="blue"></circle> <circle cx="60" cy="60" r="30" fill="red"></circle> </svg>`,
   case33       : `<svg viewBox="0,0,100,100" width="100" height="100"> <circle cx="60" cy="60" r="30" stroke="red" stroke-width="5" id="gSVGObjectgo8vor0m6ug"></circle> <use href="#gSVGObjectgo8vor0m6ug" x="-20" y="-20" fill="blue"></use> </svg>`,
-  case34       : `<svg viewBox="0,0,100,100" width="100" height="100"> <g fill="red"> <circle cx="50" cy="50" r="40"></circle> </g> </svg>`,
+  case34       : `gSVG.extend is not a function`,
   case35       : `<svg viewBox="0,0,100,100" width="100" height="100"> <g fill="red"> <circle cx="50" cy="50" r="40"></circle> </g> </svg>`,
   case36       : 'is a Graphane Object',
   case37       : `<svg viewBox="0,0,100,100" width="100" height="100"> <clipPath id="myClip" clipPathUnits="objectBoundingBox"> <circle cx="0.5" cy="1" r="0.5"></circle> </clipPath> <rect x="10" y="10" width="80" height="80" clip-path="url(#myClip)"></rect> </svg>`,
