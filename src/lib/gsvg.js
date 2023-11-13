@@ -6,7 +6,6 @@ import {
 const NAME                    = 'gSVGObject';
 const NS                      = 'http://www.w3.org/2000/svg';
 const SVG                     = 'svg';
-const PATH                    = 'path';
 const D                       = 'd';
 const TRANSFORM               = 'transform';
 const APPEND_CHILD            = 'appendChild';
@@ -236,38 +235,25 @@ const wrapper = (element) => {
             return wrapped[prop].call(proxy, ...args);
           }
         }
-        // Special cases path d="" and transform=""
-        if (
-          (prop === D && element.tagName.toLowerCase() === PATH) ||
-          prop === TRANSFORM
-        ) {
-          let content     = '';
+        // Special cases 'd' and 'transform'
+        if ([D, TRANSFORM, '$' + D, '$' + TRANSFORM].includes(prop)) {
+          debugger;
+          let content   = '';
+          let directive = prop[0] === '$';
+          if (directive) {
+            prop = prop.substring(1);
+          }
           const processor = prop === D ? pathD : elTransform;
           const dProxy    = new Proxy(
             (arg) => {
               preCall(proxy, prop, [arg])
-              return isString(arg) ?
-                element.setAttribute(prop, arg) || proxy :
-                element.getAttribute(prop)
+              isUndefined(arg) ?
+                element.getAttribute(prop) :
+                arg ?
+                  element.setAttribute(prop, arg) :
+                  element.removeAttribute(prop);
+              return proxy;
             },
-            {
-              get (_target, command) {
-                return (...args) => {
-                  content += processor(proxy, command, args);
-                  element?.setAttribute(prop, content);
-                  return dProxy;
-                };
-              }
-            }
-          );
-          return dProxy;
-        }
-        // Special cases g-bind:d="" and g-bind:transport=""
-        if (prop === '$d' || prop === '$transform') {
-          let content     = '';
-          const processor = prop === '$d' ? pathD : elTransform;
-          const dProxy    = new Proxy(
-            {},
             {
               get (_target, command) {
                 return (...args) => {
@@ -275,6 +261,7 @@ const wrapper = (element) => {
                     return content
                   }
                   content += processor(proxy, command, args);
+                  !directive && element?.setAttribute(prop, content);
                   return dProxy;
                 };
               }
@@ -282,9 +269,9 @@ const wrapper = (element) => {
           );
           return dProxy;
         }
-        const altProp     = alias(prop);
         // Return the element method
-        const fn = appendMethods(altProp) || element[altProp];
+        const altProp = alias(prop);
+        const fn      = appendMethods(altProp) || element[altProp];
         if (isFunction(fn)) {
           return (...args) => {
             preCall(proxy, prop, args);
