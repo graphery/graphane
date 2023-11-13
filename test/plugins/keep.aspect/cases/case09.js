@@ -1,5 +1,5 @@
-export const title       = '6) Resize and keep line size aspect';
-export const description = `resize an SVG an keep the line size aspect`;
+export const title       = '9) Resize and keep polygon stroke aspect';
+export const description = `resize an SVG an keep the polygon stroke aspect`;
 
 export function script () {
   const div = document.querySelector('#show');
@@ -7,36 +7,15 @@ export function script () {
                     .preserveAspectRatio('none')
                     .width('100%').height('100%');
   const g   = svg.add('g').style.stroke('#000');
-  g.add('line')
-   .x1(20).y1(20).x2(20).y2(30)
+  g.add('polygon')
+   .fill('none')
    .stroke_width(2)
-   .keepAspect();
-  g.add('line')
-   .x1(20).y1(30).x2(30).y2(30)
+   .keepAspect('stroke')
+   .points([20, 20],[20, 30],[30, 30],[30, 20]);
+  g.add('polygon')
+   .fill('none')
    .stroke_width(2)
-   .keepAspect();
-  g.add('line')
-   .x1(30).y1(30).x2(30).y2(20)
-   .stroke_width(2)
-   .keepAspect();
-  g.add('line')
-   .x1(30).y1(20).x2(20).y2(20)
-   .stroke_width(2)
-   .keepAspect();
-
-
-  g.add('line')
-   .x1(60).y1(60).x2(60).y2(70)
-   .stroke_width(2)
-  g.add('line')
-   .x1(60).y1(70).x2(70).y2(70)
-   .stroke_width(2)
-  g.add('line')
-   .x1(70).y1(70).x2(70).y2(60)
-   .stroke_width(2)
-  g.add('line')
-   .x1(70).y1(60).x2(60).y2(60)
-   .stroke_width(2)
+   .points([60, 60],[60, 70],[70, 70],[70, 60]);
   svg.attachTo(div);
   document.querySelector('#change').addEventListener('click', () => {
     div.style.width  = (Number.parseInt(div.style.width) + 50) + 'px';

@@ -3,8 +3,6 @@ export const description = `resize an SVG an keep the text size with keepAspect`
 
 export function script () {
   const div    = document.querySelector('#show');
-  const button = document.querySelector('#change');
-  const code   = document.querySelector('#result');
   const svg    = gSVG().viewBox('0 0 100 100').width(100).height(100)
                        .style.border('1px solid black');
   svg.add('line').x1(0).x2(100).y1(0).y2(100).stroke('lightgrey').stroke_width(1);
@@ -14,19 +12,22 @@ export function script () {
                     .style.fontFamily('sans-serif').style.fontSize('14px');
   text.keepAspect(true);
   svg.attachTo(div);
-  code.innerHTML = sourceFormat(svg.source());
+  document.querySelector('#change').addEventListener('click', () => {
+    svg.width(svg.width() + 50);
+    svg.height(svg.height() + 50);
+  });
+  document.querySelector('#minus').addEventListener('click', () => {
+    svg.width(svg.width() - 50);
+    svg.height(svg.height() - 50);
+  });
+  const result   = document.querySelector('#result');
+  result.innerHTML = sourceFormat(svg.source());
   svg.addEventListener('resize', () => {
-    code.innerHTML  = sourceFormat(svg.source());
+    result.innerHTML  = sourceFormat(svg.source());
   });
-  button.addEventListener('click', () => {
-    if (svg.width() === 200) {
-      svg.width(100).height(100);
-    } else {
-      svg.width(200).height(200);
-    }
-  });
+
 }
 
 export default `<div id="show"></div>
-<button id="change">change</button>
+<button id="change">up size</button> <button id="minus">down size</button>
 <pre id="result"></pre>`;

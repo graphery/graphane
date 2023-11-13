@@ -1,5 +1,5 @@
-export const title       = '5) Resize and keep rectangle aspect';
-export const description = `resize an SVG an keep the rectangle aspect`;
+export const title       = '5) Resize and keep polygon aspect';
+export const description = `resize an SVG an keep the polygon aspect`;
 
 export function script () {
   const div = document.querySelector('#show');
@@ -7,23 +7,23 @@ export function script () {
                     .preserveAspectRatio('none')
                     .width('100%').height('100%');
   const g   = svg.add('g').style.stroke('#000');
-  g.add('rect')
-   .x(20).y(20).width(10).height(10)
+  g.add('polygon')
    .fill('none')
-   .stroke_width(5)
-   .keepAspect();
-  g.add('rect')
-   .x(60).y(60).width(10).height(10)
+   .stroke_width(2)
+   .keepAspect()
+   .points([20, 20],[20, 30],[30, 30],[30, 20]);
+  g.add('polygon')
    .fill('none')
-   .stroke_width(5);
+   .stroke_width(2)
+   .points([60, 60],[60, 70],[70, 70],[70, 60]);
   svg.attachTo(div);
   document.querySelector('#change').addEventListener('click', () => {
-    div.style.width  = (Number.parseInt(div.style.width) + 20) + 'px';
-    div.style.height = (Number.parseInt(div.style.height) + 20) + 'px';
+    div.style.width  = (Number.parseInt(div.style.width) + 50) + 'px';
+    div.style.height = (Number.parseInt(div.style.height) + 50) + 'px';
   });
   document.querySelector('#minus').addEventListener('click', () => {
-    div.style.width  = (Number.parseInt(div.style.width) - 20) + 'px';
-    div.style.height = (Number.parseInt(div.style.height) - 20) + 'px';
+    div.style.width  = (Number.parseInt(div.style.width) - 50) + 'px';
+    div.style.height = (Number.parseInt(div.style.height) - 50) + 'px';
   });
   const result   = document.querySelector('#result');
   result.innerHTML = sourceFormat(svg.source());

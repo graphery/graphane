@@ -1,15 +1,15 @@
-export const title       = '40) keep-aspect plugin with directive';
+export const title       = '41) keep-aspect plugin with directive';
 export const description = `Keep font size and stroke with when the SV is resized`;
 
 export function script () {
   const composer = document.querySelector('g-composer')
-  document.querySelector('#change').addEventListener('click', () => {
-    composer.style.width  = (Number.parseInt(composer.style.width) + 20) + 'px';
-    composer.style.height = (Number.parseInt(composer.style.height) + 20) + 'px';
+  document.querySelector('#run').addEventListener('click', () => {
+    composer.style.width  = (Number.parseInt(composer.style.width) + 50) + 'px';
+    composer.style.height = (Number.parseInt(composer.style.height) + 50) + 'px';
   });
   document.querySelector('#minus').addEventListener('click', () => {
-    composer.style.width  = (Number.parseInt(composer.style.width) - 20) + 'px';
-    composer.style.height = (Number.parseInt(composer.style.height) - 20) + 'px';
+    composer.style.width  = (Number.parseInt(composer.style.width) - 50) + 'px';
+    composer.style.height = (Number.parseInt(composer.style.height) - 50) + 'px';
   });
 }
 
@@ -25,7 +25,7 @@ export default `
                 :x2="(column * 20) + 1"
                 y1="1"
                 y2="201"
-                g-keep-aspect/>
+                g-keep-aspect="stroke"/>
         </g>
       </defs>
       <defs g-for="row of 11">
@@ -33,7 +33,7 @@ export default `
               :y2="(row * 20) + 1"
               x1="1"
               x2="201"
-              g-keep-aspect/>
+              g-keep-aspect="stroke"/>
       </defs>
     </g>
     <g style="stroke: none; font-family: sans-serif; font-size: 8">
@@ -44,7 +44,7 @@ export default `
                 :x="(n % 10 * 20) + 12"
                 :y="(Math.floor(n / 10) * 20) + 12"
                 g-content="n + 1"
-                g-keep-aspect/>
+                g-keep-aspect="size"/>
         </g>
       </defs>
     </g>
@@ -52,7 +52,7 @@ export default `
   <script type="plugin" src="../plugins/keep.aspect.js"></script>
 </g-composer>
 <p>
-  <button id="change">up size</button>
+  <button id="run">up size</button>
   <button id="minus">down size</button> <script type="module">
 </p>
 `;

@@ -3,13 +3,13 @@ export const description = `Keep font size and stroke with when the SV is resize
 
 export function script () {
   const composer = document.querySelector('g-composer')
-  document.querySelector('#change').addEventListener('click', () => {
-    composer.style.width  = (Number.parseInt(composer.style.width) + 20) + 'px';
-    composer.style.height = (Number.parseInt(composer.style.height) + 20) + 'px';
+  document.querySelector('#run').addEventListener('click', () => {
+    composer.style.width  = (Number.parseInt(composer.style.width) + 50) + 'px';
+    composer.style.height = (Number.parseInt(composer.style.height) + 50) + 'px';
   });
   document.querySelector('#minus').addEventListener('click', () => {
-    composer.style.width  = (Number.parseInt(composer.style.width) - 20) + 'px';
-    composer.style.height = (Number.parseInt(composer.style.height) - 20) + 'px';
+    composer.style.width  = (Number.parseInt(composer.style.width) - 50) + 'px';
+    composer.style.height = (Number.parseInt(composer.style.height) - 50) + 'px';
   });
 }
 
@@ -34,7 +34,7 @@ export default `
               x2="201"/>
       </defs>
     </g>
-    <g style="stroke: none; font-family: sans-serif; font-size: 10">
+    <g style="stroke: none; font-family: sans-serif; font-size: 8">
       <defs g-for="n of 100">
         <text text-anchor="middle"
               alignment-baseline="middle"
@@ -48,7 +48,7 @@ export default `
   <script type="methods">
     function render() {
       $.svg.querySelectorAll(':not(defs) > line').forEach(el => {
-        el.keepAspect();
+        el.keepAspect('stroke');
       });
       $.svg.querySelectorAll(':not(defs) > text').forEach(el => {
         el.keepAspect();
@@ -57,7 +57,7 @@ export default `
   </script>
 </g-composer>
 <p>
-  <button id="change">up size</button>
+  <button id="run">up size</button>
   <button id="minus">down size</button> <script type="module">
 </p>
 `;

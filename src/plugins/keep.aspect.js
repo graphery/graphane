@@ -1,23 +1,28 @@
 import { svgPlugin as resizeObserver } from './observe.resize.js';
-import { svgPlugin as styleObserver }  from './observe.style.js';
-
 
 /**
- * keepAspect - keep the size for text and line elements and the stroke for all elements when the
- * SVG is resized or the style is changed.
+ * keepAspect - keep the size and the stroke when the SVG is resized
+ * @param {string} [option = 'size']
  * @returns {gSVG}
  */
-function keepAspect () {
+function keepAspect (option = 'size') {
   const svg = this.closest('svg');
-  switch (this.el.tagName.toLowerCase()) {
-    case 'text':
-      keepTextAspect(svg, this);
-      break;
-    case 'line':
-      keepLineAspect(svg, this);
-      break;
-    default:
-      keepStrokeAspect(svg, this);
+  if (!svg) {
+    this.top().addEventListener('attach', (evt) => {
+      keepAspect.call(this, option);
+    });
+    return this;
+  }
+  if (svg._el.getRootNode() === svg._el) {
+    svg.addEventListener('attach', (evt) => {
+      keepAspect.call(this, option);
+    });
+    return this;
+  }
+  if (option === 'stroke') {
+    keepStroke(svg, this);
+  } else {
+    keepSize(svg, this);
   }
   return this;
 }
@@ -25,57 +30,39 @@ function keepAspect () {
 
 /**
  *
- * @param {gySVGObject} svg
- * @param {gySVGObject} shape
+ * @param {gSVGObject} svg
+ * @param {gSVGObject} el
  */
-function keepStrokeAspect (svg, shape) {
-  let originalCTM     = svg.getScreenCTM() || {a : 1, d : 1};
-  let keepStrokeWidth = 0;
-  svg.resizeObserver((currentCTM) => {
-    const proportion = Math.max(currentCTM.a / originalCTM.a, currentCTM.d / originalCTM.d);
-    shape.stroke_width(keepStrokeWidth / proportion);
-  });
-  svg.styleObserver('stroke-width', (values) => {
-    const currentCTM = svg.getScreenCTM();
-    keepStrokeWidth  = Number.parseFloat(values['stroke-width'].current);
-    const proportion = Math.max(currentCTM.a / originalCTM.a, currentCTM.d / originalCTM.d);
-    shape.stroke_width(keepStrokeWidth / proportion);
-  })
-}
-
-/**
- *
- * @param {gySVGObject} svg
- * @param {gySVGObject} text
- */
-function keepTextAspect (svg, text) {
+function keepSize (svg, el) {
   const originalCTM = svg.getScreenCTM() || {a : 1, d : 1};
-  text.el._keepX    = text.x();
-  text.el._keepY    = text.y();
+  const BBox        = el.tagName().toLowerCase() === 'text' ?
+    {x : el.x(), y : el.y()} :
+    el.getBBox();
   svg.resizeObserver((currentCTM) => {
-    text.transform(`scale( ${ originalCTM.a / currentCTM.a }, ${ originalCTM.d / currentCTM.d })`);
-    text.x(text.el._keepX / (originalCTM.a / currentCTM.a));
-    text.y(text.el._keepY / (originalCTM.d / currentCTM.d));
+    const transform = el.transform('').transform;
+    const scaleX = originalCTM.a / currentCTM.a;
+    const scaleY = originalCTM.d / currentCTM.d;
+    const translateX = BBox.x * (currentCTM.a / originalCTM.a) - BBox.x;
+    const translateY = BBox.y * (currentCTM.d / originalCTM.d) - BBox.y;
+    if (scaleX !== 1 || scaleY !== 1) {
+      transform.scale(originalCTM.a / currentCTM.a, originalCTM.d / currentCTM.d)
+    }
+    if (translateY !== 0 || translateY !== 0) {
+      transform.translate(translateX, translateY);
+    }
   });
 }
 
 /**
  *
- * @param {gySVGObject} svg
- * @param {gySVGObject} line
+ * @param {gSVGObject} svg
+ * @param {gSVGObject} el
  */
-function keepLineAspect (svg, line) {
-  const originalCTM = svg.getScreenCTM() || {a : 1, d : 1};
-  line.el._keepX1   = line.x1();
-  line.el._keepX2   = line.x2();
-  line.el._keepY1   = line.y1();
-  line.el._keepY2   = line.y2();
+function keepStroke (svg, el) {
+  const originalCTM  = svg.getScreenCTM() || {a : 1, d : 1};
+  el.el._strokeWidth = parseFloat(getComputedStyle(el._el).strokeWidth);
   svg.resizeObserver((currentCTM) => {
-    line.transform(`scale( ${ originalCTM.a / currentCTM.a }, ${ originalCTM.d / currentCTM.d })`);
-    line.x1(line.el._keepX1 / (originalCTM.a / currentCTM.a));
-    line.x2(line.el._keepX2 / (originalCTM.a / currentCTM.a));
-    line.y1(line.el._keepY1 / (originalCTM.d / currentCTM.d));
-    line.y2(line.el._keepY2 / (originalCTM.d / currentCTM.d));
+    el.style.strokeWidth(el.el._strokeWidth * Math.max(originalCTM.a / currentCTM.a, originalCTM.d / currentCTM.d));
   });
 }
 
@@ -83,11 +70,19 @@ export function svgPlugin (setup) {
 
   // Install dependencies
   setup.install(resizeObserver);
-  setup.install(styleObserver);
 
   // Update gSVGObject
   setup.extendInstance({
     keepAspect
   });
+
+  if (setup.extendTemplate) {
+    setup.extendTemplate.defineDirective({
+      name : 'g-keep-aspect',
+      execute (gObject, {expression}) {
+        gObject.keepAspect(expression);
+      }
+    })
+  }
 
 }
