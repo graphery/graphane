@@ -448,38 +448,30 @@ export function gSVG (el) {
  */
 gSVG.isWrapped = isWrapped;
 
-const setup = {
-  install : install,
-  extendConstructor (extension) {
-    Object.assign(gSVG, extension);
-  },
-  extendInstance (extension) {
-    Object.assign(GSVGObject.prototype, extension);
-  },
-  extendPath (extension) {
-    Object.assign(registeredPathD, extension);
-  },
-  extendSetup (extension) {
-    Object.assign(setup, extension);
-  },
+const Extensor = (obj) => (extension) => isFunction(extension) ?
+  extension(obj) :
+  Object.assign(obj, extension);
+
+const setup       = {
+  install,
+  extendConstructor : Extensor(gSVG),
+  extendInstance    : Extensor(GSVGObject.prototype),
+  extendPath        : Extensor(registeredPathD),
   beforeEveryCall (callback) {
-    if (typeof callback === FUNCTION) {
+    if (isFunction(callback)) {
       registeredCalls.push(callback);
     }
   }
 };
+setup.extendSetup = Extensor(setup);
 
 /**
  * gSVG.install - load new plugins
- * @param {Function|{svg: Function}} plugin
+ * @param {Function} plugin
  * @return {gSVG|Promise}
  */
 function install (plugin) {
-  if (isFunction(plugin)) {
-    plugin(setup);
-  } else if (isFunction(plugin?.svg)) {
-    plugin.svg(setup);
-  }
+  plugin(setup);
   return gSVG;
 }
 
