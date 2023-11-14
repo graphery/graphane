@@ -202,7 +202,7 @@ class GSVGObject {
    * @returns {object}
    */
   top () {
-    return this.parents().pop();
+    return this.parents().pop() || this;
   }
 
 }
