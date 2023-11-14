@@ -7,13 +7,11 @@ import {
 }                                 from '../helpers/types.js';
 import viewport                   from "../core/viewport.js";
 import gSVG                       from '../lib/gsvg.js';
-import { svgPlugin as animateTo } from '../plugins/animateto.js';
 import { svgPlugin as render }    from '../plugins/template.engine.js';
 import { debounceMethod }         from "../helpers/functions.js";
 import { getFunctions }           from "../helpers/function.create.js";
 
-gSVG.install(animateTo)
-    .install(render);
+gSVG.install(render);
 
 const NAME           = 'composer';
 const SVG            = 'svg';
