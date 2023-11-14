@@ -5,20 +5,22 @@
  * @param {SVGMatrix} prevMatrix
  */
 
-const resizeObserverCache = new WeakMap();
+const observerCache = new WeakSet();
 
 /**
  * resizeObserver - call the callback if the SVG is resized
  * @param {resizeObserver~callback} [callback]
  * @returns {gSVG}
  */
-function resizeObserver (callback = () => void (0)) {
-  const self = this;
-  const svg  = this.el.tagName.toLowerCase() === 'svg' ? this.el : this.closest('svg').el;
-  if (resizeObserverCache.has(svg)) {
-    return resizeObserverCache.get(svg).push(callback);
+function observeResize () {
+  const svg  = this.el.tagName.toLowerCase() === 'svg' ? this.el : this.closest('svg')?.el;
+  if (!svg) {
+    this.top().addEventListener('attach', () => observeResize.call(this));
+    return this;
   }
-  resizeObserverCache.set(svg, [callback]);
+  if (observerCache.has(svg)) {
+    return this;
+  }
   let prevMatrix = {};
   const check    = () => {
     const currentMatrix = svg.getScreenCTM();
@@ -30,18 +32,14 @@ function resizeObserver (callback = () => void (0)) {
       currentMatrix.e !== prevMatrix.e ||
       currentMatrix.f !== prevMatrix.f)
     ) {
-      const callbacks = resizeObserverCache.get(svg);
-      for (let cb of callbacks) {
-        cb.call(self, currentMatrix, prevMatrix);
-      }
-      const event = new CustomEvent("resize", {detail : {currentMatrix, prevMatrix}});
-      self.el.dispatchEvent(event);
+      svg.dispatchEvent(new CustomEvent("resize", {detail : {currentMatrix, prevMatrix}}));
       prevMatrix = currentMatrix;
     }
     window.requestAnimationFrame(check);
   };
+  observerCache.add(svg);
   check();
-  return self;
+  return this;
 }
 
 
@@ -52,6 +50,6 @@ function resizeObserver (callback = () => void (0)) {
 export function svgPlugin (setup) {
   // Update gySVGObject
   setup.extendInstance({
-    resizeObserver
+    observeResize
   });
 }

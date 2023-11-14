@@ -16,10 +16,6 @@ const results       = {
   case01_after : pos,
   case02       : pre,
   case02_after : pos,
-  case03       : pre,
-  case03_after : pos,
-  case04       : pre,
-  case04_after : pos,
 }
 
 const dir = await opendir(FOLDER);

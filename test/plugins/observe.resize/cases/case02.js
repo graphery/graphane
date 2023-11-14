@@ -8,11 +8,15 @@ export function script () {
   const code   = document.querySelector('#result');
   const svg    = gSVG().viewBox('0 0 100 100').width(100).height(100)
   svg.add('line').x1(10).y1(10).x2(90).y2(90).stroke('black').stroke_width(10);
-  const line2  = svg.add('line').x1(10).y1(90).x2(90).y2(10).stroke('black').stroke_width(10);
-  svg.attachTo(div);
+  const line2    = gSVG('line').x1(10).y1(90).x2(90).y2(10).stroke('black').stroke_width(10);
   code.innerHTML = sourceFormat(svg.source());
-  line2.resizeObserver((current, prev) => {
-    check.innerHTML = current.a === 0.5 && prev.a === 1 ? 'ok' : '...';
+  line2.observeResize();
+  svg.add(line2);
+  svg.attachTo(div);
+  svg.addEventListener('resize', (evt) => {
+    const {currentMatrix, prevMatrix} = evt.detail;
+
+    check.innerHTML = currentMatrix.a === 0.5 && prevMatrix.a === 1 ? 'ok' : '...';
     code.innerHTML  = sourceFormat(svg.source());
   });
   button.addEventListener('click', () => {

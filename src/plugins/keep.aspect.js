@@ -1,4 +1,4 @@
-import { svgPlugin as resizeObserver } from './observe.resize.js';
+import { svgPlugin as observeResize } from './observe.resize.js';
 
 const interpreter = (s) => s?.split(/\)\s*/)
                             .filter(x => !!x)
@@ -57,7 +57,8 @@ function keepSize (svg, el) {
   }
   originalCTM.a = originalCTM.a * init.scale[0];
   originalCTM.d = originalCTM.d * init.scale[1];
-  svg.resizeObserver((currentCTM) => {
+  svg.addEventListener('resize', (evt) => {
+    const currentCTM = evt.detail.currentMatrix;
     const transform = el.transform('').transform;
     const scaleX = (originalCTM.a / currentCTM.a);
     const scaleY = (originalCTM.d / currentCTM.d);
@@ -73,6 +74,7 @@ function keepSize (svg, el) {
       transform.translate(translateX, translateY);
     }
   });
+  svg.observeResize();
 }
 
 /**
@@ -91,7 +93,7 @@ function keepStroke (svg, el) {
 export function svgPlugin (setup) {
 
   // Install dependencies
-  setup.install(resizeObserver);
+  setup.install(observeResize);
 
   // Update gSVGObject
   setup.extendInstance({
