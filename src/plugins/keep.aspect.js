@@ -1,5 +1,15 @@
 import { svgPlugin as resizeObserver } from './observe.resize.js';
 
+const interpreter = (s) => s?.split(/\)\s*/)
+                            .filter(x => !!x)
+                            .map(x => x.split(/\s*\(/))
+                            .reduce((o, r) => {
+                              o[r.shift()] = r.pop()
+                                              .split(/,/)
+                                              .map(n => Number.isNaN(Number(n)) ? n : Number(n));
+                              return o;
+                            }, {}) || {};
+
 /**
  * keepAspect - keep the size and the stroke when the SVG is resized
  * @param {string} [option = 'size']
@@ -35,17 +45,29 @@ function keepAspect (option = 'size') {
  */
 function keepSize (svg, el) {
   const originalCTM = svg.getScreenCTM() || {a : 1, d : 1};
-  const BBox        = el.tagName().toLowerCase() === 'text' ?
+  const box        = el.tagName().toLowerCase() === 'text' ?
     {x : el.x(), y : el.y()} :
     el.getBBox();
+  const init = interpreter(el.transform());
+  if (!init.scale) {
+    init.scale = [1,1];
+  }
+  if (!init.translate) {
+    init.translate = [0, 0];
+  }
+  originalCTM.a = originalCTM.a * init.scale[0];
+  originalCTM.d = originalCTM.d * init.scale[1];
   svg.resizeObserver((currentCTM) => {
     const transform = el.transform('').transform;
-    const scaleX = originalCTM.a / currentCTM.a;
-    const scaleY = originalCTM.d / currentCTM.d;
-    const translateX = BBox.x * (currentCTM.a / originalCTM.a) - BBox.x;
-    const translateY = BBox.y * (currentCTM.d / originalCTM.d) - BBox.y;
+    const scaleX = (originalCTM.a / currentCTM.a);
+    const scaleY = (originalCTM.d / currentCTM.d);
+    const translateX = box.x * (currentCTM.a / originalCTM.a) - box.x;
+    const translateY = box.y * (currentCTM.d / originalCTM.d) - box.y;
+    Object.keys(init)
+          .filter(x => !['scale','translate'].includes(x))
+          .forEach(x => transform[x](...init[x]))
     if (scaleX !== 1 || scaleY !== 1) {
-      transform.scale(originalCTM.a / currentCTM.a, originalCTM.d / currentCTM.d)
+      transform.scale(scaleX, scaleY);
     }
     if (translateY !== 0 || translateY !== 0) {
       transform.translate(translateX, translateY);
