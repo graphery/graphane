@@ -14,7 +14,7 @@ const results = {
   case01       : `<svg viewBox="0 0 100 100" width="100" height="100" style="border: 1px solid black;"> <line x1="0" x2="100" y1="0" y2="100" stroke="lightgrey" stroke-width="1"></line> <line x1="100" x2="0" y1="0" y2="100" stroke="lightgrey" stroke-width="1"></line> <text x="10" y="50" dominant-baseline="middle" style="font-family: sans-serif; font-size: 14px;">hello word</text> </svg>`,
   case01_after : `<svg viewBox="0 0 100 100" width="150" height="150" style="border: 1px solid black;"> <line x1="0" x2="100" y1="0" y2="100" stroke="lightgrey" stroke-width="1"></line> <line x1="100" x2="0" y1="0" y2="100" stroke="lightgrey" stroke-width="1"></line> <text x="10" y="50" dominant-baseline="middle" style="font-family: sans-serif; font-size: 14px;" transform="scale(0.6666666666666666,0.6666666666666666)translate(5,25)">hello word</text> </svg>`,
   case02       : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <circle cx="30" cy="30" r="10" fill="none" stroke-width="5"></circle> <circle cx="60" cy="60" r="10" fill="none" stroke-width="5"></circle> </g> </svg>`,
-  case02_after : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <circle cx="30" cy="30" r="10" fill="none" stroke-width="5" transform="scale(0.6666666666666666,0.6666666666666666)translate(10,10)"></circle> <circle cx="60" cy="60" r="10" fill="none" stroke-width="5"></circle> </g> </svg>`,
+  case02_after : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <circle cx="30" cy="30" r="10" fill="none" stroke-width="5" transform="scale(0.6666666666666666,0.6666666666666666)translate(15,15)"></circle> <circle cx="60" cy="60" r="10" fill="none" stroke-width="5"></circle> </g> </svg>`,
   case03       : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <rect x="20" y="20" width="10" height="10" fill="none" stroke-width="2"></rect> <rect x="60" y="60" width="10" height="10" fill="none" stroke-width="2"></rect> </g> </svg>`,
   case03_after : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <rect x="20" y="20" width="10" height="10" fill="none" stroke-width="2" transform="scale(0.6666666666666666,0.6666666666666666)translate(10,10)"></rect> <rect x="60" y="60" width="10" height="10" fill="none" stroke-width="2"></rect> </g> </svg>`,
   case04       : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <path fill="none" stroke-width="2" d="M20,20l0,10l10,0l0,-10Z"></path> <path fill="none" stroke-width="2" d="M60,60l0,10l10,0l0,-10Z"></path> </g> </svg>`,
@@ -35,6 +35,10 @@ const results = {
   case12_after : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <g transform="scale(0.6666666666666666,0.6666666666666666)translate(8.964466094970703,8.964466094970703)"> <rect x="20" y="20" width="10" height="10" fill="none" stroke-width="2" transform="rotate(45,25,25)"></rect> </g> <rect x="60" y="60" width="10" height="10" fill="none" stroke-width="2" transform="rotate(45,65,65)scale(0.6666666666666666,0.6666666666666666)translate(30,30)"></rect> </g> </svg>`,
   case13       : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <g> <rect x="0" y="0" width="10" height="10" fill="none" stroke-width="2" transform="rotate(45,25,25)translate(20,20)"></rect> </g> <g> <rect x="0" y="0" width="10" height="10" fill="none" stroke-width="2" transform="rotate(45,65,65)translate(60,60)"></rect> </g> </g> </svg>`,
   case13_after : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <g transform="scale(0.6666666666666666,0.6666666666666666)translate(8.964466094970703,8.964466094970703)"> <rect x="0" y="0" width="10" height="10" fill="none" stroke-width="2" transform="rotate(45,25,25)translate(20,20)"></rect> </g> <g transform="scale(0.6666666666666666,0.6666666666666666)translate(28.964466094970703,28.964466094970703)"> <rect x="0" y="0" width="10" height="10" fill="none" stroke-width="2" transform="rotate(45,65,65)translate(60,60)"></rect> </g> </g> </svg>`,
+  case14       : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <circle cx="50" cy="50" r="10" fill="none" stroke-width="3"></circle> <circle cx="50" cy="50" r="40" fill="none" stroke-width="3"></circle> </g> </svg>`,
+  case14_after : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <circle cx="50" cy="50" r="10" fill="none" stroke-width="3" transform="scale(0.5,0.5)translate(50,50)"></circle> <circle cx="50" cy="50" r="40" fill="none" stroke-width="3"></circle> </g> </svg>`,
+  case15       : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <rect x="45" y="45" width="10" height="10" fill="none" stroke-width="3"></rect> <rect x="20" y="20" width="60" height="60" fill="none" stroke-width="3"></rect> </g> </svg>`,
+  case15_after : `<svg viewBox="0,0,100,100" preserveAspectRatio="none" width="100%" height="100%"> <g style="stroke: rgb(0, 0, 0);"> <rect x="45" y="45" width="10" height="10" fill="none" stroke-width="3" transform="scale(0.5,0.5)translate(45,45)"></rect> <rect x="20" y="20" width="60" height="60" fill="none" stroke-width="3"></rect> </g> </svg>`,
 }
 
 const dir = await opendir(FOLDER);
@@ -66,7 +70,7 @@ for await (const dirent of dir) {
 
     test('compare image', async ({page}) => {
       const show = page.locator('#show svg');
-      await expect(show).toHaveScreenshot()
+      await expect(show).toHaveScreenshot();
     });
 
     test('compare image after run action', async ({page}) => {
@@ -74,8 +78,19 @@ for await (const dirent of dir) {
       await run.click();
       await wait(500);
       const show = page.locator('#show svg');
-      await expect(show).toHaveScreenshot()
+      await expect(show).toHaveScreenshot();
     });
+
+    if (['code14','code15'].includes(code)) {
+      test('compare image after run action', async ({page}) => {
+        await page.locator('#change').click();
+        await wait(500);
+        await page.locator('#toggle').click();
+        await page.locator('#minus').click();
+        await wait(500);
+        await expect(page.locator('#show svg')).toHaveScreenshot();
+      });
+    }
 
   });
 }

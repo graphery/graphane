@@ -1,5 +1,6 @@
 import { svgPlugin as observeResize } from './observe.resize.js';
 
+const KEEP_ASPECT = Symbol();
 const interpreter = (s) => s?.split(/\)\s*/)
                             .filter(x => !!x)
                             .map(x => x.split(/\s*\(/))
@@ -29,10 +30,19 @@ function keepAspect (option = 'size') {
     });
     return this;
   }
+  debugger;
+  if (this[KEEP_ASPECT]) {
+    svg.removeEventListener('resize', this[KEEP_ASPECT]);
+  }
   if (option === 'stroke') {
     keepStroke(svg, this);
-  } else {
+  }
+  if (option === 'size') {
     keepSize(svg, this);
+  }
+  if (option) {
+    svg.addEventListener('resize', this[KEEP_ASPECT]);
+    svg.observeResize();
   }
   return this;
 }
@@ -45,27 +55,30 @@ function keepAspect (option = 'size') {
  */
 function keepSize (svg, el) {
   const originalCTM = svg.getScreenCTM() || {a : 1, d : 1};
-  const box        = el.tagName().toLowerCase() === 'text' ?
+  const tag         = el.tagName().toLowerCase();
+  const box         = tag === 'text' ?
     {x : el.x(), y : el.y()} :
-    el.getBBox();
-  const init = interpreter(el.transform());
+    tag === 'circle' ?
+      {x : el.cx(), y : el.cy()} :
+      el.getBBox();
+  const init        = interpreter(el.transform());
   if (!init.scale) {
-    init.scale = [1,1];
+    init.scale = [1, 1];
   }
   if (!init.translate) {
     init.translate = [0, 0];
   }
-  originalCTM.a = originalCTM.a * init.scale[0];
-  originalCTM.d = originalCTM.d * init.scale[1];
-  svg.addEventListener('resize', (evt) => {
+  originalCTM.a   = originalCTM.a * init.scale[0];
+  originalCTM.d   = originalCTM.d * init.scale[1];
+  el[KEEP_ASPECT] = (evt) => {
     const currentCTM = evt.detail.currentMatrix;
-    const transform = el.transform('').transform;
-    const scaleX = (originalCTM.a / currentCTM.a);
-    const scaleY = (originalCTM.d / currentCTM.d);
+    const transform  = el.transform('').transform;
+    const scaleX     = (originalCTM.a / currentCTM.a);
+    const scaleY     = (originalCTM.d / currentCTM.d);
     const translateX = box.x * (currentCTM.a / originalCTM.a) - box.x;
     const translateY = box.y * (currentCTM.d / originalCTM.d) - box.y;
     Object.keys(init)
-          .filter(x => !['scale','translate'].includes(x))
+          .filter(x => !['scale', 'translate'].includes(x))
           .forEach(x => transform[x](...init[x]))
     if (scaleX !== 1 || scaleY !== 1) {
       transform.scale(scaleX, scaleY);
@@ -73,8 +86,7 @@ function keepSize (svg, el) {
     if (translateY !== 0 || translateY !== 0) {
       transform.translate(translateX, translateY);
     }
-  });
-  svg.observeResize();
+  };
 }
 
 /**
@@ -85,9 +97,10 @@ function keepSize (svg, el) {
 function keepStroke (svg, el) {
   const originalCTM  = svg.getScreenCTM() || {a : 1, d : 1};
   el.el._strokeWidth = parseFloat(getComputedStyle(el._el).strokeWidth);
-  svg.resizeObserver((currentCTM) => {
+  el[KEEP_ASPECT]    = (evt) => {
+    const currentCTM = evt.detail.currentMatrix;
     el.style.strokeWidth(el.el._strokeWidth * Math.max(originalCTM.a / currentCTM.a, originalCTM.d / currentCTM.d));
-  });
+  };
 }
 
 export function svgPlugin (setup) {

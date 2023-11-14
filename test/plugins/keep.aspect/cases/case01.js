@@ -10,7 +10,7 @@ export function script () {
   const text   = svg.add('text').x(10).y(50).content('hello word')
                     .dominant_baseline('middle')
                     .style.fontFamily('sans-serif').style.fontSize('14px');
-  text.keepAspect(true);
+  text.keepAspect();
   svg.attachTo(div);
   document.querySelector('#change').addEventListener('click', () => {
     svg.width(svg.width() + 50);
