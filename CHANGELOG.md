@@ -7,8 +7,11 @@
 - Added `attach` event when an element is added to the SVG.
 - Added `.parents()` method to the SVG library to obtain an array with all the parent elements.
 - Added `.top()` method to the SVG library to obtain the top parent element.
+- Added observe-resize plugin:
+  - `.observeResize()` method.
+  - `resize` event on SVG element.
 - Added keep-aspect plugin:
-  - `g-keep-aspect` directive
+  - `g-keep-aspect` directive.
   - `.keepAspect()` method.
 - Refactored `.add()` and `.addBefore()` methods.
 - Fixed debug plugin with new `.add()` and `.addBefore()` methods.
