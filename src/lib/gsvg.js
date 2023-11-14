@@ -1,5 +1,5 @@
 import {
-  FUNCTION, EMPTY_STRING, COMA,
+  EMPTY_STRING, COMA,
   isSymbol, isObject, isString, isUndefined, isFunction, isBoolean, isNull
 } from '../helpers/types.js';
 
