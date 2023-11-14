@@ -9,19 +9,13 @@ const observerCache = new WeakSet();
 
 /**
  * resizeObserver - call the callback if the SVG is resized
- * @param {resizeObserver~callback} [callback]
- * @returns {gSVG}
+ * @param {Object} svg
  */
-function observeResize () {
-  const svg  = this.el.tagName.toLowerCase() === 'svg' ? this.el : this.closest('svg')?.el;
-  if (!svg) {
-    this.top().addEventListener('attach', () => observeResize.call(this));
-    return this;
-  }
+function observeResize (svg) {
   if (observerCache.has(svg)) {
-    return this;
+    return;
   }
-  let prevMatrix = {};
+  let prevMatrix = svg.getScreenCTM();
   const check    = () => {
     const currentMatrix = svg.getScreenCTM();
     if (currentMatrix !== null && (
@@ -39,7 +33,13 @@ function observeResize () {
   };
   observerCache.add(svg);
   check();
-  return this;
+}
+
+function addEventListener(event, ...params) {
+  if (event === 'resize' && this.el.tagName.toLowerCase() === 'svg') {
+    observeResize(this.el);
+  }
+  this.el.addEventListener(event, ...params)
 }
 
 
@@ -49,7 +49,13 @@ function observeResize () {
  */
 export function svgPlugin (setup) {
   // Update gySVGObject
-  setup.extendInstance({
-    observeResize
+  setup.extendInstance((proto) => {
+    const el = proto.addEventListener;
+    proto.addEventListener = function(...args) {
+      addEventListener.call(this, ...args);
+      if (el) {
+        e.call(this, ...args);
+      }
+    }
   });
 }

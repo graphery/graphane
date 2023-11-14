@@ -11,7 +11,6 @@ export function script () {
   svg.add('line').x1(10).y1(90).x2(90).y2(10).stroke('black').stroke_width(10);
   svg.attachTo(div);
   code.innerHTML = sourceFormat(svg.source());
-  svg.observeResize();
   svg.addEventListener('resize', (evt) => {
     const {currentMatrix, prevMatrix} = evt.detail;
 

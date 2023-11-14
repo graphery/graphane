@@ -30,7 +30,6 @@ function keepAspect (option = 'size') {
     });
     return this;
   }
-  debugger;
   if (this[KEEP_ASPECT]) {
     svg.removeEventListener('resize', this[KEEP_ASPECT]);
   }
@@ -42,7 +41,6 @@ function keepAspect (option = 'size') {
   }
   if (option) {
     svg.addEventListener('resize', this[KEEP_ASPECT]);
-    svg.observeResize();
   }
   return this;
 }

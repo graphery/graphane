@@ -27,7 +27,7 @@ for await (const dirent of dir) {
       });
     }
 
-    if (['case04', 'case05', 'case40', 'case41'].includes(code)) {
+    if (['case04', 'case05', 'case40', 'case41', 'case43'].includes(code)) {
       test('compare image after run action', async ({page}) => {
         const run = page.locator('#run');
         await run.click();
