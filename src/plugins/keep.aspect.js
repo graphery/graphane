@@ -81,7 +81,7 @@ function keepSize (svg, el) {
     if (scaleX !== 1 || scaleY !== 1) {
       transform.scale(scaleX, scaleY);
     }
-    if (translateY !== 0 || translateY !== 0) {
+    if (translateX !== 0 || translateY !== 0) {
       transform.translate(translateX, translateY);
     }
   };
