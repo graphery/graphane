@@ -19,13 +19,13 @@ const interpreter = (s) => s?.split(/\)\s*/)
 function keepAspect (option = 'size') {
   const svg = this.closest('svg');
   if (!svg) {
-    this.top().addEventListener('attach', (evt) => {
+    this.top().addEventListener('attach', () => {
       keepAspect.call(this, option);
     });
     return this;
   }
   if (svg._el.getRootNode() === svg._el) {
-    svg.addEventListener('attach', (evt) => {
+    svg.addEventListener('attach', () => {
       keepAspect.call(this, option);
     });
     return this;
