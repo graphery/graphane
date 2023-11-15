@@ -104,9 +104,9 @@ async function file (request, response, folder, observe) {
     }
   );
 
-  observe(fileLoc);
   let readable = fs.createReadStream(fileLoc);
   readable.pipe(response);
+  observe(fileLoc);
   log(`200 ${ request.url }`);
 
 }
