@@ -75,7 +75,7 @@ defineDirective({
           argument === 'transform' ? gObject.$transform :
             undefined
     };
-    const value   = evalExpression(expression, context);
+    let value   = evalExpression(expression, context);
     if (argument === 'class') {
       if (isArray(value)) {
         gObject.classList.add(...value.filter(val => !!val));
@@ -97,7 +97,7 @@ defineDirective({
       return;
     }
     if (!isUndefined(value)) {
-      gObject[argument](argument === 'd' || argument === 'transform' ? '' + value : value);
+      gObject[argument](value);
     }
   }
 });

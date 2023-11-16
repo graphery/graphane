@@ -258,10 +258,12 @@ const wrapper = (element) => {
               get (_target, command) {
                 return (...args) => {
                   if (command === Symbol.toPrimitive) {
-                    return content
+                    const ret = content;
+                    content = '';
+                    return ret
                   }
                   content += processor(proxy, command, args);
-                  !directive && element?.setAttribute(prop, content);
+                  element?.setAttribute(prop, content);
                   return dProxy;
                 };
               }
