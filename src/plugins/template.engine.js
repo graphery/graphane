@@ -3,8 +3,6 @@ import {
   isArray, isObject, isNumber, isFunction, isUndefined
 }                                       from '../helpers/types.js';
 import { createFunction }               from '../helpers/function.create.js';
-import { Operations }                   from '../helpers/array.operations.js';
-import { clone }                        from '../helpers/objects.js';
 import { svgPlugin as animateToPlugin } from './animateto.js';
 
 const INIT       = Symbol();
@@ -348,16 +346,7 @@ function process (el, data, checkCloned = true) {
  * @param {Object|Array} [context]
  */
 function render (context = {}) {
-  process(this, {
-    ...context,
-    ...(Array.isArray(context.data) ? {} : context.data),
-    $ : context.data ? {
-      ...context.$,
-      ...Operations(context.data),
-      data    : context.data,
-      rawData : clone(context.data),
-    } : {}
-  });
+  process(this, context);
   this.dispatchEvent(new Event('render'));
 }
 
