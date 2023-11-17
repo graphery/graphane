@@ -3,17 +3,19 @@ import {
   RENDER, CONTEXT, FIRE_EVENT
 }                              from '../core/base.js';
 import {
-  STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction
-} from '../helpers/types.js';
+  STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
+}                              from '../helpers/types.js';
 import viewport                from "../core/viewport.js";
 import gSVG                    from '../lib/gsvg.js';
 import { svgPlugin as render } from '../plugins/template.engine.js';
 import { debounceMethod }      from "../helpers/functions.js";
 import { getFunctions }        from "../helpers/function.create.js";
+import { operations }          from "../helpers/array.operations.js";
+import { clone }               from "../helpers/objects.js";
 
 const composerPlugin = (setup) => {
   setup.extendSetup({
-    extendComposer(extension) {
+    extendComposer (extension) {
       isFunction(extension) ?
         extension(Composer.prototype) :
         Object.assign(Composer.prototype, extension);
@@ -36,8 +38,9 @@ const queryScript    = (kind) => `script[type=${ kind }],g-script[type=${ kind }
  */
 export default class Composer extends Base {
 
-  #svg    = null;
-  #loaded = false;
+  #svg        = null;
+  #loaded     = false;
+  isRendering = false;
 
   async #fetch (url) {
     const res = await fetch(url)
@@ -181,19 +184,25 @@ export default class Composer extends Base {
   }
 
   update (forced = false) {
-    if (!this.rendered && !forced) {
+    if (this.isRendering && !forced) {
       return;
     }
     if (this.#svg) {
-      this.rendered   = false;
-      const ctx       = this [CONTEXT];
-      const renderCtx = {
+      this.isRendering = true;
+      const ctx = this [CONTEXT];
+      const data       = operations(
+        ctx.methods.data ?
+          ctx.methods.data(clone(ctx.data)) :
+          clone(ctx.data)
+      );
+      const renderCtx  = {
         ...ctx.methods,
-        data : ctx.methods.data ? ctx.methods.data(ctx.data) : ctx.data,
-        $    : {config : ctx.config, svg : this.#svg, composer: this}
+        ...(isArray(data) ? {} : data),
+        data,
+        $ : this
       };
       this.#svg.render(renderCtx);
-      this.rendered = true;
+      this.isRendering = false;
     }
   }
 
