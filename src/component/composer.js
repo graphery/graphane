@@ -1,17 +1,28 @@
 import {
   Base, define,
   RENDER, CONTEXT, FIRE_EVENT
-}                                 from '../core/base.js';
+}                              from '../core/base.js';
 import {
-  STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray
-}                                 from '../helpers/types.js';
-import viewport                   from "../core/viewport.js";
-import gSVG                       from '../lib/gsvg.js';
-import { svgPlugin as render }    from '../plugins/template.engine.js';
-import { debounceMethod }         from "../helpers/functions.js";
-import { getFunctions }           from "../helpers/function.create.js";
+  STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction
+} from '../helpers/types.js';
+import viewport                from "../core/viewport.js";
+import gSVG                    from '../lib/gsvg.js';
+import { svgPlugin as render } from '../plugins/template.engine.js';
+import { debounceMethod }      from "../helpers/functions.js";
+import { getFunctions }        from "../helpers/function.create.js";
 
-gSVG.install(render);
+const composerPlugin = (setup) => {
+  setup.extendSetup({
+    extendComposer(extension) {
+      isFunction(extension) ?
+        extension(Composer.prototype) :
+        Object.assign(Composer.prototype, extension);
+    }
+  })
+};
+
+gSVG.install(render)
+    .install(composerPlugin);
 
 const NAME           = 'composer';
 const SVG            = 'svg';
@@ -179,7 +190,7 @@ export default class Composer extends Base {
       const renderCtx = {
         ...ctx.methods,
         data : ctx.methods.data ? ctx.methods.data(ctx.data) : ctx.data,
-        $    : {config : ctx.config, svg : this.#svg}
+        $    : {config : ctx.config, svg : this.#svg, composer: this}
       };
       this.#svg.render(renderCtx);
       this.rendered = true;
