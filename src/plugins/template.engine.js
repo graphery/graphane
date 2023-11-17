@@ -53,27 +53,23 @@ defineDirective({
   alias    : ':',
   argument : true,
   execute (gObject, {expression, argument, data, evalExpression}) {
-    const context = {
+    const context      = {
       ...data,
-      $  : {
-        ...data.$,
-        dynamic (value, duration = 200, delay = 0) {
-          gObject.animateTo(
-            (isArray(value) ? value : [value]).map(v =>
-              isObject(v) && 'offset' in v ?
-                {[argument] : v.value, offset : v.offset} :
-                {[argument] : v}
-            ),
-            {duration, delay}
-          );
-        }
-      },
-      $$ :
-        argument === 'd' ? gObject.$d :
-          argument === 'transform' ? gObject.$transform :
-            undefined
+      $$ : argument === 'd' ? gObject.$d :
+        argument === 'transform' ? gObject.$transform :
+          {}
     };
-    let value   = evalExpression(expression, context);
+    context.$$.dynamic = (value, duration = 200, delay = 0) => {
+      gObject.animateTo(
+        (isArray(value) ? value : [value]).map(v =>
+          isObject(v) && 'offset' in v ?
+            {[argument] : v.value, offset : v.offset} :
+            {[argument] : v}
+        ),
+        {duration, delay}
+      );
+    };
+    let value          = evalExpression(expression, context);
     if (argument === 'class') {
       if (isArray(value)) {
         gObject.classList.add(...value.filter(val => !!val));

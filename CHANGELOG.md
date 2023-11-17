@@ -4,7 +4,8 @@
 
 - BREAKING CHANGE: the `d` attribute is reset when the `.d` object is obtained.
 - BREAKING CHANGE: the `$.min()`, `$.max()` and other data helpers was change to `data.$min()`,
-    `data.$max()`, etc.
+  `data.$max()`, etc.
+- BREAKING CHANG: renamed `$.dynamic()` to `$$.dynamic()` in `g-bind` directive.
 - Added `render` event when the engine processes the template.
 - Added `isRendereing` property to true when the composer is processing the template.
 - Added `attach` event when an element is added to the SVG.

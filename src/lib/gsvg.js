@@ -256,6 +256,9 @@ const wrapper = (element) => {
             },
             {
               get (_target, command) {
+                if (command in _target) {
+                  return Reflect.get(_target, command);
+                }
                 return (...args) => {
                   if (command === Symbol.toPrimitive) {
                     const ret = content;
