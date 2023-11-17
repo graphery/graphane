@@ -159,6 +159,18 @@ test.describe(name, () => {
     expect(tested).toBe(true);
   });
 
+  test('set the same value', () => {
+    let changed = false;
+    const data = objectObserver({a: 1}, (...args) => {
+      changed = true;
+    });
+    data.a = 1;
+    expect(changed).toBe(false);
+    data.a = 2;
+    expect(changed).toBe(true);
+  });
+
+
   test('stop and start observer', () => {
     let tested = false;
     const data = objectObserver({a: 1}, (...args) => {

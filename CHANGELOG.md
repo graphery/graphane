@@ -3,7 +3,10 @@
 ## 0.1.0-alpha.5 (xx/xx/2023)
 
 - BREAKING CHANGE: the `d` attribute is reset when the `.d` object is obtained.
+- BREAKING CHANGE: the `$.min()`, `$.max()` and other data helpers was change to `data.$min()`,
+    `data.$max()`, etc.
 - Added `render` event when the engine processes the template.
+- Added `isRendereing` property to true when the composer is processing the template.
 - Added `attach` event when an element is added to the SVG.
 - Added `.parents()` method to the SVG library to obtain an array with all the parent elements.
 - Added `.top()` method to the SVG library to obtain the top parent element.
@@ -16,6 +19,8 @@
 - Refactored `.add()` and `.addBefore()` methods.
 - Fixed debug plugin with new `.add()` and `.addBefore()` methods.
 - Refactored `d` and `transform` handler.
+- Change the object observer behavior, now it doesn't launch the callback when the property is
+  updated with the previous value.
 - Remove support for an ancient plugin model.
 
 ## 0.1.0-alpha.4 (08/11/2023)
