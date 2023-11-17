@@ -11,7 +11,23 @@ function getValue (obj, prop) {
   return getProperty(obj, prop);
 }
 
-export function Operations (data) {
+/**
+ * @typedef operators
+ * @type {object}
+ * @property {function} $min
+ * @property {function} $max
+ * @property {function} $sum
+ * @property {function} $count
+ * @property {function} $avg
+ * @property {function} $distinct
+ */
+
+/**
+ *
+ * @param {Object|Array} [data={}]
+ * @returns {operators}
+ */
+export function operations (data = {}) {
 
   const cache = {}
 
@@ -52,26 +68,40 @@ export function Operations (data) {
   }
 
 
-  const min      = operation('min', INITIAL, (result, value) => value > result ? result : value);
-  const max      = operation('max', INITIAL, (result, value) => value < result ? result : value);
-  const count    = operation('count', 0, (result) => result + 1);
-  const sum      = operation('sum', 0, (result, value) => value + result);
-  const avg      = operation('avg', {n : 0, i : 0}, (result, value) => {
+  const $min      = operation('min', INITIAL, (result, value) => value > result ? result : value);
+  const $max      = operation('max', INITIAL, (result, value) => value < result ? result : value);
+  const $count    = operation('count', 0, (result) => result + 1);
+  const $sum      = operation('sum', 0, (result, value) => value + result);
+  const $avg      = operation('avg', {n : 0, i : 0}, (result, value) => {
     result.n++;
     result.i += Number(value);
     return result;
   }, (result) => result.i / result.n);
-  const distinct = operation('distinct', new Set(), (result, value) => {
+  const $distinct = operation('distinct', new Set(), (result, value) => {
     result.add(value);
     return result;
   }, (result) => [...result]);
 
-  return {
-    min,
-    max,
-    sum,
-    count,
-    avg,
-    distinct,
+  const descriptors = {};
+  const config      = {enumerable : false, configurable : true, writable : true};
+  if (!('$min' in data)) {
+    descriptors.$min = {value : $min, ...config};
   }
+  if (!('$max' in data)) {
+    descriptors.$max = {value : $max, ...config};
+  }
+  if (!('$sum' in data)) {
+    descriptors.$sum = {value : $sum, ...config};
+  }
+  if (!('$count' in data)) {
+    descriptors.$count = {value : $count, ...config};
+  }
+  if (!('$avg' in data)) {
+    descriptors.$avg = {value : $avg, ...config};
+  }
+  if (!('$distinct' in data)) {
+    descriptors.$distinct = {value : $distinct, ...config};
+  }
+
+  return Object.defineProperties(data, descriptors);
 }
