@@ -1,15 +1,18 @@
-const cache        = new Map();
-const functionName = /function\s+([\p{L}\p{Nl}$_][\p{L}\p{Nl}$_\p{Mn}\p{Mc}\p{Nd}\p{Pc}]*)\s*\(/gmu;
+const cache         = new Map();
+const functionName  = /function\s+([\p{L}\p{Nl}$_][\p{L}\p{Nl}$_\p{Mn}\p{Mc}\p{Nd}\p{Pc}]*)\s*\(/gmu;
+const AsyncFunction = (async function () {
+}).constructor;
 
-export function createFunction (args, code) {
+export function createFunction (args, code, async = false) {
   const key = `${ args.join(',') } ${ code }`;
   if (cache.has(key)) {
     return cache.get(key);
   }
-  const fn = new Function(...args, code);
+  const fn = new (async ? AsyncFunction : Function)(...args, code);
   cache.set(key, fn);
   return fn;
 }
+
 
 export function getFunctions (globals, code) {
   const names = [...code.matchAll(functionName)].map(x => x[1]);

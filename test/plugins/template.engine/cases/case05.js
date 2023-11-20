@@ -1,9 +1,9 @@
 export const title       = '5) g-bind';
 export const description = 'bind attributes with g-bind';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     position : [10, 10, 80, 80],
     color    : 'red'
   });

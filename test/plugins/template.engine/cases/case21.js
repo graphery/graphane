@@ -1,9 +1,9 @@
 export const title       = '21) g-bind:transform with functions';
 export const description = '<code>:transform="translate() + scale()</code> with functions';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render();
+  await svg.render();
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 

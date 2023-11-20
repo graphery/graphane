@@ -1,18 +1,18 @@
 export const title       = '24) g-for basic generation';
 export const description = 'g-for basic generation';
 
-export function script () {
+export async function script () {
   const svg     = gSVG(document.querySelector('#svg'));
   const update = document.querySelector('#update');
 
-  function updateSource () {
-    svg.render({value: Number(update.value)});
+  async function updateSource () {
+    await svg.render({value: Number(update.value)});
     document.querySelector('#result').innerHTML = sourceFormat(svg.source());
   }
 
   update.addEventListener('input', updateSource);
 
-  updateSource();
+  await updateSource();
 }
 
 export default `<svg id="svg" viewBox="0 0 200 200" width="200" height="200">

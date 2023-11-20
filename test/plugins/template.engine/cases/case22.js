@@ -1,9 +1,9 @@
 export const title       = '22) g-for <code>(key, value) of obj</code>';
 export const description = 'g-for with object';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     data : {
       a: {cx : 25, cy : 25, color : 'red'},
       b: {cx : 50, cy : 50, color : 'green'},

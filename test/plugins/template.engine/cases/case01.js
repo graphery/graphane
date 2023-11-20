@@ -1,9 +1,9 @@
 export const title       = '1) Create SVG by template';
 export const description = 'create a very simple SVG template';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     x      : 10,
     y      : 10,
     width  : 80,

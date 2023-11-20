@@ -1,9 +1,9 @@
 export const title       = '16) g-bind:style - object';
 export const description = 'g-bind:style with an object of values';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     isWarning : {
       fill   : 'orange',
       stroke : 'red'

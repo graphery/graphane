@@ -1,9 +1,9 @@
 export const title       = '3) g-content with svg source';
 export const description = 'include svg content into a &lt;g>&lt;/g>';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     source : '<rect x="40" y="40" width="20" height="20" fill="green">'
   });
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());

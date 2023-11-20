@@ -1,9 +1,9 @@
 export const title       = '13) g-bind:class - logical evaluation';
 export const description = `g-bind:class with a logical evaluation`;
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     isWarning : true
   });
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());

@@ -179,11 +179,16 @@ export default class Composer extends Base {
     }
 
     // Call to update
-    this.update(true);
+    return this.update(true);
 
   }
 
-  update (forced = false) {
+  /**
+   *
+   * @param {boolean} [forced=false]
+   * @returns {Promise<void>}
+   */
+  async update (forced = false) {
     if (this.isRendering && !forced) {
       return;
     }
@@ -201,7 +206,7 @@ export default class Composer extends Base {
         data,
         $ : this
       };
-      this.#svg.render(renderCtx);
+      await this.#svg.render(renderCtx);
       this.isRendering = false;
     }
   }

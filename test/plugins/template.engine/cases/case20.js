@@ -1,16 +1,16 @@
 export const title = '20) g-bind update render';
 export const description = 'g-bind update values and render again';
 
-export function script () {
+export async function script () {
 const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     values: [
       {cx: 20, cy: 20, color: 'red'},
       {cx: 50, cy: 50, color: 'green'},
       {cx: 80, cy: 80, color: 'blue'},
     ]
   });
-  svg.render({
+  await svg.render({
     values: [
       {cx: 80, cy: 20, color: 'red'},
       {cx: 50, cy: 50, color: 'green'},

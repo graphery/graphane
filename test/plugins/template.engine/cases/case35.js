@@ -1,9 +1,9 @@
 export const title       = '35) g-bind width dynamic keyframes and offset';
 export const description = 'g-bind with $$.dynamic([...]) with offset';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render();
+  await svg.render();
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 

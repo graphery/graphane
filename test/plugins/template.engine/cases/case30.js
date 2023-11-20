@@ -1,9 +1,9 @@
 export const title       = '30) nested g-if';
 export const description = 'display or not a nested element by g-if';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     option1 : true,
     option2 : false
   });

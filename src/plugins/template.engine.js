@@ -139,21 +139,21 @@ defineDirective({
 defineDirective({
   name     : 'g-for',
   template : true,
-  execute (def, {expression, data}) {
+  async execute (def, {expression, data}) {
     def[CLONES] = def[CLONES] || [];
     let n       = 0;
-    evalForExpression(
+    await evalForExpression(
       expression,
       data,
-      (subData) => {
+      async (subData) => {
         if (def[CLONES][n]) {
-          process(def[CLONES][n], subData, false);
+          await process(def[CLONES][n], subData, false);
         } else {
           const g = def.gSVG('g');
           def.children().forEach(child => {
             g.add(child.cloneNode(true));
           });
-          process(g, subData);
+          await process(g, subData);
           def.before(g.el);
           g[CLONED] = true;
           def[CLONES].push(g);
@@ -271,7 +271,7 @@ function evalExpression (code, data) {
  * @param {function} final
  * @returns {*}
  */
-function evalForExpression (code, data, each, final) {
+async function evalForExpression (code, data, each, final) {
   const iteratorName = '__$$iterator';
   const callbackName = '__$$callback';
   const finalName    = '__$$final';
@@ -288,14 +288,14 @@ function evalForExpression (code, data, each, final) {
     const args         = !left.startsWith('(') ? `(${ left })` : left;
     const dataKeys     = Object.keys(data);
     const codeFunction = `
-      ${ iteratorName }.forEach(${ args } => {
+      await Promise.all(${ iteratorName }.map(${ args } => 
         ${ callbackName }({${ dataKeys }${ dataKeys.length ?
       ',' :
-      '' }${ variables.join(',') }});
-      });
+      '' }${ variables.join(',') }})
+      ));
       ${ finalName }(${ iteratorName });
     `;
-    const fn           = createFunction([...dataKeys, iteratorName, callbackName, finalName], codeFunction);
+    const fn           = createFunction([...dataKeys, iteratorName, callbackName, finalName], codeFunction, true);
     return fn(...Object.values(data), iterator, each, final);
   } catch (err) {
     console.warn(LABEL, err);
@@ -308,10 +308,8 @@ function evalForExpression (code, data, each, final) {
  * @param {Object} el
  * @param {Object} data
  * @param {boolean} [checkCloned=true]
- * @example
- * svg.render(records)
  */
-function process (el, data, checkCloned = true) {
+async function process (el, data, checkCloned = true) {
   if (checkCloned && el[CLONED]) {
     return
   }
@@ -327,22 +325,23 @@ function process (el, data, checkCloned = true) {
   }
   let template = false;
   for (let directive of el[TEMPLATE]) {
-    directive.execute(el, {...directive, data, evalExpression});
+    await directive.execute(el, {...directive, data, evalExpression});
     template = directive.template || template;
   }
   if (!template) {
     for (const child of el.children()) {
-      process(child, data);
+      await process(child, data);
     }
   }
 }
 
 /**
  *
- * @param {Object|Array} [context]
+ * @param {Object|Array} context
+ * @returns {Promise<void>}
  */
-function render (context = {}) {
-  process(this, context);
+async function render (context = {}) {
+  await process(this, context);
   this.dispatchEvent(new Event('render'));
 }
 

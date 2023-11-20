@@ -1,9 +1,9 @@
 export const title       = '12) g-bind:class - simple value';
 export const description = 'g-bind:class with a simple string value';
 
-export function script () {
+export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render({
+  await svg.render({
     value : 'warning'
   });
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());
