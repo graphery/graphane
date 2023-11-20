@@ -24,6 +24,7 @@
 - Change the object observer behavior, now it doesn't launch the callback when the property is
   updated with the previous value.
 - Remove support for an ancient plugin model.
+- Fixed an error with SVG library and Promises.
 
 ## 0.1.0-alpha.4 (08/11/2023)
 
