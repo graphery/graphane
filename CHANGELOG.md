@@ -6,25 +6,28 @@
 - BREAKING CHANGE: the `$.min()`, `$.max()` and other data helpers was change to `data.$min()`,
   `data.$max()`, etc.
 - BREAKING CHANG: renamed `$.dynamic()` to `$$.dynamic()` in `g-bind` directive.
-- Added `render` event when the engine processes the template.
-- Added `isRendereing` property to true when the composer is processing the template.
+- Added `render` event on SVG when the engine processes the template.
+- Added `isRendereing` property to `true` when the composer is processing the template.
 - Added `attach` event when an element is added to the SVG.
 - Added `.parents()` method to the SVG library to obtain an array with all the parent elements.
 - Added `.top()` method to the SVG library to obtain the top parent element.
 - Added observe-resize plugin:
-  - `.observeResize()` method.
+  - `.observeResize()` method to the SVG library.
   - `resize` event on SVG element.
 - Added keep-aspect plugin:
-  - `g-keep-aspect` directive.
+  - `g-keep-aspect` custom directive to the template engine.
   - `.keepAspect()` method.
-- Refactored `.add()` and `.addBefore()` methods.
-- Fixed debug plugin with new `.add()` and `.addBefore()` methods.
-- Refactored `d` and `transform` handler.
+ - Added load plugin:
+  - `g-load` custom directive to the template engine.
+  - `load` event.
 - Change the object observer behavior, now it doesn't launch the callback when the property is
   updated with the previous value.
-- Remove support for an ancient plugin model.
+- Refactored `.add()` and `.addBefore()` methods.
+- Refactored `d` and `transform` handler.
+- Fixed debug plugin with new `.add()` and `.addBefore()` methods.
 - Fixed an error with SVG library and Promises.
 - Fixed an SVG library bug with `.content()` and `innerHTML()` when including tags ending in `/>`.
+- Removed support for the ancient plugin model (deprecated).
 
 ## 0.1.0-alpha.4 (08/11/2023)
 
