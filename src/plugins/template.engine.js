@@ -113,9 +113,9 @@ defineDirective({
       gObject.removeEventListener(event, manager.get(expression));
     }
     const handler = function (evt) {
-      let handler = evalExpression(expression, data);
-      if (isFunction(handler)) {
-        handler.call(gObject, evt);
+      let fn = evalExpression(expression, data, gObject);
+      if (isFunction(fn)) {
+        fn.call(gObject, evt);
       }
     };
     gObject.addEventListener(event, handler);
@@ -139,21 +139,21 @@ defineDirective({
 defineDirective({
   name     : 'g-for',
   template : true,
-  async execute (def, {expression, data}) {
+  execute (def, {expression, data}) {
     def[CLONES] = def[CLONES] || [];
     let n       = 0;
-    await evalForExpression(
+    evalForExpression(
       expression,
       data,
-      async (subData) => {
+      (subData) => {
         if (def[CLONES][n]) {
-          await process(def[CLONES][n], subData, false);
+          process(def[CLONES][n], subData, false);
         } else {
           const g = def.gSVG('g');
           def.children().forEach(child => {
             g.add(child.cloneNode(true));
           });
-          await process(g, subData);
+          process(g, subData);
           def.before(g.el);
           g[CLONED] = true;
           def[CLONES].push(g);
@@ -248,15 +248,16 @@ function toArray (v) {
  * evalExpression - evaluate an expression with a data context
  * @param {string} code
  * @param {object} data
+ * @param {object} [context=null]
  * @returns {*}
  */
-function evalExpression (code, data) {
+function evalExpression (code, data, context = null) {
   try {
     const fn = createFunction(
       Object.keys(data).filter(n => !isNumber(n)),
       `return ( ${ code } ); `
     );
-    return fn(...Object.values(data));
+    return fn.apply(context, Object.values(data));
   } catch (err) {
     console.warn(LABEL, err.message);
   }
@@ -271,7 +272,7 @@ function evalExpression (code, data) {
  * @param {function} final
  * @returns {*}
  */
-async function evalForExpression (code, data, each, final) {
+function evalForExpression (code, data, each, final) {
   const iteratorName = '__$$iterator';
   const callbackName = '__$$callback';
   const finalName    = '__$$final';
@@ -288,14 +289,14 @@ async function evalForExpression (code, data, each, final) {
     const args         = !left.startsWith('(') ? `(${ left })` : left;
     const dataKeys     = Object.keys(data);
     const codeFunction = `
-      await Promise.all(${ iteratorName }.map(${ args } => 
+      ${ iteratorName }.forEach(${ args } => {
         ${ callbackName }({${ dataKeys }${ dataKeys.length ?
       ',' :
-      '' }${ variables.join(',') }})
-      ));
+      '' }${ variables.join(',') }});
+      });
       ${ finalName }(${ iteratorName });
     `;
-    const fn           = createFunction([...dataKeys, iteratorName, callbackName, finalName], codeFunction, true);
+    const fn           = createFunction([...dataKeys, iteratorName, callbackName, finalName], codeFunction);
     return fn(...Object.values(data), iterator, each, final);
   } catch (err) {
     console.warn(LABEL, err);
@@ -309,7 +310,7 @@ async function evalForExpression (code, data, each, final) {
  * @param {Object} data
  * @param {boolean} [checkCloned=true]
  */
-async function process (el, data, checkCloned = true) {
+function process (el, data, checkCloned = true) {
   if (checkCloned && el[CLONED]) {
     return
   }
@@ -325,23 +326,22 @@ async function process (el, data, checkCloned = true) {
   }
   let template = false;
   for (let directive of el[TEMPLATE]) {
-    await directive.execute(el, {...directive, data, evalExpression});
+    directive.execute(el, {...directive, data, evalExpression});
     template = directive.template || template;
   }
   if (!template) {
     for (const child of el.children()) {
-      await process(child, data);
+      process(child, data);
     }
   }
 }
 
 /**
  *
- * @param {Object|Array} context
- * @returns {Promise<void>}
+ * @param {Object|Array} [context]
  */
-async function render (context = {}) {
-  await process(this, context);
+function render (context = {}) {
+  process(this, context);
   this.dispatchEvent(new Event('render'));
 }
 
