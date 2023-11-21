@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.0-alpha.6 (xx/xx/2023)
+
+- Fixed an error with load plugin and its internal cache.
+
 ## 0.1.0-alpha.5 (21/11/2023)
 
 - BREAKING CHANGE: the `d` attribute is reset when the `.d` object is obtained.
