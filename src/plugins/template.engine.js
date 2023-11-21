@@ -236,7 +236,7 @@ function toArray (v) {
     return {iterator : [...v], type : ARRAY};
   }
   if (isNumber(v)) {
-    return {iterator : Array(v < 0 ? 0 : v).fill(0).map((v, i) => i), type : NUMBER};
+    return {iterator : Array(v < 0 ? 0 : 0 | v).fill(0).map((v, i) => i), type : NUMBER};
   }
   if (isObject(v)) {
     return {iterator : Object.entries(v).map(m => m.reverse()), type : OBJECT};
