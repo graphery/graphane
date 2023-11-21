@@ -6,7 +6,6 @@
 - BREAKING CHANGE: the `$.min()`, `$.max()` and other data helpers was change to `data.$min()`,
   `data.$max()`, etc.
 - BREAKING CHANG: renamed `$.dynamic()` to `$$.dynamic()` in `g-bind` directive.
-- Changed to asynchronous execution the template engine.
 - Added `render` event when the engine processes the template.
 - Added `isRendereing` property to true when the composer is processing the template.
 - Added `attach` event when an element is added to the SVG.
@@ -25,6 +24,7 @@
   updated with the previous value.
 - Remove support for an ancient plugin model.
 - Fixed an error with SVG library and Promises.
+- Fixed an SVG library bug with `.content()` and `innerHTML()` when including tags ending in `/>`.
 
 ## 0.1.0-alpha.4 (08/11/2023)
 

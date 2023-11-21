@@ -12,6 +12,7 @@ const APPEND_CHILD            = 'appendChild';
 const INSERT_BEFORE           = 'insertBefore';
 const INSERT_ADJACENT_ELEMENT = 'insertAdjacentElement';
 const ATTACH                  = 'attach';
+const INNER_HTML              = 'innerHTML';
 
 const cache        = new WeakMap();
 const readonlyProp = new Set();
@@ -72,7 +73,7 @@ const createWrap = (tag) =>
  * @returns {string}
  */
 const alias = (prop) => ({
-  content   : 'innerHTML',
+  content   : INNER_HTML,
   source    : 'outerHTML',
   parent    : 'parentElement',
   next      : 'nextElementSibling',
@@ -262,7 +263,7 @@ const wrapper = (element) => {
                 return (...args) => {
                   if (command === Symbol.toPrimitive) {
                     const ret = content;
-                    content = '';
+                    content   = '';
                     return ret
                   }
                   content += processor(proxy, command, args);
@@ -334,7 +335,8 @@ const methodWrapper = (element, prop, parentWrapper, parentProp) => {
       }
       if (
         (isObject(element[propNormalized]) && element[propNormalized] === value) ||
-        element[propNormalized] !== previousValue
+        element[propNormalized] !== previousValue ||
+        propNormalized === INNER_HTML
       ) {
         return parentWrapper;
       }
