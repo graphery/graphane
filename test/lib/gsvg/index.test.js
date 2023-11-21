@@ -70,6 +70,7 @@ const results = {
   case46       : `<svg viewBox="0,0,60,60" width="100" height="100"> <rect x="40" y="40" width="20" height="20" fill="#000066"></rect> <rect x="20" y="40" width="20" height="20" fill="#006600"></rect> <rect x="0" y="0" width="20" height="20" fill="#FF0000"></rect> <rect x="20" y="0" width="20" height="20" fill="#00FF00"></rect> <rect x="0" y="20" width="20" height="20" fill="#AA0000"></rect> <rect x="20" y="20" width="20" height="20" fill="#009900"></rect> <rect x="0" y="40" width="20" height="20" fill="#660000"></rect> <rect x="40" y="20" width="20" height="20" fill="#0000AA"></rect> <rect x="40" y="0" width="20" height="20" fill="#0000AA"></rect> </svg>`,
   case47       : `<svg viewBox="0,0,60,60" width="100" height="100"> <rect x="0" y="0" width="20" height="20" fill="#ff0000"></rect> <rect x="20" y="0" width="20" height="20" fill="#00ff00"></rect> <rect x="40" y="0" width="20" height="20" fill="#0000aa"></rect> <rect x="0" y="20" width="20" height="20" fill="#aa0000"></rect> <rect x="20" y="20" width="20" height="20" fill="#009900"></rect> <rect x="40" y="20" width="20" height="20" fill="#0000aa"></rect> <rect x="0" y="40" width="20" height="20" fill="#660000"></rect> <rect x="20" y="40" width="20" height="20" fill="#006600"></rect> <rect x="40" y="40" width="20" height="20" fill="#000066"></rect> </svg>`,
   case48       : BASE_1,
+  case49       : `<svg viewBox="0,0,100,100" width="100" height="100"> <g> <svg viewBox="0,0,100,100" width="100" height="100"> <line x1="10" y1="10" x2="90" y2="90" stroke="black" stroke-width="10"></line> <line x1="10" y1="90" x2="90" y2="10" stroke="black" stroke-width="10"></line> </svg> </g> </svg>`
 }
 
 const dir = await opendir(FOLDER);
@@ -91,7 +92,7 @@ for await (const dirent of dir) {
     }
     if (!['case38', 'case39', 'case40'].includes(code)) {
       test('compare image', async ({page}) => {
-        const show = page.locator('#show svg');
+        const show = page.locator('#show > svg');
         await expect(show).toHaveScreenshot()
       });
     }
