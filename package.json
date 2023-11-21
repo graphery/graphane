@@ -15,6 +15,7 @@
     "workbench:plugin.observe.style": "node ./tools/workbench -l plugin.observe.style -i /src/lib/gsvg.script.js -i /src/plugins/observe.style.script.js -t test/plugins/observe.style/cases -p 7007",
     "workbench:plugin.shapes": "node ./tools/workbench -l plugin.shapes -i /src/lib/gsvg.script.js -i /src/plugins/shapes.script.js -t test/plugins/shapes/cases -p 7009",
     "workbench:plugin.template.engine": "node ./tools/workbench -l plugin.template.engine -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -t test/plugins/template.engine/cases -p 7008",
+    "workbench:plugin.load": "node ./tools/workbench -l plugin.load -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/load.script.js -t test/plugins/load/cases -p 7010",
     "test": "concurrently -m 1 npm:test:*",
     "test:helpers": "playwright test ./test/helpers/ --project=helpers",
     "test:composer": "playwright test test/component/composer/index.test.js --project=composer",
@@ -27,6 +28,7 @@
     "test:plugin.observe.style": "playwright test test/plugins/observe.style/index.test.js --project=observe.style",
     "test:plugin.shapes": "playwright test test/plugins/shapes/index.test.js --project=shapes",
     "test:plugin.template.engine": "playwright test test/plugins/template.engine/index.test.js --project=template.engine",
+    "test:plugin.load": "playwright test test/plugins/load/index.test.js --project=load",
     "build": "concurrently -m 1 npm:build:*",
     "build:core": "node ./tools/packer/index.js -m ./src/core/index.js ./dist/core/index.js ./package.json",
     "build:composer": "node ./tools/packer/index.js src/component/composer.js ./dist/component/composer.js ./package.json",
@@ -38,6 +40,7 @@
     "build:plugin.observe.style": "node ./tools/packer/index.js -m src/plugins/observe.style.js ./dist/plugins/observe.style.js",
     "build:plugin.template.engine": "node ./tools/packer/index.js -m src/plugins/template.engine.js ./dist/plugins/template.engine.js",
     "build:plugin.shapes": "node ./tools/packer/index.js -m src/plugins/shapes.js ./dist/plugins/shapes.js",
+    "build:plugin.load": "node ./tools/packer/index.js -m src/plugins/load.js ./dist/plugins/load.js",
     "build:plugin.script": "node ./tools/packer/index.js ./src/lib/gsvg.script.js ./dist/script/gsvg.js ./package.json",
     "build:plugin.animateto.script": "node ./tools/packer/index.js -m src/plugins/animateto.js ./dist/script/plugins/gsvg.animateto.js",
     "build:plugin.debug.script": "node ./tools/packer/index.js -m src/plugins/debug.js ./dist/script/plugins/gsvg.debug.js",
@@ -46,6 +49,7 @@
     "build:plugin.observe.style.script": "node ./tools/packer/index.js -m src/plugins/observe.style.js ./dist/script/plugins/gsvg.observe.style.js",
     "build:plugin.shapes.script": "node ./tools/packer/index.js -m src/plugins/shapes.js ./dist/script/plugins/gsvg.shapes.js",
     "build:plugin.template.engine.script": "node ./tools/packer/index.js -m src/plugins/template.engine.js ./dist/script/plugins/gsvg.template.engine.js",
+    "build:plugin.load.script": "node ./tools/packer/index.js -m src/plugins/load.js ./dist/script/plugins/gsvg.load.js",
     "update:playwright": "npx playwright install"
   },
   "devDependencies": {
