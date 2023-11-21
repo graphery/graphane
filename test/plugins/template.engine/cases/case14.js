@@ -1,9 +1,9 @@
 export const title       = '14) g-bind:class - array';
 export const description = 'g-bind:class with an array of values';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render({
+  svg.render({
     isWarning : true
   });
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());

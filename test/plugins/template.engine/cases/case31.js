@@ -1,9 +1,9 @@
 export const title       = '31) g-bind width dynamic default values';
 export const description = 'g-bind with $$.dynamic(valu)';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render();
+  svg.render();
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 

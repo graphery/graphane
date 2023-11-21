@@ -1,9 +1,9 @@
 export const title       = '15) g-bind:class - object';
 export const description = 'g-bind:class with an object of values (true or false)';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render({
+  svg.render({
     isWarning : true
   });
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());

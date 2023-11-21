@@ -1,9 +1,9 @@
 export const title       = '11) g-for <code>({cx, cy, color}, idx) of values</code>';
 export const description = 'g-for with index';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render({
+  svg.render({
     values : [
       {cx : 25, cy : 25, color : 'red'},
       {cx : 50, cy : 50, color : 'green'},

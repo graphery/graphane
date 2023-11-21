@@ -1,10 +1,10 @@
 export const title       = '28) g-bind:d with functions';
 export const description = 'g-bind:d with functions as M().c().Z()';
 
-export async function script () {
+export function script () {
   const svg     = gSVG(document.querySelector('#svg'));
 
-  await svg.render();
+  svg.render();
 }
 
 export default `<svg id="svg" viewBox="0 0 512 512" width="300" height="300">

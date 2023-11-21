@@ -1,9 +1,9 @@
 export const title       = '32) g-bind width dynamic with delay';
 export const description = 'g-bind with $$.dynamic(value, duration, delay)';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render({
+  svg.render({
     time1 : 200,
     time2 : 600,
     time3 : 1200,

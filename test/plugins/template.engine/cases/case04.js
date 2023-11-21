@@ -1,9 +1,9 @@
 export const title       = '4)  g-if';
 export const description = 'display or not an element by  g-if';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render({
+  svg.render({
     option1 : true,
     option2 : false
   });

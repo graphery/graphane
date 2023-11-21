@@ -1,9 +1,9 @@
 export const title       = '19) g-bind:style - kebab-case and camelCase';
 export const description = 'g-bind:style with a key of kebab-case and camelCase';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render();
+  svg.render();
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 

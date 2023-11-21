@@ -1,12 +1,12 @@
 export const title       = '36) render event';
 export const description = 'update the visibility after render event';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
   svg.addEventListener('render', () => {
     svg.style.display('');
   });
-  await svg.render({
+  svg.render({
     values : [
       {cx : 25, cy : 25, color : 'red'},
       {cx : 50, cy : 50, color : 'green'},

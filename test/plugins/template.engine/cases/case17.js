@@ -1,9 +1,9 @@
 export const title = '17) g-bind:style - conditional object';
 export const description = 'g-bind:style with a logical condition and an object of values';
 
-export async function script () {
+export function script () {
 const svg = gSVG(document.querySelector('#svg'));
-  await svg.render({
+  svg.render({
     warning   : true,
     isWarning : {
       fill   : 'orange',

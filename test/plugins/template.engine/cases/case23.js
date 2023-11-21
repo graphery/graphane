@@ -1,9 +1,9 @@
 export const title       = '23) g-bing of <code>svg</code>';
 export const description = 'g-bind with svg element';
 
-export async function script () {
+export function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render({
+  svg.render({
     viewBox: '0 0 100 100',
     data : ['red', 'green', 'blue', 'orange']
   });

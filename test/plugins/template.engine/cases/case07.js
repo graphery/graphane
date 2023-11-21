@@ -1,7 +1,7 @@
 export const title       = '7) g-on';
 export const description = 'bind event with g-on:click';
 
-export async function script () {
+export function script () {
   const svg  = gSVG(document.querySelector('#svg'));
   const data = {
     position : [10, 10, 80, 80],
@@ -15,7 +15,7 @@ export async function script () {
       svg.render(data);
     }
   };
-  await svg.render(data);
+  svg.render(data);
   document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 

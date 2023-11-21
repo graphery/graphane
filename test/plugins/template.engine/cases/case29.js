@@ -4,7 +4,7 @@ export const description = 'g-bind:d with shape plugin';
 export async function script () {
   gSVG.install((await import('/src/plugins/shapes.js')).svgPlugin);
   const svg = gSVG(document.querySelector('#svg'));
-  await svg.render();
+  svg.render();
 }
 
 export default `<svg id="svg" viewBox="0 0 300 300" width="300" height="300">

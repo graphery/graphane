@@ -1,21 +1,21 @@
 export const title       = '27) g-for with big number of elements';
 export const description = 'g-for with big number of elements';
 
-export async function script () {
+export function script () {
   const svg     = gSVG(document.querySelector('#svg'));
   const updateA = document.querySelector('#updateA');
   const updateB = document.querySelector('#updateB');
   const updateC = document.querySelector('#updateC');
 
   async function updateSource () {
-    await svg.render({data : [Number(updateA.value), Number(updateB.value), Number(updateC.value)]});
+    svg.render({data : [Number(updateA.value), Number(updateB.value), Number(updateC.value)]});
   }
 
   updateA.addEventListener('input', updateSource);
   updateB.addEventListener('input', updateSource);
   updateC.addEventListener('input', updateSource);
 
-  await updateSource();
+  updateSource();
 }
 
 export default `<svg id="svg" viewBox="0 0 1800 600" width="900" height="300">
