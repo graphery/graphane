@@ -50,12 +50,13 @@ export const objectObserver = (object, callback) => {
       },
       set (target, prop, value) {
         let ret;
+        const same = target[prop] === value;
         if (isObject(value) && !isNull(value)) {
           ret = Reflect.set(target, prop, observe(value));
         } else {
           ret = Reflect.set(target, prop, value);
         }
-        !ignore && callback(object);
+        !ignore && !same && callback(object);
         return ret;
       },
       deleteProperty (target, prop) {

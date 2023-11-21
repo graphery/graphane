@@ -11,7 +11,7 @@ export function script () {
      .x(50).y(52).text_anchor('middle').dominant_baseline('middle')
      .fill('white').style.font_size('1.2em').font_family('sans-serif').font_weight('bold');
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

@@ -9,13 +9,13 @@ export function script () {
   const svg  = gSVG().viewBox(0, 0, 500, 500).width(100).height(100)
   const path = svg.add('path').stroke('black').stroke_width(10).d(d1)
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
   run.addEventListener('click', () => {
     path.animateTo(
       path.d() === d1 ? {d: d2} : {d: d1},
       1000,
       () => code.innerHTML = 'moving...',
-      () => code.innerHTML = div.innerHTML.replace(/</g, "&lt;")
+      () => code.innerHTML = sourceFormat(svg.source())
     );
   });
 }

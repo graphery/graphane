@@ -11,7 +11,7 @@ export function script () {
   svg.add('circle').cx (60).cy (60).r (30).fill('red');
   svg.addBefore('circle').cx (30).cy (30).r (30).fill('blue');
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

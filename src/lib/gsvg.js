@@ -1,14 +1,19 @@
 import {
-  FUNCTION, EMPTY_STRING, COMA,
+  EMPTY_STRING, COMA,
   isSymbol, isObject, isString, isUndefined, isFunction, isBoolean, isNull
 } from '../helpers/types.js';
 
-const NAME         = 'gSVGObject';
-const NS           = 'http://www.w3.org/2000/svg';
-const SVG          = 'svg';
-const PATH         = 'path';
-const D            = 'd';
-const TRANSFORM    = 'transform';
+const NAME                    = 'gSVGObject';
+const NS                      = 'http://www.w3.org/2000/svg';
+const SVG                     = 'svg';
+const D                       = 'd';
+const TRANSFORM               = 'transform';
+const APPEND_CHILD            = 'appendChild';
+const INSERT_BEFORE           = 'insertBefore';
+const INSERT_ADJACENT_ELEMENT = 'insertAdjacentElement';
+const ATTACH                  = 'attach';
+const INNER_HTML              = 'innerHTML';
+
 const cache        = new WeakMap();
 const readonlyProp = new Set();
 
@@ -18,7 +23,7 @@ const readonlyProp = new Set();
  * @param {string} prop
  * @returns {boolean}
  */
-const directAccess = (prop) => prop[0] === '_' || isSymbol(prop) || ['el', 'gSVG'].includes(prop);
+const directAccess = (prop) => prop[0] === '_' || isSymbol(prop) || ['el', 'gSVG', 'then'].includes(prop);
 
 /**
  * Check the instance
@@ -68,12 +73,45 @@ const createWrap = (tag) =>
  * @returns {string}
  */
 const alias = (prop) => ({
-  content  : 'innerHTML',
-  source   : 'outerHTML',
-  parent   : 'parentElement',
-  next     : 'nextElementSibling',
-  previous : 'previousElementSibling'
+  content   : INNER_HTML,
+  source    : 'outerHTML',
+  parent    : 'parentElement',
+  next      : 'nextElementSibling',
+  previous  : 'previousElementSibling',
+  add       : APPEND_CHILD,
+  addBefore : INSERT_BEFORE
 })[prop] || prop;
+
+/**
+ * Return a wrapped method for append element operations
+ * @param {string} method
+ * @returns {function|null}
+ */
+const appendMethods = (method) => {
+  return ['append', 'before', 'after',
+          APPEND_CHILD, INSERT_BEFORE, INSERT_ADJACENT_ELEMENT].includes(method) ?
+    function (...params) {
+      const a = [];
+      const b = [];
+      const c = [];
+      if (method === INSERT_ADJACENT_ELEMENT) {
+        a.push(params[0]);
+        b.push(createWrap(params[1]));
+      } else if (method === INSERT_BEFORE) {
+        b.push(createWrap(params[0]));
+        c.push(params[1] || this.firstChild || null);
+      } else {
+        b.push(...params.map(createWrap))
+      }
+      if (!b.every(el => el?._el)) {
+        return b[0];
+      }
+      this[method](...[...a, ...b.map(el => el ? el._el : el), ...c]);
+      b.forEach(el => el._el.dispatchEvent(new Event(ATTACH)));
+      return b.length > 1 ? b : b[0];
+    } :
+    null;
+}
 
 
 /**
@@ -103,30 +141,6 @@ class GSVGObject {
   }
 
   /**
-   * @param {gSVGObject|Object|string} tag
-   * @returns {gSVGObject}
-   */
-  add (tag) {
-    let r = createWrap(tag);
-    if (r) {
-      this._el.appendChild(r._el);
-    }
-    return r;
-  }
-
-  /**
-   * @param {gSVGObject|Object|string} tag
-   * @returns {gSVGObject}
-   */
-  addBefore (tag) {
-    let r = createWrap(tag);
-    if (r) {
-      this._el.insertBefore(r._el, this._el.firstChild || null);
-    }
-    return r;
-  }
-
-  /**
    * @param {string|Object} tag
    * @returns {gSVGObject}
    */
@@ -138,6 +152,7 @@ class GSVGObject {
       ) :
       document.querySelector(tag);
     r.appendChild(this._el);
+    this._el.dispatchEvent(new Event(ATTACH));
     return this;
   }
 
@@ -170,6 +185,27 @@ class GSVGObject {
     return `url(${ this.ref() })`;
   }
 
+  /**
+   * gSVGObject.parents()
+   * @returns {[{object}]}
+   */
+  parents () {
+    const result = [];
+    let el       = this;
+    while (el = el.parentElement()) {
+      result.push(el);
+    }
+    return result;
+  }
+
+  /**
+   * gSVGObject.parents()
+   * @returns {object}
+   */
+  top () {
+    return this.parents().pop() || this;
+  }
+
 }
 
 /**
@@ -200,23 +236,36 @@ const wrapper = (element) => {
             return wrapped[prop].call(proxy, ...args);
           }
         }
-        // Special cases path d="" and transform=""
-        if (
-          (prop === D && element.tagName.toLowerCase() === PATH) ||
-          prop === TRANSFORM
-        ) {
-          let content  = element.getAttribute(D) || '';
+        // Special cases 'd' and 'transform'
+        if ([D, TRANSFORM, '$' + D, '$' + TRANSFORM].includes(prop)) {
+          let content   = '';
+          let directive = prop[0] === '$';
+          if (directive) {
+            prop = prop.substring(1);
+          }
           const processor = prop === D ? pathD : elTransform;
-          const dProxy = new Proxy(
+          const dProxy    = new Proxy(
             (arg) => {
-              preCall(proxy, prop, [arg])
-              return isString(arg) ?
-                element.setAttribute(prop, arg) || proxy :
-                element.getAttribute(prop)
+              preCall(proxy, prop, [arg]);
+              if (isUndefined(arg)) {
+                return element.getAttribute(prop);
+              }
+              arg ?
+                element.setAttribute(prop, arg) :
+                element.removeAttribute(prop);
+              return proxy;
             },
             {
               get (_target, command) {
+                if (command in _target) {
+                  return Reflect.get(_target, command);
+                }
                 return (...args) => {
+                  if (command === Symbol.toPrimitive) {
+                    const ret = content;
+                    content   = '';
+                    return ret
+                  }
                   content += processor(proxy, command, args);
                   element?.setAttribute(prop, content);
                   return dProxy;
@@ -226,32 +275,13 @@ const wrapper = (element) => {
           );
           return dProxy;
         }
-        // Special cases g-bind:d="" and g-bind:transport=""
-        if (prop === '$d' || prop === '$transform') {
-          let content  = '';
-          const processor = prop === '$d' ? pathD : elTransform;
-          const dProxy = new Proxy(
-            {},
-            {
-              get (_target, command) {
-                return (...args) => {
-                  if (command === Symbol.toPrimitive) {
-                    return content
-                  }
-                  content += processor(proxy, command, args);
-                  return dProxy;
-                };
-              }
-            }
-          );
-          return dProxy;
-        }
-        prop = alias(prop);
         // Return the element method
-        if (isFunction(element[prop])) {
+        const altProp = alias(prop);
+        const fn      = appendMethods(altProp) || element[altProp];
+        if (isFunction(fn)) {
           return (...args) => {
             preCall(proxy, prop, args);
-            const result = element[prop].call(element, ...args);
+            const result = fn.call(element, ...args);
             return (
               isUndefined(result) ?
                 proxy :
@@ -260,7 +290,7 @@ const wrapper = (element) => {
           };
         }
         // Return the wrapped method
-        return methodWrapper(element, prop, proxy);
+        return methodWrapper(element, altProp, proxy);
       }
     }
   );
@@ -305,7 +335,8 @@ const methodWrapper = (element, prop, parentWrapper, parentProp) => {
       }
       if (
         (isObject(element[propNormalized]) && element[propNormalized] === value) ||
-        element[propNormalized] !== previousValue
+        element[propNormalized] !== previousValue ||
+        propNormalized === INNER_HTML
       ) {
         return parentWrapper;
       }
@@ -424,50 +455,30 @@ export function gSVG (el) {
  */
 gSVG.isWrapped = isWrapped;
 
-/**
- * gSVG.extend
- * @param {Function} plugin
- * @return {gSVG}
- */
-gSVG.extend = (plugin) => {
-  console.warn('gSVG.extend() for old plugin is deprecated. ' +
-               'Please, use gSVG.install() for new plugins.')
-  plugin(gSVG, GSVGObject);
-  return gSVG;
-}
+const Extensor = (obj) => (extension) => isFunction(extension) ?
+  extension(obj) :
+  Object.assign(obj, extension);
 
-const setup = {
-  install : install,
-  extendConstructor (extension) {
-    Object.assign(gSVG, extension);
-  },
-  extendInstance (extension) {
-    Object.assign(GSVGObject.prototype, extension);
-  },
-  extendPath (extension) {
-    Object.assign(registeredPathD, extension);
-  },
-  extendSetup (extension) {
-    Object.assign(setup, extension);
-  },
+const setup       = {
+  install,
+  extendConstructor : Extensor(gSVG),
+  extendInstance    : Extensor(GSVGObject.prototype),
+  extendPath        : Extensor(registeredPathD),
   beforeEveryCall (callback) {
-    if (typeof callback === FUNCTION) {
+    if (isFunction(callback)) {
       registeredCalls.push(callback);
     }
   }
 };
+setup.extendSetup = Extensor(setup);
 
 /**
  * gSVG.install - load new plugins
- * @param {Function|{svg: Function}} plugin
+ * @param {Function} plugin
  * @return {gSVG|Promise}
  */
 function install (plugin) {
-  if (isFunction(plugin)) {
-    plugin(setup);
-  } else if (isFunction(plugin?.svg)) {
-    plugin.svg(setup);
-  }
+  plugin(setup);
   return gSVG;
 }
 

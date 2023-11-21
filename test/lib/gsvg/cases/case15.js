@@ -11,7 +11,7 @@ export function script () {
   const circle = gSVG('circle').cx(50).cy(50).r(40);
   svg.add(circle);
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

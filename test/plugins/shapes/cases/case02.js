@@ -9,7 +9,7 @@ export function script () {
      .d.circle(50, 50, 42);
   svg.add('rect').x(20).y(40).width(60).height(20).fill('white');
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

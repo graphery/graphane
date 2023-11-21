@@ -8,7 +8,7 @@ export function script () {
   const svg  = gSVG().viewBox(0, 0, 100, 100).width(100).height(100);
   const text = svg.add('text').x(0).y(50).content('hello world');
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
   run.addEventListener('click', () => {
     text.animateTo(
       window.getComputedStyle(text.el).textShadow !== 'rgb(255, 0, 0) 2px 2px 2px' ?
@@ -16,7 +16,7 @@ export function script () {
         {textShadow : 'none'},
       1000,
       () => code.innerHTML = 'moving...',
-      () => code.innerHTML = div.innerHTML.replace(/</g, "&lt;")
+      () => code.innerHTML = sourceFormat(svg.source())
     );
   });
 }

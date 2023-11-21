@@ -11,10 +11,10 @@ const URL           = '/test/plugins/observe.style/cases/';
 const FOLDER        = './test/plugins/observe.style/cases/';
 
 const results       = {
-  case01       : '<svg viewBox="0 0 100 100" width="100" height="100" style="stroke: black; stroke-width: 10;"><line x1="10" y1="10" x2="90" y2="90"></line><line x1="10" y1="90" x2="90" y2="10"></line></svg>',
-  case01_after : '<svg viewBox="0 0 100 100" width="100" height="100" style="stroke: red; stroke-width: 10;"><line x1="10" y1="10" x2="90" y2="90"></line><line x1="10" y1="90" x2="90" y2="10"></line></svg>',
-  case02       : '<svg viewBox="0 0 100 100" width="100" height="100"><line x1="10" y1="10" x2="90" y2="90" style="stroke: black; stroke-width: 10;"></line><line x1="10" y1="90" x2="90" y2="10" stroke="black" stroke-width="10"></line></svg>',
-  case02_after : '<svg viewBox="0 0 100 100" width="100" height="100"><line x1="10" y1="10" x2="90" y2="90" style="stroke: red; stroke-width: 10;"></line><line x1="10" y1="90" x2="90" y2="10" stroke="black" stroke-width="10"></line></svg>',
+  case01       : `<svg viewBox="0 0 100 100" width="100" height="100" style="stroke: black; stroke-width: 10;"> <line x1="10" y1="10" x2="90" y2="90"></line> <line x1="10" y1="90" x2="90" y2="10"></line> </svg>`,
+  case01_after : `<svg viewBox="0 0 100 100" width="100" height="100" style="stroke: red; stroke-width: 10;"> <line x1="10" y1="10" x2="90" y2="90"></line> <line x1="10" y1="90" x2="90" y2="10"></line> </svg>`,
+  case02       : `<svg viewBox="0 0 100 100" width="100" height="100"> <line x1="10" y1="10" x2="90" y2="90" style="stroke: black; stroke-width: 10;"></line> <line x1="10" y1="90" x2="90" y2="10" stroke="black" stroke-width="10"></line> </svg>`,
+  case02_after : `<svg viewBox="0 0 100 100" width="100" height="100"> <line x1="10" y1="10" x2="90" y2="90" style="stroke: red; stroke-width: 10;"></line> <line x1="10" y1="90" x2="90" y2="10" stroke="black" stroke-width="10"></line> </svg>`,
 }
 
 const dir = await opendir(FOLDER);

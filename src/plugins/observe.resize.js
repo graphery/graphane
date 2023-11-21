@@ -5,21 +5,17 @@
  * @param {SVGMatrix} prevMatrix
  */
 
-const resizeObserverCache = new WeakMap();
+const observerCache = new WeakSet();
 
 /**
  * resizeObserver - call the callback if the SVG is resized
- * @param {resizeObserver~callback} [callback]
- * @returns {gSVG}
+ * @param {Object} svg
  */
-function resizeObserver (callback = () => void (0)) {
-  const self = this;
-  const svg  = this.el.tagName.toLowerCase() === 'svg' ? this.el : this.closest('svg').el;
-  if (resizeObserverCache.has(svg)) {
-    return resizeObserverCache.get(svg).push(callback);
+function observeResize (svg) {
+  if (observerCache.has(svg)) {
+    return;
   }
-  resizeObserverCache.set(svg, [callback]);
-  let prevMatrix = {};
+  let prevMatrix = svg.getScreenCTM();
   const check    = () => {
     const currentMatrix = svg.getScreenCTM();
     if (currentMatrix !== null && (
@@ -30,18 +26,20 @@ function resizeObserver (callback = () => void (0)) {
       currentMatrix.e !== prevMatrix.e ||
       currentMatrix.f !== prevMatrix.f)
     ) {
-      const callbacks = resizeObserverCache.get(svg);
-      for (let cb of callbacks) {
-        cb.call(self, currentMatrix, prevMatrix);
-      }
-      const event = new CustomEvent("resize", {detail : {currentMatrix, prevMatrix}});
-      self.el.dispatchEvent(event);
+      svg.dispatchEvent(new CustomEvent("resize", {detail : {currentMatrix, prevMatrix}}));
       prevMatrix = currentMatrix;
     }
     window.requestAnimationFrame(check);
   };
+  observerCache.add(svg);
   check();
-  return self;
+}
+
+function addEventListener(event, ...params) {
+  if (event === 'resize' && this.el.tagName.toLowerCase() === 'svg') {
+    observeResize(this.el);
+  }
+  this.el.addEventListener(event, ...params)
 }
 
 
@@ -51,7 +49,13 @@ function resizeObserver (callback = () => void (0)) {
  */
 export function svgPlugin (setup) {
   // Update gySVGObject
-  setup.extendInstance({
-    resizeObserver
+  setup.extendInstance((proto) => {
+    const el = proto.addEventListener;
+    proto.addEventListener = function(...args) {
+      addEventListener.call(this, ...args);
+      if (el) {
+        e.call(this, ...args);
+      }
+    }
   });
 }

@@ -7,7 +7,7 @@ export function script () {
   const svg  = gSVG().viewBox('0 0 200 500').width(200).height(200)
   svg.add('path').d.star(100, 250, 100, 15, 5, 0)
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

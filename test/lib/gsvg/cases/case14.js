@@ -10,7 +10,7 @@ export function script () {
   const svg   = gSVG().viewBox(0, 0, 100, 100).width(100).height(100)
   svg.add('circle').cx (50).cy (50).r (40);
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

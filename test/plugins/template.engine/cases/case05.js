@@ -7,7 +7,7 @@ export function script () {
     position : [10, 10, 80, 80],
     color    : 'red'
   });
-  document.querySelector('#result').innerHTML = svg.source().replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">

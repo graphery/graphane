@@ -10,10 +10,12 @@ export function script () {
   svg.add('line').x1(10).y1(10).x2(90).y2(90).stroke('black').stroke_width(10);
   svg.add('line').x1(10).y1(90).x2(90).y2(10).stroke('black').stroke_width(10);
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
-    svg.resizeObserver((current, prev) => {
-    check.innerHTML = current.a === 0.5 && prev.a === 1 ? 'ok' : '...';
-    code.innerHTML  = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
+  svg.addEventListener('resize', (evt) => {
+    const {currentMatrix, prevMatrix} = evt.detail;
+
+    check.innerHTML = currentMatrix.a === 0.5 && prevMatrix.a === 1 ? 'ok' : '...';
+    code.innerHTML  = sourceFormat(svg.source());
   });
   button.addEventListener('click', () => {
     if (svg.width() === 100) {

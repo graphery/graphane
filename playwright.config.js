@@ -48,6 +48,12 @@ if (process.argv.includes('--project=composer')) {
   options          = '-i /src/lib/gsvg.script.js ' +
                      '-i /src/plugins/shapes.script.js ' +
                      '-t test/plugins/shapes/cases';
+} else if (process.argv.includes('--project=load')) {
+  process.env.port = '7210';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/plugins/template.engine.script.js ' +
+                     '-i /src/plugins/load.script.js ' +
+                     '-t test/plugins/load/cases';
 }
 
 const webServer = process.env.port ? {
@@ -70,6 +76,7 @@ export default defineConfig({
     {name : 'observe.style'},
     {name : 'template.engine'},
     {name : 'shapes'},
+    {name : 'load'},
   ],
   testDir       : './test',
   fullyParallel : true,
