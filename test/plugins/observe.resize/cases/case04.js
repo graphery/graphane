@@ -8,14 +8,16 @@ export function script () {
   const code   = document.querySelector('#result');
   const svg    = gSVG().viewBox('0 0 100 100').width(100).height(100)
   svg.add('line').x1(10).y1(10).x2(90).y2(90).stroke('black').stroke_width(10);
-  const line2  = svg.add('line').x1(10).y1(90).x2(90).y2(10).stroke('black').stroke_width(10);
+  const line2 = svg.add('line').x1(10).y1(90).x2(90).y2(10).stroke('black').stroke_width(10);
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML  = sourceFormat(svg.source());
   line2.resizeObserver();
-  line2.addEventListener('resize', (event) => {
+  svg.addEventListener('resize', (event) => {
     const {currentMatrix, prevMatrix} = event.detail;
-    check.innerHTML     = currentMatrix.a === 0.5 && prevMatrix.a === 1 ? 'ok' : '...';
-    code.innerHTML      = div.innerHTML.replace(/</g, "&lt;");
+    check.innerHTML                   = currentMatrix.a === 0.5 && prevMatrix.a === 1 ?
+      'ok' :
+      '...';
+    code.innerHTML                    = sourceFormat(svg.source());
   });
   button.addEventListener('click', () => {
     if (svg.width() === 100) {
@@ -23,7 +25,6 @@ export function script () {
     } else {
       svg.width(100).height(100);
     }
-    code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
   });
 }
 
