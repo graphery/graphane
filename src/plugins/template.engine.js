@@ -3,6 +3,7 @@ import {
   isArray, isObject, isNumber, isFunction, isUndefined
 }                                       from '../helpers/types.js';
 import { createFunction }               from '../helpers/function.create.js';
+import { isValidIdentifier }            from "../helpers/identifier.js";
 import { svgPlugin as animateToPlugin } from './animateto.js';
 
 const INIT       = Symbol();
@@ -253,13 +254,14 @@ function toArray (v) {
  */
 function evalExpression (code, data, context = null) {
   try {
-    const fn = createFunction(
-      Object.keys(data).filter(n => !isNumber(n)),
+    const keys = Object.keys(data).filter(isValidIdentifier);
+    const fn   = createFunction(
+      keys,
       `return ( ${ code } ); `
     );
-    return fn.apply(context, Object.values(data));
+    return fn.apply(context, keys.map(key => data[key]));
   } catch (err) {
-    console.warn(LABEL, err.message);
+    console.warn(LABEL, err.message, '\n', code);
   }
 }
 
@@ -287,7 +289,7 @@ function evalForExpression (code, data, each, final) {
     }
     const variables    = getVariables(left);
     const args         = !left.startsWith('(') ? `(${ left })` : left;
-    const dataKeys     = Object.keys(data);
+    const dataKeys     = Object.keys(data).filter(isValidIdentifier);
     const codeFunction = `
       ${ iteratorName }.forEach(${ args } => {
         ${ callbackName }({${ dataKeys }${ dataKeys.length ?
@@ -297,7 +299,7 @@ function evalForExpression (code, data, each, final) {
       ${ finalName }(${ iteratorName });
     `;
     const fn           = createFunction([...dataKeys, iteratorName, callbackName, finalName], codeFunction);
-    return fn(...Object.values(data), iterator, each, final);
+    return fn(...dataKeys.map(key => data[key]), iterator, each, final);
   } catch (err) {
     console.warn(LABEL, err);
   }
