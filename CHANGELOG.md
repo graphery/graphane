@@ -2,7 +2,9 @@
 
 ## 0.1.0-alpha.6 (xx/xx/2023)
 
-- Fixed an error with `g-for="n of 10.1"`.
+- Improved Javascript identifier validation in template directives.
+- Improved error description in console messages. 
+- Fixed an error with decimal values as `g-for="n of 10.1"`.
 - Fixed an error with load plugin and its internal cache.
 
 ## 0.1.0-alpha.5 (21/11/2023)
