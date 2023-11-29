@@ -56,9 +56,9 @@ defineDirective({
   execute (gObject, {expression, argument, data, evalExpression}) {
     const context      = {
       ...data,
-      $$ : argument === 'd' ? gObject.$d :
-        argument === 'transform' ? gObject.$transform :
-          {}
+      $$ : ['d', 'transform'].includes(argument) ?
+        gObject['$' + argument] :
+        () => gObject[argument]()
     };
     context.$$.dynamic = (value, duration = 200, delay = 0) => {
       gObject.animateTo(

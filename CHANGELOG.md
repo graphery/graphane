@@ -2,6 +2,7 @@
 
 ## 0.1.0-alpha.6 (xx/xx/2023)
 
+- Added `$$()` in the `g-bind` directive to get the current value of the attribute.
 - Improved the code resulting of running `.animateTo()` or `$$.dynamic()` with `transform=rotate()`.
 - Improved Javascript identifier validation in template directives.
 - Improved error description in console messages. 
