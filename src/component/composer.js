@@ -1,6 +1,6 @@
 import {
   Base, define,
-  RENDER, CONTEXT, FIRE_EVENT
+  RENDER, CONTEXT, FIRE_EVENT, CHANGE
 }                              from '../core/base.js';
 import {
   STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
@@ -26,11 +26,10 @@ const composerPlugin = (setup) => {
 gSVG.install(render)
     .install(composerPlugin);
 
-const NAME           = 'composer';
-const SVG            = 'svg';
-const INTERNAL_WIDTH = '--internal-width';
-const UPDATE         = 'update';
-const queryScript    = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
+const NAME        = 'composer';
+const SVG         = 'svg';
+const UPDATE      = 'update';
+const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
 
 /**
  * gy-svg class
@@ -75,10 +74,7 @@ export default class Composer extends Base {
     }
     const svg = ctx.content.querySelector(SVG);
     if (svg) {
-      this.#svg     = gSVG(svg);
-      const viewBox = this.#svg.viewBox();
-      const width   = isString(viewBox) ? viewBox.split(/\s|;/)[3] : 0;
-      this.shadowRoot.host.style.setProperty(INTERNAL_WIDTH, `${ width || 250 }px`);
+      this.#svg = gSVG(svg);
     }
     return true;
   }
@@ -127,13 +123,10 @@ export default class Composer extends Base {
       <style>
         :host {
           display : inline-block;
-          width   : var(--internal-width, 250px);
-          height  : auto;
+          width   : max-content;
+          height  : max-content;
         }
 
-        :host([hidden]) {
-          display : none;
-        }
       </style>
       <span id="content"></span>
     `;
@@ -144,12 +137,10 @@ export default class Composer extends Base {
    * Render method
    * @private
    */
-  async [RENDER] () {
-
-    // Load
-    await this.load();
-
+  [RENDER] () {
+    return this.load();
   }
+
 
   async load () {
     try {
@@ -193,8 +184,13 @@ export default class Composer extends Base {
       return;
     }
     if (this.#svg) {
+      if (!this.#svg.getBoundingClientRect().width && !this.getBoundingClientRect().width) {
+        const viewBox = this.#svg.viewBox();
+        const width   = isString(viewBox) ? viewBox.split(/\s|;/)[3] : 0;
+        this.#svg.style.width(width + 'px');
+      }
       this.isRendering = true;
-      const ctx = this [CONTEXT];
+      const ctx        = this [CONTEXT];
       const data       = operations(
         ctx.methods.data ?
           ctx.methods.data(clone(ctx.data)) :
