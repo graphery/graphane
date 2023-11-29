@@ -2,6 +2,7 @@
 
 ## 0.1.0-alpha.6 (xx/xx/2023)
 
+- Improved the code resulting of running `.animateTo()` or `$$.dynamic()` with `transform=rotate()`.
 - Improved Javascript identifier validation in template directives.
 - Improved error description in console messages. 
 - Fixed an error with decimal values as `g-for="n of 10.1"`.

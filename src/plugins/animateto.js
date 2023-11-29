@@ -208,6 +208,23 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     .replace(/([a-zA-Z])\s*/g, '$1')
     .replace(/\s+/g, ',');
 
+  /**
+   * Transform d CSS property to valid d attribute format
+   * @param {string} transform
+   * @returns {string}
+   */
+  const transform2attribute = (transform) => {
+    const regex = /translate\((.*)px,(.*)px\) rotate\((.*)deg\) translate\((.*)px,(.*)px\)\s+/;
+    const match = regex.exec(transform);
+    if (match && Number(match[1]) === Number(match[4]) * -1 && Number(match[2]) === Number(match[5]) * -1) {
+      transform = transform.replace(regex, `rotate(${match[3]}, ${match[1]}, ${match[2]})`)
+    } else {
+      transform = value2attribute(transform);
+    }
+    return transform;
+  }
+
+
   // Main code
   const config    = normalizeOptions(options);
   const frames    = normalizeKeyframes(keyframes);
@@ -219,14 +236,16 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     const lastAttributes = frames[frames.length - 1];
     for (let attr in lastAttributes) {
       const attrKey = toHyphen(attr);
-      if (/^text-/.test(attrKey)) {
+      if (attrKey.startsWith("text-")) {
         this._el.style[attr] = lastAttributes[attr];
       } else if (attr !== OFFSET && attr in lastAttributes) {
         this._el.setAttribute(
           attrKey,
           attrKey === D ?
             d2attribute(lastAttributes[attr]) :
-            value2attribute(lastAttributes[attr]));
+            attrKey === TRANSFORM ?
+              transform2attribute(lastAttributes[attr]) :
+              value2attribute(lastAttributes[attr]));
       }
     }
     alternatives.forEach(altAnimate => {
