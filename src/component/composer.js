@@ -141,6 +141,36 @@ export default class Composer extends Base {
     return this.load();
   }
 
+  async [CHANGE] (mutations) {
+    const promises = [];
+    try {
+      for (let mutation of mutations) {
+        if (mutation.target.tagName === 'SVG') {
+          promises.push(this.#loadSVG());
+        } else if (mutation.target.tagName === 'SCRIPT') {
+          switch (mutation.target.type.toLowerCase()) {
+            case 'data':
+              promises.push(this.#loadData());
+              break;
+            case 'methods':
+              promises.push(this.#loadMethods());
+              break;
+            case 'config':
+              promises.push(this.#loadConfig());
+              break;
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err.message);
+      this[FIRE_EVENT]('error', err.message);
+      return false;
+    }
+    if (promises.length) {
+      await Promise.all(promises);
+      return this.update();
+    }
+  }
 
   async load () {
     try {
