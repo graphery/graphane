@@ -3,7 +3,7 @@ import {
   RENDER, CONTEXT, FIRE_EVENT, CHANGE
 }                              from '../core/base.js';
 import {
-  STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
+  STRING, OBJECT, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
 }                              from '../helpers/types.js';
 import viewport                from "../core/viewport.js";
 import gSVG                    from '../lib/gsvg.js';
@@ -75,6 +75,13 @@ export default class Composer extends Base {
     const svg = ctx.content.querySelector(SVG);
     if (svg) {
       this.#svg = gSVG(svg);
+      if (!this.#svg.getBoundingClientRect().width &&
+          (!this.#svg.width() || this.#svg.width()?.baseVal?.value === 0) &&
+          !this.#svg.style.width() &&
+          !this.getBoundingClientRect().width &&
+          !this.style.width) {
+        this.#svg.style.width('100px');
+      }
     }
     return true;
   }
@@ -214,11 +221,6 @@ export default class Composer extends Base {
       return;
     }
     if (this.#svg) {
-      if (!this.#svg.getBoundingClientRect().width && !this.getBoundingClientRect().width) {
-        const viewBox = this.#svg.viewBox();
-        const width   = isString(viewBox) ? viewBox.split(/\s|;/)[3] : 0;
-        this.#svg.style.width(width + 'px');
-      }
       this.isRendering = true;
       const ctx        = this [CONTEXT];
       const data       = operations(

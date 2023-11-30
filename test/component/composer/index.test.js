@@ -20,26 +20,26 @@ for await (const dirent of dir) {
       await page.goto(`/load.html?case=${ URL }${ dirent.name }&imp=${ IMPORT }`);
     });
 
-    if (!['case07', 'case08', 'case09'].includes(code)) {
+    if (!['case07', 'case08', 'case51', 'case52', 'case53'].includes(code)) {
       test('compare image', async ({page}) => {
-        const show = page.locator('#case g-composer');
+        const show = page.locator('g-composer');
         await expect(show).toHaveScreenshot()
       });
     }
 
-    if (['case04', 'case05', 'case40', 'case41', 'case43'].includes(code)) {
+    if (['case04', 'case05', 'case40', 'case41', 'case43', 'case51', 'case52', 'case53'].includes(code)) {
       test('compare image after run action', async ({page}) => {
         const run = page.locator('#run');
         await run.click();
         await wait(500);
-        const show = page.locator('#case g-composer');
+        const show = page.locator('g-composer');
         await expect(show).toHaveScreenshot()
       });
     }
 
     if (['case29', 'case30', 'case31', 'case32'].includes(code)) {
       test('compare image after run action', async ({page}) => {
-        const run = page.locator('g-composer', { hasText: 'click' });
+        const run = page.locator('g-composer', {hasText : 'click'});
         await run.click();
         await wait(500);
         const show = page.locator('#case g-composer');
@@ -80,6 +80,7 @@ for await (const dirent of dir) {
         await expect(show).toHaveScreenshot()
       });
     }
+
 
   });
 }
