@@ -152,6 +152,9 @@ export default class Composer extends Base {
     const promises = [];
     try {
       for (let mutation of mutations) {
+        if (mutation.target === this) {
+          return this.load();
+        }
         if (mutation.target.tagName === 'SVG') {
           promises.push(this.#loadSVG());
         } else if (mutation.target.tagName === 'SCRIPT') {
