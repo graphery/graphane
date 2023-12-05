@@ -27,8 +27,8 @@ gSVG.install(render)
     .install(composerPlugin);
 
 const NAME        = 'composer';
-const SVG         = 'svg';
 const UPDATE      = 'update';
+const SVG         = 'SVG';
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
 
 /**
@@ -147,22 +147,20 @@ export default class Composer extends Base {
     const promises = [];
     try {
       for (let mutation of mutations) {
-        if (mutation.target === this && !mutation.attributeName) {
+        const target = mutation.target;
+        if (target === this && !mutation.attributeName) {
           return this.load();
         }
-        if (mutation.target.tagName === 'SVG') {
+        if (target.tagName === SVG) {
           promises.push(this.#loadSVG());
-        } else if (mutation.target.tagName === 'SCRIPT') {
-          switch (mutation.target.type.toLowerCase()) {
-            case 'data':
-              promises.push(this.#loadData());
-              break;
-            case 'methods':
-              promises.push(this.#loadMethods());
-              break;
-            case 'config':
-              promises.push(this.#loadConfig());
-              break;
+        } else if (target.tagName === 'SCRIPT') {
+          const load = {
+            data    : this.#loadData,
+            methods : this.#loadMethods,
+            config  : this.#loadConfig
+          }[target.type.toLowerCase()];
+          if (load) {
+            promises.push(load());
           }
         }
       }
