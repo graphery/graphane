@@ -3,10 +3,11 @@
 ## 0.1.0-alpha.6 (xx/xx/2023)
 
 - Added `$$()` in the `g-bind` directive to get the current value of the attribute.
+- Added reloading of the component when the Light DOM changes.
 - Improved the code resulting of running `.animateTo()` or `$$.dynamic()` with `transform=rotate()`.
 - Improved Javascript identifier validation in template directives.
 - Improved error description in console messages.
-- Fixed a default `width` to 100px when not defined by SVG or component size.
+- Fixed the `width` behaviour when not defined by SVG or component size.
 - Fixed an error with decimal values as `g-for="n of 10.1"`.
 - Fixed an error with load plugin and its internal cache.
 - Removed `--internal-width` CSS variable.
