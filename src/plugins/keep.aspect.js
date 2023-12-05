@@ -39,9 +39,7 @@ function keepAspect (option = 'size') {
   if (option === 'size') {
     keepSize(svg, this);
   }
-  if (option) {
-    svg.addEventListener('resize', this[KEEP_ASPECT]);
-  }
+  svg.addEventListener('resize', this[KEEP_ASPECT]);
   return this;
 }
 
