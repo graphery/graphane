@@ -35,13 +35,6 @@ function observeResize (svg) {
   check();
 }
 
-function addEventListener(event, ...params) {
-  if (event === 'resize' && this.el.tagName.toLowerCase() === 'svg') {
-    observeResize(this.el);
-  }
-  this.el.addEventListener(event, ...params)
-}
-
 
 /**
  * resizeObserver plugins installer
@@ -50,12 +43,11 @@ function addEventListener(event, ...params) {
 export function svgPlugin (setup) {
   // Update gySVGObject
   setup.extendInstance((proto) => {
-    const el = proto.addEventListener;
-    proto.addEventListener = function(...args) {
-      addEventListener.call(this, ...args);
-      if (el) {
-        e.call(this, ...args);
+    proto.addEventListener = function(type, listener, options) {
+      if (type === 'resize' && this.el.tagName.toLowerCase() === 'svg') {
+        observeResize(this.el);
       }
+      this.el.addEventListener(type, listener, options);
     }
   });
 }
