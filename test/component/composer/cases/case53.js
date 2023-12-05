@@ -1,4 +1,4 @@
-export const title       = '52) Size: hide and automatic';
+export const title       = '53) Size: hide and automatic';
 export const description = 'start with display none';
 
 

@@ -22,7 +22,7 @@ export function script () {
 export default `
 <div id="container" style="display:none">
   <g-composer>
-    <svg viewBox="0 0 100 100" width="200">
+    <svg viewBox="0 0 100 100" style="width:200px">
       <rect x="0" y="0" width="100" height="100" fill="red"/>
     </svg>
   </g-composer>

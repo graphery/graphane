@@ -2,7 +2,7 @@ export const title       = '24) render with svg methods-src';
 export const description = `Use the render template with svg and methods-src`;
 
 export default `<g-composer methods-src="/test/component/composer/assets/colors.js">
-  <svg viewBox="0 0 100 100" id="svg">
+  <svg viewBox="0 0 100 100" id="svg" width="100">
     <defs g-for="value of data">
         <circle   :cx="value.cx"
                   :cy="value.cy"

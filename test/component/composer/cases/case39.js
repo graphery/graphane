@@ -1,7 +1,7 @@
 export const title       = '39) shape plugin';
 export const description = `Add shape plugin`;
 
-export default `<g-composer>
+export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
     <path fill="none" stroke="#D80000" stroke-width="2" 
       :d="$$.regularPolygon(30, 26, 25, 6, 30)"/>

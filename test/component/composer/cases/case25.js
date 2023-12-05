@@ -1,7 +1,7 @@
 export const title       = '25) use $.min(), $.max(), $.avg(), $.count()';
 export const description = `Render with a template than use $ methods`;
 
-export default `<g-composer>
+export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
     <line x1="0" 
           y1="99" 

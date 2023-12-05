@@ -75,12 +75,8 @@ export default class Composer extends Base {
     const svg = ctx.content.querySelector(SVG);
     if (svg) {
       this.#svg = gSVG(svg);
-      if (!this.#svg.getBoundingClientRect().width &&
-          (!this.#svg.width() || this.#svg.width()?.baseVal?.value === 0) &&
-          !this.#svg.style.width() &&
-          !this.getBoundingClientRect().width &&
-          !this.style.width) {
-        this.#svg.style.width('100px');
+      if (!this.#svg.width() || this.#svg.width()?.baseVal?.value === 0) {
+        this.#svg.width('auto');
       }
     }
     return true;
@@ -133,7 +129,6 @@ export default class Composer extends Base {
           width   : max-content;
           height  : max-content;
         }
-
       </style>
       <span id="content"></span>
     `;

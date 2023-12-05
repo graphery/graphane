@@ -4,7 +4,7 @@ export const description = 'Use the render template with template and script typ
 
 export default `<g-composer>
   <template>
-   <svg viewBox="0 0 100 100" id="svg">
+   <svg viewBox="0 0 100 100" id="svg" style="width: 100px">
     <defs g-for="value of data">
         <circle   :cx="value.cx"
                   :cy="value.cy"
