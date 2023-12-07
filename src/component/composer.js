@@ -76,7 +76,7 @@ export default class Composer extends Base {
     if (svg) {
       this.#svg = gSVG(svg);
       if (!this.#svg.width() || this.#svg.width()?.baseVal?.value === 0) {
-        this.#svg.width('auto');
+        this.#svg.width('100%');
       }
     }
     return true;
