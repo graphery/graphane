@@ -38,7 +38,7 @@ export const toCamel = name => name.replace(/-([a-z0-9])/g, (x, y) => y.toUpperC
  */
 export const toHyphen = name => {
   name = name.replace(/([A-Z])/g, '-$1').toLowerCase();
-  return name[0] === '-' ? name.slice(1) : name;
+  return name.startsWith('-') ? name.slice(1) : name;
 };
 
 
@@ -98,7 +98,7 @@ export function attribute2object (value) {
  */
 export function attribute2array (value) {
   if (isString(value)) {
-    if (value.trim()[0] === '[') {
+    if (value.trim().startsWith('[')) {
       return (value.match(/\[(.*?)[^\]]]/g) || []).map(arr => attribute2array(arr.substring(
         1,
         arr.length - 1
@@ -119,7 +119,7 @@ export function attribute2array (value) {
  */
 export function attribute2arrayObject (value) {
   if (isString(value)) {
-    if (value.trim()[0] === '[') {
+    if (value.trim().startsWith('[')) {
       return (value.match(/\[(.*?)[^\]]]/g) || []).map(arr => attribute2object(arr.substring(
         1,
         arr.length - 1
@@ -136,13 +136,13 @@ export function attribute2arrayObject (value) {
 
 /**
  *
- * @param {Object} value
+ * @param {Object|string} value
  * @return {string|undefined}
  */
 export function array2attribute (value) {
   if (isArray(value)) {
     let str = JSON.stringify(value);
-    return str.substr(1, str.length - 2)
+    return str.substring(1, str.length - 1)
               .replace(/,/g, ', ')
               .replace(/"/g, '');
   } else if (isString(value)) {

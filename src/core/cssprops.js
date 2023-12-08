@@ -1,6 +1,6 @@
 import { CSS_PROPS, COMPONENT_PREFIX } from './base.js';
 
-const buildName   = (name) => /^--/.test(name) ? name : `--${ COMPONENT_PREFIX }${ name }`;
+const buildName   = (name) => name.startsWith('--') ? name : `--${ COMPONENT_PREFIX }${ name }`;
 
 
 /**

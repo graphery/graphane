@@ -359,7 +359,7 @@ const DEBUG_ALL   = 2;
 const toCamel                = name => name.replace(/_([a-z0-9])/g, (x, y) => y.toUpperCase());
 const isValidAttribute       = (element, name) => toCamel(name) in element ||
                                                   toCamel(name) in getComputedStyle(element);
-const isValidElement         = (parent, child) => ELEMENTS[parent] && ELEMENTS[parent].includes(child);
+const isValidElement         = (parent, child) => ELEMENTS[parent]?.includes(child);
 const isValidMethod          = (element, f, extensions) => {
   const tag   = element.el.tagName;
   const proto = Object.getPrototypeOf(element);

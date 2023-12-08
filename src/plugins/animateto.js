@@ -56,7 +56,7 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
    * @returns {object}
    */
   const normalizeOptions = (opts) => {
-    const normalizedConfig = isObject(opts) ? Object.assign({}, opts) : {duration : opts};
+    const normalizedConfig = isObject(opts) ? {...opts} : {duration : opts};
     if (reduceMotion) {
       normalizedConfig.duration = 0;
     }
@@ -77,7 +77,7 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     const normalizeFrames = [];
     const alternativeKeys = new Set();
     for (let keyframe of originalKeyframes) {
-      const normalized = Object.assign({}, keyframe);
+      const normalized = {...keyframe};
       for (let key in normalized) {
         if (!(key in computedStyle) || exception.includes(key)) {
           alternativeKeys.add(key);

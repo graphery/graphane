@@ -316,15 +316,13 @@ function descriptorObservedAttributes (Class, attribute, prototype, previousGet,
       };
     }
   } else {
-    if (descriptorObsAttrPrototype) {
-      descriptor.get = function () {
+    descriptor.get = descriptorObsAttrPrototype ?
+      function () {
         return [attribute.name, ...descriptorObsAttrPrototype.get.call(prototype)];
-      };
-    } else {
-      descriptor.get = function () {
+      } :
+      function () {
         return [attribute.name];
       };
-    }
   }
 
   return descriptor;
@@ -419,7 +417,7 @@ function definePropertySet (property) {
     // Schema normalization
     if (property.schema) {
       objectObserver.stop();
-      value                = property.schema.normalize(value);
+      value = property.schema.normalize(value);
       objectObserver.start();
     }
 
@@ -432,13 +430,11 @@ function definePropertySet (property) {
     if (isFunction(property.set)) {
       property.set.call(this, value);
     } else {
-      // String conversion updated
-      if (isString(value) && property.type) {
-        ctx[property.name] = str2value(value, property.type);
-      } else {
-        // Default updated
-        ctx[property.name] = value;
-      }
+      ctx[property.name] = isString(value) && property.type ?
+        // String conversion updated
+        str2value(value, property.type) :
+        // Other values
+        value;
     }
 
     // Update attribute
@@ -505,11 +501,11 @@ function registreComponent (Class, name) {
  */
 function define (Class, def = {}) {
   def.property  = (...properties) => {
-    properties.forEach(property => defineProperty(Class, Object.assign({}, property)));
+    properties.forEach(property => defineProperty(Class, {...property}));
     return def;
   };
   def.attribute = (...attributes) => {
-    attributes.forEach(attribute => defineAttribute(Class, Object.assign({}, attribute)));
+    attributes.forEach(attribute => defineAttribute(Class, {...attribute}));
     return def;
   };
   def.tag       = (name) => {
