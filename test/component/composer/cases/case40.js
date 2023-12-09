@@ -1,5 +1,5 @@
-export const title       = '40) keep-aspect plugin with method';
-export const description = `Keep font size and stroke with when the SV is resized`;
+export const title       = '40) non-scaling-size plugin with method';
+export const description = `Keep font size when the SVG is resized`;
 
 export function script () {
   const composer = document.querySelector('g-composer')
@@ -44,14 +44,14 @@ export default `
       </defs>
     </g>
   </svg>
-  <script type="plugin" src="../plugins/keep.aspect.js"></script>
+  <script type="plugin" src="../plugins/non.scaling.size.js"></script>
   <script type="methods">
     function render() {
       $.svg.querySelectorAll(':not(defs) > line').forEach(el => {
-        el.keepAspect('stroke');
+        el.vectorEffect('non-scaling-stroke');
       });
       $.svg.querySelectorAll(':not(defs) > text').forEach(el => {
-        el.keepAspect();
+        el.nonScalingSize();
       });
     }
   </script>

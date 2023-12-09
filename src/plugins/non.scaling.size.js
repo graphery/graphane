@@ -116,7 +116,14 @@ export function svgPlugin (setup) {
     setup.extendTemplate.defineDirective({
       name : 'g-keep-aspect',
       execute (gObject, {expression}) {
-        gObject.keepAspect(expression);
+        console.warn('"g-keep-aspect" directive is deprecated; use "g-non-scaling-size" instead.');
+        gObject.nonScalingSize(expression);
+      }
+    })
+    setup.extendTemplate.defineDirective({
+      name : 'g-non-scaling-size',
+      execute (gObject) {
+        gObject.nonScalingSize('size');
       }
     })
   }
