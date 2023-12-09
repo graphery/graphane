@@ -7,6 +7,11 @@
 - Improved the code resulting of running `.animateTo()` or `$$.dynamic()` with `transform=rotate()`.
 - Improved Javascript identifier validation in template directives.
 - Improved error description in console messages.
+- Refactor and renamed `keep-aspect` plugin to `non-scaling-size`. As a result:
+  - `g-keep-aspect` custom directive is now `g-non-scaling-size`.
+  - `.keepAspect()` method is now `nonScalingSize()`.
+  - `.keepAspect('stroke')` method is deprecated and must be used the standard
+    attribute `vector-effect="non-scaling-stroke"`.
 - Fixed the `width` behaviour when not defined by SVG or component size.
 - Fixed an error with decimal values as `g-for="n of 10.1"`.
 - Fixed an error with load plugin and its internal cache.
@@ -30,9 +35,9 @@
 - Added keep-aspect plugin:
   - `g-keep-aspect` custom directive to the template engine.
   - `.keepAspect()` method.
- - Added load plugin:
-  - `g-load` custom directive to the template engine.
-  - `load` event.
+- Added load plugin:
+- `g-load` custom directive to the template engine.
+- `load` event.
 - Change the object observer behavior, now it doesn't launch the callback when the property is
   updated with the previous value.
 - Refactored `.add()` and `.addBefore()` methods.
