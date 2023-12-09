@@ -1,4 +1,4 @@
-export const title       = '14) Add and remove keep circle aspect';
+export const title       = '15) Add and remove keep rect aspect';
 export const description = `resize an SVG with and without keep aspect`;
 
 export function script () {
@@ -7,13 +7,13 @@ export function script () {
                     .preserveAspectRatio('none')
                     .width('100%').height('100%');
   const g   = svg.add('g').style.stroke('#000');
-  const c1  = g.add('circle')
-               .cx(50).cy(50).r(10)
+  const r1  = g.add('rect')
+               .x(45).y(45).width(10).height(10)
                .fill('none')
                .stroke_width(3)
-               .keepAspect();
-  const c2  = g.add('circle')
-               .cx(50).cy(50).r(40)
+               .nonScalingSize();
+  const r2  = g.add('rect')
+               .x(20).y(20).width(60).height(60)
                .fill('none')
                .stroke_width(3);
   svg.attachTo(div);
@@ -28,9 +28,9 @@ export function script () {
   const toggle = document.querySelector('#toggle');
   toggle.addEventListener('input', () => {
     if (toggle.checked) {
-      c1.keepAspect('size');
+      r1.keepAspect('size');
     } else {
-      c1.keepAspect(false);
+      r1.keepAspect(false);
     }
   })
   const result     = document.querySelector('#result');

@@ -1,5 +1,5 @@
 export const title       = '10) Resize and keep line aspect (stroke-width)';
-export const description = `resize an SVG an keep the line stroke-width`;
+export const description = `[DEPRECATED] resize an SVG an keep the line stroke-width`;
 
 export function script () {
   const div    = document.querySelector('#show');

@@ -1,5 +1,5 @@
 export const title       = '1) Resize and keep the text size';
-export const description = `resize an SVG an keep the text size with keepAspect`;
+export const description = `resize an SVG an keep the text size with nonScalingSize`;
 
 export function script () {
   const div    = document.querySelector('#show');
@@ -10,7 +10,7 @@ export function script () {
   const text   = svg.add('text').x(10).y(50).content('hello word')
                     .dominant_baseline('middle')
                     .style.fontFamily('sans-serif').style.fontSize('14px');
-  text.keepAspect();
+  text.nonScalingSize();
   svg.attachTo(div);
   document.querySelector('#change').addEventListener('click', () => {
     svg.width(svg.width() + 50);

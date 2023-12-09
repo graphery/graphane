@@ -1,30 +1,21 @@
-export const title       = '7) Resize and keep g size aspect';
-export const description = `resize an SVG an keep the g size aspect`;
+export const title       = '4) Resize and keep path aspect';
+export const description = `resize an SVG an keep the path aspect`;
 
 export function script () {
   const div = document.querySelector('#show');
   const svg = gSVG().viewBox(0, 0, 100, 100)
                     .preserveAspectRatio('none')
                     .width('100%').height('100%');
-  const g1   = svg.add('g').style.stroke('#000').stroke_width(2).keepAspect();
-  g1.add('line')
-   .x1(20).y1(20).x2(20).y2(30);
-  g1.add('line')
-   .x1(20).y1(30).x2(30).y2(30);
-  g1.add('line')
-   .x1(30).y1(30).x2(30).y2(20);
-  g1.add('line')
-   .x1(30).y1(20).x2(20).y2(20);
-
-  const g2   = svg.add('g').style.stroke('#000').stroke_width(2);
-  g2.add('line')
-   .x1(60).y1(60).x2(60).y2(70);
-  g2.add('line')
-   .x1(60).y1(70).x2(70).y2(70);
-  g2.add('line')
-   .x1(70).y1(70).x2(70).y2(60);
-  g2.add('line')
-   .x1(70).y1(60).x2(60).y2(60);
+  const g   = svg.add('g').style.stroke('#000');
+  g.add('path')
+   .fill('none')
+   .stroke_width(2)
+   .nonScalingSize()
+   .d.M(20, 20).l(0, 10).l(10, 0).l(0, -10).Z();
+  g.add('path')
+   .fill('none')
+   .stroke_width(2)
+   .d.M(60, 60).l(0, 10).l(10, 0).l(0, -10).Z();
   svg.attachTo(div);
   document.querySelector('#change').addEventListener('click', () => {
     div.style.width  = (Number.parseInt(div.style.width) + 50) + 'px';

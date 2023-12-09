@@ -1,5 +1,5 @@
-export const title       = '4) Resize and keep path aspect';
-export const description = `resize an SVG an keep the path aspect`;
+export const title       = '2) Resize and keep circle aspect';
+export const description = `resize an SVG an keep the circle radius and stroke with nonScalingSize`;
 
 export function script () {
   const div = document.querySelector('#show');
@@ -7,15 +7,15 @@ export function script () {
                     .preserveAspectRatio('none')
                     .width('100%').height('100%');
   const g   = svg.add('g').style.stroke('#000');
-  g.add('path')
+  g.add('circle')
+               .cx(30).cy(30).r(10)
+               .fill('none')
+               .stroke_width(5)
+               .nonScalingSize();
+  g.add('circle')
+   .cx(60).cy(60).r(10)
    .fill('none')
-   .stroke_width(2)
-   .keepAspect()
-   .d.M(20, 20).l(0, 10).l(10, 0).l(0, -10).Z();
-  g.add('path')
-   .fill('none')
-   .stroke_width(2)
-   .d.M(60, 60).l(0, 10).l(10, 0).l(0, -10).Z();
+   .stroke_width(5);
   svg.attachTo(div);
   document.querySelector('#change').addEventListener('click', () => {
     div.style.width  = (Number.parseInt(div.style.width) + 50) + 'px';

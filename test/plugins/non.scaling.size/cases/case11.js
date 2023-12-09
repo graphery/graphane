@@ -1,5 +1,5 @@
 export const title       = '11) Resize and keep text and line aspect';
-export const description = `resize an SVG an keep the text size and line stroke with keepAspect`;
+export const description = `resize an SVG an keep the text size and line stroke with nonScalingSize`;
 
 export function script () {
   const div    = document.querySelector('#show');
@@ -26,7 +26,7 @@ export function script () {
                         .x((column * 20) + 12).y((row * 20) + 12)
                         .content(n);
       if (n % 2 === 0) {
-        text.keepAspect();
+        text.nonScalingSize();
       }
     }
   }
