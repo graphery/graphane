@@ -102,6 +102,45 @@ test.describe(name, () => {
     expect(b.$distinct(data, 'x.n')).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
 
+  test('call to $filter', () => {
+    const data = [
+      {x : {n : 1}},
+      {x : {n : 2}},
+      {x : {n : 3}},
+      {x : {n : 4}},
+      {x : {n : 5}},
+      {x : {n : 6}},
+      {x : {n : 7}},
+      {x : {n : 8}},
+      {x : {n : 9}},
+      {x : {y : 10}},
+    ];
+    const b = operations(data);
+    expect(b.$filter(r => r.x.n < 5)).toStrictEqual([
+      {x : {n : 1}},
+      {x : {n : 2}},
+      {x : {n : 3}},
+      {x : {n : 4}}
+    ]);
+  });
+
+  test('call to $map', () => {
+    const data = [
+      {x : {n : 1}},
+      {x : {n : 2}},
+      {x : {n : 3}},
+      {x : {n : 4}},
+      {x : {n : 5}},
+      {x : {n : 6}},
+      {x : {n : 7}},
+      {x : {n : 8}},
+      {x : {n : 9}},
+      {x : {y : 10}},
+    ];
+    const b = operations(data);
+    expect(b.$map(r => r.x.n).$filter(n => n < 5).$sum()).toBe(10);
+  });
+
   test('overwrite methods', () => {
     const data = {
       $min() {
