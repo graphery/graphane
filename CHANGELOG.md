@@ -17,6 +17,7 @@
 - Fixed an error with load plugin and its internal cache.
 - Removed `--internal-width` CSS variable.
 - Removed support for `hidden` attribute in `g-component`.
+- Refactor the array operators.
 
 ## 0.1.0-alpha.5 (21/11/2023)
 

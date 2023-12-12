@@ -3,7 +3,6 @@ import { isUndefined, isString } from "./types.js";
 
 const DIRECT  = Symbol();
 const INITIAL = Symbol();
-const CONFIG  = {enumerable : false, configurable : true, writable : true};
 
 function getValue (obj, prop) {
   if (prop === DIRECT) {
@@ -32,7 +31,7 @@ function getValue (obj, prop) {
  */
 export function operations (data = {}) {
 
-  const cache = {}
+  const cache  = {}
 
   /**
    *
@@ -52,7 +51,9 @@ export function operations (data = {}) {
       data,
       name,
       {
-        ...CONFIG,
+        enumerable   : false,
+        configurable : true,
+        writable     : true,
         value (arr = undefined, prop = DIRECT) {
           if (isString(arr) || isUndefined(arr)) {
             prop = arr || DIRECT;
@@ -79,25 +80,6 @@ export function operations (data = {}) {
     );
   }
 
-  /**
-   * @param {string} name
-   * @param {Function } op
-   */
-  function wrapper (name, op) {
-    Object.defineProperty(
-      data,
-      name,
-      {
-        ...CONFIG,
-        value (...args) {
-          return operations(op.apply(data, args));
-        }
-      }
-    );
-  }
-
-  wrapper('$filter', Array.prototype.filter);
-  wrapper('$map', Array.prototype.map);
   operation('$min', INITIAL, (result, value) => value > result ? result : value);
   operation('$max', INITIAL, (result, value) => value < result ? result : value);
   operation('$count', 0, (result) => result + 1);
