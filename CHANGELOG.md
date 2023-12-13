@@ -7,6 +7,7 @@
 - Improved the code resulting of running `.animateTo()` or `$$.dynamic()` with `transform=rotate()`.
 - Improved Javascript identifier validation in template directives.
 - Improved error description in console messages.
+- Improved CSV format support.
 - Refactor and renamed `keep-aspect` plugin to `non-scaling-size`. As a result:
   - `g-keep-aspect` custom directive is now `g-non-scaling-size`.
   - `.keepAspect()` method is now `nonScalingSize()`.
