@@ -69,8 +69,8 @@ export function attribute2object (value) {
   if (isString(value)) {
     try {
       const normalized = value
-        .replace(/^\s*{/,'')
-        .replace(/}\s*$/,'')
+        .replace(/^\s*{/, '')
+        .replace(/}\s*$/, '')
         .split(/((?:[^;^,"']|"[^"]*"|'[^']*')+)/)
         .filter(partial => !['', ';', ','].includes(partial.trim()))
         .map(partial => partial.split(':'))
@@ -223,7 +223,7 @@ function removeDoubleQuote (str) {
  * @param {string} str
  * @returns {boolean}
  */
-export function isLikeObject(str) {
+export function isLikeObject (str) {
   return /^\s*{(.|\s)*}\s*$/.test(str);
 }
 
@@ -232,7 +232,7 @@ export function isLikeObject(str) {
  * @param {string} str
  * @returns {boolean}
  */
-export function isLikeArray(str) {
+export function isLikeArray (str) {
   return /^\s*\[(.|\s)*]\s*$/.test(str);
 }
 
@@ -250,11 +250,11 @@ export function csvStr2obj (str) {
           .split(/((?:[^;^,"']|"[^"]*"|'[^']*')+)/)
           .filter(partial => ![EMPTY_STRING, SEMICOLON, COMA].includes(partial.trim()));
         if (idx === 0) {
-          keys = [...parts.map(p => JSON.parse(p))];
+          keys = [...parts.map(x => str2value(x))];
           return result;
         }
         parts.forEach((part, i) => {
-          obj[keys[i]] = JSON.parse(part);
+          obj[keys[i]] = str2value(part);
         });
         result.push(obj);
         return result;
