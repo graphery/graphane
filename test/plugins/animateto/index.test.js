@@ -33,6 +33,10 @@ const results = {
   case10_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <line x1="90" y1="10" x2="10" y2="90" stroke="black"></line> </svg>`,
   case11       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="0" y="0" width="40" height="40" fill="black"></rect> </svg>`,
   case11_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="0" y="0" width="40" height="40" fill="black"></rect> </svg>`,
+  case12       : `<svg viewBox="0,0,100,100" width="100" height="100"> <circle cx="10" cy="10" r="10" fill="black" stroke="red" stroke-width="1"></circle> </svg>`,
+  case12_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <circle cx="10" cy="10" r="10" fill="black" stroke="red" stroke-width="1"></circle> </svg>`,
+  case13       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="20" y="20" width="60" height="60" fill="black"></rect> </svg>`,
+  case13_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="20" y="20" width="60" height="60" fill="black" rx="0" ry="0"></rect> </svg>`,
 }
 
 const dir = await opendir(FOLDER);
