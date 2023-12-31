@@ -13,6 +13,7 @@
   - `.keepAspect()` method is now `nonScalingSize()`.
   - `.keepAspect('stroke')` method is deprecated and must be used the standard
     attribute `vector-effect="non-scaling-stroke"`.
+- Fixed errors with `animateTo` in Firefox.
 - Fixed the `width` behaviour when not defined by SVG or component size.
 - Fixed an error with decimal values as `g-for="n of 10.1"`.
 - Fixed an error with load plugin and its internal cache.

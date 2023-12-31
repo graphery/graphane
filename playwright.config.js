@@ -9,6 +9,9 @@ if (process.argv.includes('--project=composer')) {
 } else if (process.argv.includes('--project=core')) {
   process.env.port = '7201';
   options          = '-t ./test/core/cases';
+} else if (process.argv.includes('--project=core.viewport')) {
+  process.env.port = '7211';
+  options          = '-t ./test/core.viewport/cases';
 } else if (process.argv.includes('--project=svg')) {
   process.env.port = '7202';
   options          = '-i /src/lib/gsvg.script.js ' +
@@ -67,6 +70,7 @@ export default defineConfig({
   projects      : [
     {name : 'helpers'},
     {name : 'core'},
+    {name : 'core.viewport'},
     {name : 'composer'},
     {name : 'svg'},
     {name : 'animateto'},
