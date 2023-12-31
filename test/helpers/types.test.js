@@ -145,7 +145,7 @@ test.describe(name, () => {
     const str = `
 a,b,c
 1,2,3
-d,e,"f,b"
+d,e,"f,g"
 `;
     expect(csvStr2obj(str)).toStrictEqual([{a : 1, b : 2, c : 3}, {a : 'd', b : 'e', c : 'f,g'}])
   });
