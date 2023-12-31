@@ -1,4 +1,4 @@
-import { isObject, isString, isFunction, isArray } from '../helpers/types.js';
+import { isObject, isString, isFunction, isArray, toCamel } from '../helpers/types.js';
 
 const SVG       = 'SVG';
 const ANIMATE   = 'animate';
@@ -16,7 +16,7 @@ const DEG_TYPES = [ROTATE, 'skewX', 'skewY'];
 const DEG       = 'deg';
 const PX        = 'px';
 const MS        = 'ms';
-const exception = ['width', 'height'];
+const TO_PIXELS = ['width', 'height', 'x' , 'y', 'cx', 'cy', 'r', 'rx', 'ry'];
 
 /**
  * The reduced-motion flag
@@ -77,9 +77,14 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     const normalizeFrames = [];
     const alternativeKeys = new Set();
     for (let keyframe of originalKeyframes) {
-      const normalized = {...keyframe};
-      for (let key in normalized) {
-        if (!(key in computedStyle) || exception.includes(key)) {
+      const normalized = {};
+      for (let rawKey in keyframe) {
+        const key = toCamel(rawKey);
+        normalized[key] = keyframe[rawKey];
+        if (TO_PIXELS.includes(key)) {
+          normalized[key] = normalized[key] + 'px';
+        }
+        if (!(key in computedStyle)) {
           alternativeKeys.add(key);
         } else if (key === D) {
           normalized.d = `${ PATH }("${ normalized.d }")`
