@@ -1,7 +1,7 @@
 export const title       = '32) g-on with added method';
 export const description = `Use the g-on directive with an added method`;
 
-export default `<g-composer>
+export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
     <circle id="run" 
             cx="50"

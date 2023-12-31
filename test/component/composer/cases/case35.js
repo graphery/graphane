@@ -2,7 +2,7 @@ export const title       = '35) call to methods object';
 export const description = `Call to load() method directly`;
 
 export default `
-<g-composer>
+<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100">
   </svg>
   <script type="methods">

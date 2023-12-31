@@ -1,4 +1,4 @@
-import { isObject, isString, isFunction, isArray } from '../helpers/types.js';
+import { isObject, isString, isFunction, isArray, toCamel } from '../helpers/types.js';
 
 const SVG       = 'SVG';
 const ANIMATE   = 'animate';
@@ -16,7 +16,7 @@ const DEG_TYPES = [ROTATE, 'skewX', 'skewY'];
 const DEG       = 'deg';
 const PX        = 'px';
 const MS        = 'ms';
-const exception = ['width', 'height'];
+const TO_PIXELS = ['width', 'height', 'x' , 'y', 'cx', 'cy', 'r', 'rx', 'ry'];
 
 /**
  * The reduced-motion flag
@@ -56,7 +56,7 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
    * @returns {object}
    */
   const normalizeOptions = (opts) => {
-    const normalizedConfig = isObject(opts) ? Object.assign({}, opts) : {duration : opts};
+    const normalizedConfig = isObject(opts) ? {...opts} : {duration : opts};
     if (reduceMotion) {
       normalizedConfig.duration = 0;
     }
@@ -77,9 +77,14 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     const normalizeFrames = [];
     const alternativeKeys = new Set();
     for (let keyframe of originalKeyframes) {
-      const normalized = Object.assign({}, keyframe);
-      for (let key in normalized) {
-        if (!(key in computedStyle) || exception.includes(key)) {
+      const normalized = {};
+      for (let rawKey in keyframe) {
+        const key = toCamel(rawKey);
+        normalized[key] = keyframe[rawKey];
+        if (TO_PIXELS.includes(key)) {
+          normalized[key] = normalized[key] + 'px';
+        }
+        if (!(key in computedStyle)) {
           alternativeKeys.add(key);
         } else if (key === D) {
           normalized.d = `${ PATH }("${ normalized.d }")`
@@ -208,6 +213,23 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     .replace(/([a-zA-Z])\s*/g, '$1')
     .replace(/\s+/g, ',');
 
+  /**
+   * Transform d CSS property to valid d attribute format
+   * @param {string} transform
+   * @returns {string}
+   */
+  const transform2attribute = (transform) => {
+    const regex = /translate\((.*)px,(.*)px\) rotate\((.*)deg\) translate\((.*)px,(.*)px\)\s+/;
+    const match = regex.exec(transform);
+    if (match && Number(match[1]) === Number(match[4]) * -1 && Number(match[2]) === Number(match[5]) * -1) {
+      transform = transform.replace(regex, `rotate(${match[3]}, ${match[1]}, ${match[2]})`)
+    } else {
+      transform = value2attribute(transform);
+    }
+    return transform;
+  }
+
+
   // Main code
   const config    = normalizeOptions(options);
   const frames    = normalizeKeyframes(keyframes);
@@ -219,14 +241,16 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     const lastAttributes = frames[frames.length - 1];
     for (let attr in lastAttributes) {
       const attrKey = toHyphen(attr);
-      if (/^text-/.test(attrKey)) {
+      if (attrKey.startsWith("text-")) {
         this._el.style[attr] = lastAttributes[attr];
       } else if (attr !== OFFSET && attr in lastAttributes) {
         this._el.setAttribute(
           attrKey,
           attrKey === D ?
             d2attribute(lastAttributes[attr]) :
-            value2attribute(lastAttributes[attr]));
+            attrKey === TRANSFORM ?
+              transform2attribute(lastAttributes[attr]) :
+              value2attribute(lastAttributes[attr]));
       }
     }
     alternatives.forEach(altAnimate => {

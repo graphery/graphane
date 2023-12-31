@@ -13,7 +13,13 @@ const pre           = `<svg viewBox="0 0 100 100" width="100" height="100"> <lin
 const pos           = `<svg viewBox="0 0 100 100" width="50" height="50"> <line x1="10" y1="10" x2="90" y2="90" stroke="black" stroke-width="10"></line> <line x1="10" y1="90" x2="90" y2="10" stroke="black" stroke-width="10"></line> </svg>`;
 const results       = {
   case01       : pre,
-  case01_after : pos
+  case01_after : pos,
+  case02       : pre,
+  case02_after : pos,
+  case03       : pre,
+  case03_after : pos,
+  case04       : pre,
+  case04_after : pos,
 }
 
 const dir = await opendir(FOLDER);

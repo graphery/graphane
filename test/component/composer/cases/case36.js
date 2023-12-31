@@ -1,7 +1,7 @@
 export const title       = '36) render with svg and script type="method" with data() function';
 export const description = `Add normalized data`;
 
-export default `<g-composer>
+export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
     <defs g-for="(value, idx) of data">
         <circle   :cx="value.cx"

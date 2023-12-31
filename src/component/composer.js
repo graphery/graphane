@@ -1,9 +1,9 @@
 import {
   Base, define,
-  RENDER, CONTEXT, FIRE_EVENT
+  RENDER, CONTEXT, FIRE_EVENT, CHANGE
 }                              from '../core/base.js';
 import {
-  STRING, OBJECT, isString, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
+  STRING, OBJECT, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
 }                              from '../helpers/types.js';
 import viewport                from "../core/viewport.js";
 import gSVG                    from '../lib/gsvg.js';
@@ -26,11 +26,10 @@ const composerPlugin = (setup) => {
 gSVG.install(render)
     .install(composerPlugin);
 
-const NAME           = 'composer';
-const SVG            = 'svg';
-const INTERNAL_WIDTH = '--internal-width';
-const UPDATE         = 'update';
-const queryScript    = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
+const NAME        = 'composer';
+const UPDATE      = 'update';
+const SVG         = 'SVG';
+const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
 
 /**
  * gy-svg class
@@ -75,10 +74,10 @@ export default class Composer extends Base {
     }
     const svg = ctx.content.querySelector(SVG);
     if (svg) {
-      this.#svg     = gSVG(svg);
-      const viewBox = this.#svg.viewBox();
-      const width   = isString(viewBox) ? viewBox.split(/\s|;/)[3] : 0;
-      this.shadowRoot.host.style.setProperty(INTERNAL_WIDTH, `${ width || 250 }px`);
+      this.#svg = gSVG(svg);
+      if (!this.#svg.width() || this.#svg.width()?.baseVal?.value === 0) {
+        this.#svg.width('100%');
+      }
     }
     return true;
   }
@@ -127,12 +126,8 @@ export default class Composer extends Base {
       <style>
         :host {
           display : inline-block;
-          width   : var(--internal-width, 250px);
-          height  : auto;
-        }
-
-        :host([hidden]) {
-          display : none;
+          width   : max-content;
+          height  : max-content;
         }
       </style>
       <span id="content"></span>
@@ -144,11 +139,40 @@ export default class Composer extends Base {
    * Render method
    * @private
    */
-  async [RENDER] () {
+  [RENDER] () {
+    return this.load();
+  }
 
-    // Load
-    await this.load();
-
+  async [CHANGE] (mutations) {
+    const promises = [];
+    try {
+      for (let mutation of mutations) {
+        const target = mutation.target;
+        if (target === this && !mutation.attributeName) {
+          return this.load();
+        }
+        if (target.tagName === SVG) {
+          promises.push(this.#loadSVG());
+        } else if (target.tagName === 'SCRIPT') {
+          const load = {
+            data    : this.#loadData,
+            methods : this.#loadMethods,
+            config  : this.#loadConfig
+          }[target.type.toLowerCase()];
+          if (load) {
+            promises.push(load());
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err.message);
+      this[FIRE_EVENT]('error', err.message);
+      return false;
+    }
+    if (promises.length) {
+      await Promise.all(promises);
+      return this.update();
+    }
   }
 
   async load () {
@@ -194,7 +218,7 @@ export default class Composer extends Base {
     }
     if (this.#svg) {
       this.isRendering = true;
-      const ctx = this [CONTEXT];
+      const ctx        = this [CONTEXT];
       const data       = operations(
         ctx.methods.data ?
           ctx.methods.data(clone(ctx.data)) :

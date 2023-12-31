@@ -1,7 +1,7 @@
 export const title       = '19) render with data inline';
 export const description = `Use the render template with <code>data="key: value"</code>`;
 
-export default `<g-composer data="value: 3">
+export default `<g-composer data="value: 3" style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
     <defs g-for="n of value">
         <circle   :cx="(n + 1) * 25"

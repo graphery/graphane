@@ -1,7 +1,7 @@
 export const title       = '22) render with svg and script type="data" with methods';
 export const description = `Use the render template with svg and &lt;script type="data"> with methods`;
 
-export default `<g-composer>
+export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
     <defs g-for="value of values">
         <circle   :cx="value.cx"
