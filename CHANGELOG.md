@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.1.0-alpha.6 (xx/xx/2023)
+## 0.1.0-alpha.6 (31/12/2023)
 
 - Added `$$()` in the `g-bind` directive to get the current value of the attribute.
 - Added reloading of the component when the Light DOM changes.
