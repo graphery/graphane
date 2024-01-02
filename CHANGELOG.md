@@ -1,5 +1,17 @@
 # Change Log
 
+## 0.1.0-beta.1 (31/12/2023)
+
+- BREAKING CHANGE: the attribute `viewport-ratio` is now `intersection-ratio`.
+- BREAKING CHANGE: the attribute `viewport-class` is now `intersection-class`.
+- BREAKING CHANGE: the attribute `viewport-once-class` is now `intersection-once-class`.
+- BREAKING CHANGE: the event `enterViewport` is now `intersection.enter`.
+- BREAKING CHANGE: the event `exitViewport` is now `intersection.exit`.
+- Added `.intersection(ratio)` and events `intersection.enter`/`intersection.exit` to the SVG
+  library.
+- Added `g-intersection="ratio"` and events `intersection.enter`/`intersection.exit` to the SVG
+  Template Engine.
+
 ## 0.1.0-alpha.6 (31/12/2023)
 
 - Added `$$()` in the `g-bind` directive to get the current value of the attribute.
