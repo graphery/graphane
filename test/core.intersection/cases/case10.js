@@ -1,9 +1,9 @@
-export const title       = '7) css var'
+export const title       = '10) once-classes'
 export const description = `Display an circle into a overflow div`;
 
 export async function script () {
   const {Base, RENDER, define} = await import('/src/core/base.js');
-  const {viewport}             = await import('/src/core/viewport.js');
+  const {intersectionCoreExtension}         = await import('/src/core/intersection.js');
 
   class MyComponent extends Base {
 
@@ -15,7 +15,7 @@ export async function script () {
           }
         </style>
         <svg viewBox="0 0 100 100" width="100" height="100">
-          <circle cx="50" cy="50" r="50" style="fill: var(--circle-fill)"/>
+          <circle cx="50" cy="50" r="50"/>
           <rect x="14" y="14" width="72" height="72"/> 
         </svg>`;
     }
@@ -25,25 +25,29 @@ export async function script () {
   }
 
   define(MyComponent)
-    .extension(viewport)
+    .extension(intersectionCoreExtension)
     .tag('my-component');
 
   const component  = document.querySelector('g-my-component');
   const result     = document.querySelector('#result');
-  result.innerHTML = `<p>viewportRatio = ${component.viewportRatio }</p>`
+  result.innerHTML = `<p>intersectionRatio = ${component.intersectionRatio }</p>`
 
 }
 
 export default `
 <style>
 .exit {
-  --circle-fill: blue;
+  fill: blue;
 }
-.enter {
-  --circle-fill: red;
+.stroke {
+  stroke: black;
+  stroke-width: 1;
+}
+.fill {
+  fill: red;
 }
 </style>
 <div id="container" style="width: 120px; height: 120px; overflow: auto">
-  <g-my-component viewport-ratio="1" class="exit" viewport-class="enter" style="margin-top:120px;"></g-my-component>
+  <g-my-component intersection-ratio="1" class="exit" intersection-once-class="stroke  fill other" style="margin-top:120px;"></g-my-component>
 </div>
 <pre id="result"></pre>`;

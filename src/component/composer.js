@@ -4,9 +4,9 @@ import {
 }                              from '../core/base.js';
 import {
   STRING, OBJECT, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
-}                              from '../helpers/types.js';
-import viewport                from "../core/viewport.js";
-import gSVG                    from '../lib/gsvg.js';
+}                   from '../helpers/types.js';
+import intersection from "../core/intersection.js";
+import gSVG         from '../lib/gsvg.js';
 import { svgPlugin as render } from '../plugins/template.engine.js';
 import { debounceMethod }      from "../helpers/functions.js";
 import { getFunctions }        from "../helpers/function.create.js";
@@ -249,7 +249,7 @@ Composer.prototype.update = debounceMethod(Composer.prototype.update, 1)
 
 // Define the component
 define(Composer)
-  .extension(viewport)
+  .extension(intersection)
   .attribute({name : 'svg-src', type : STRING, value : '', posUpdate : RENDER})
   .attribute({name : 'data', type : OBJECT, value : [], posUpdate : UPDATE})
   .attribute({name : 'data-src', type : STRING, posUpdate : RENDER})

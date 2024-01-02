@@ -1,9 +1,9 @@
-export const title       = '4) css class & viewport-ratio = 0'
+export const title       = '8) update intersectionRatio'
 export const description = `Display an circle into a overflow div`;
 
 export async function script () {
   const {Base, RENDER, define} = await import('/src/core/base.js');
-  const {viewport}             = await import('/src/core/viewport.js');
+  const {intersectionCoreExtension}         = await import('/src/core/intersection.js');
 
   class MyComponent extends Base {
 
@@ -15,7 +15,7 @@ export async function script () {
           }
         </style>
         <svg viewBox="0 0 100 100" width="100" height="100">
-          <circle cx="50" cy="50" r="50"/>
+          <circle cx="50" cy="50" r="50" style="fill: var(--circle-fill)"/>
           <rect x="14" y="14" width="72" height="72"/> 
         </svg>`;
     }
@@ -25,25 +25,21 @@ export async function script () {
   }
 
   define(MyComponent)
-    .extension(viewport)
+    .extension(intersectionCoreExtension)
     .tag('my-component');
-
-  const component  = document.querySelector('g-my-component');
-  const result     = document.querySelector('#result');
-  result.innerHTML = `<p>viewportRatio = ${component.viewportRatio }</p>`
 
 }
 
 export default `
 <style>
 .exit {
-  fill: blue;
+  --circle-fill: blue;
 }
 .enter {
-  fill: red;
+  --circle-fill: red;
 }
 </style>
 <div id="container" style="width: 120px; height: 120px; overflow: auto">
-  <g-my-component class="exit" viewport-class="enter" style="margin-top:120px;"></g-my-component>
+  <g-my-component intersection-ratio="1" class="exit" intersection-class="enter" style="margin-top:70px;"></g-my-component>
 </div>
-<pre id="result"></pre>`;
+<pre>intersectionRatio = <input type="range" min="0" max="1" value="1" step="0.05" oninput="document.querySelector('g-my-component').intersectionRatio = this.value"</pre>`;

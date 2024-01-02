@@ -5,8 +5,8 @@ import { opendir }      from 'node:fs/promises';
 import { join }         from 'node:path';
 
 const ROOT   = '/';
-const URL    = ROOT + 'test/core.viewport/cases/';
-const FOLDER = './test/core.viewport/cases/';
+const URL    = ROOT + 'test/core.intersection/cases/';
+const FOLDER = './test/core.intersection/cases/';
 
 const dir = await opendir(FOLDER);
 for await (const dirent of dir) {
@@ -24,10 +24,10 @@ for await (const dirent of dir) {
       await expect(component).toHaveScreenshot();
     });
     if (['case08'].includes(code)) {
-      test('compare image after change viewportRatio', async ({page}) => {
+      test('compare image after change intersectionRatio', async ({page}) => {
         await page.evaluate(_ => {
           const component = document.querySelector('g-my-component');
-          component.viewportRatio = 0.4;
+          component.intersectionRatio = 0.4;
         });
         const component = page.locator('#container');
         await expect(component).toHaveScreenshot();
