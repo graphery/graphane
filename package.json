@@ -61,7 +61,7 @@
     "commander": "^11.1.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.11",
-    "esprima-next": "5.8.4",
+    "esprima-next": "6.0.1",
     "playwright": "^1.40.1",
     "ws": "^8.16.0"
   },
