@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.1.0-beta.1 (31/12/2023)
+## 0.1.0-alpha.7 (xx/01/2024)
 
 - BREAKING CHANGE: the attribute `viewport-ratio` is now `intersection-ratio`.
 - BREAKING CHANGE: the attribute `viewport-class` is now `intersection-class`.
@@ -11,6 +11,7 @@
   library.
 - Added `g-intersection="ratio"` and events `intersection.enter`/`intersection.exit` to the SVG
   Template Engine.
+- Refactored `animateTo` and fixed errors with FireFox.
 
 ## 0.1.0-alpha.6 (31/12/2023)
 

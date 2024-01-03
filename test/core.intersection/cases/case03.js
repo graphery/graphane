@@ -1,4 +1,4 @@
-export const title       = '2) event & intersectionRatio = 0.5'
+export const title       = '3) event & intersectionRatio = 0.5'
 export const description = `Display an circle into a overflow div`;
 
 export async function script () {

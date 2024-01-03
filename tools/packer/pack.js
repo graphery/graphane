@@ -6,6 +6,12 @@ const optimizeTemplateString = require('./optimizeTemplateString.js');
 async function pack (from, to, packagejson, options) {
 
   //-------------------------------------------------------
+  // Original size
+  //-------------------------------------------------------
+  let prev = (await fs.readFile(to)).toString();
+  !options.silence && console.log('                 previous size:', prev.length);
+
+  //-------------------------------------------------------
   // Open to file
   //-------------------------------------------------------
   let fromFile = (await fs.stat(from));
@@ -64,6 +70,9 @@ async function pack (from, to, packagejson, options) {
   content = content.replace(/\s{2,}/g, ' ');
   content = content.trim();
   !options.silence && console.log('            after space remove:', content.length);
+
+  // Compare size
+  !options.silence && console.log('                    difference:', content.length - prev.length);
 
 
   //-------------------------------------------------------

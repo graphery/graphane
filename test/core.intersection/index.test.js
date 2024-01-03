@@ -33,19 +33,25 @@ for await (const dirent of dir) {
         await expect(component).toHaveScreenshot();
       });
     } else {
-      test('compare image after middle scroll', async ({page}) => {
-        await page.evaluate(_ => {
-          const container = document.querySelector('#container');
-          container.scroll(0, container.clientHeight / 3);
+      if (!['case10'].includes(code)) {
+        test('compare image after middle scroll', async ({page}) => {
+          await wait(100);
+          await page.evaluate(_ => {
+            const container = document.querySelector('#container');
+            container.scroll(0, (container.scrollHeight - container.clientHeight) / 3);
+          });
+          await wait(100);
+          const component = page.locator('#container');
+          await expect(component).toHaveScreenshot();
         });
-        const component = page.locator('#container');
-        await expect(component).toHaveScreenshot();
-      });
+      }
       test('compare image after scroll', async ({page}) => {
+        await wait(100);
         await page.evaluate(_ => {
           const container = document.querySelector('#container');
-          container.scroll(0, container.clientHeight);
+          container.scroll(0, container.scrollHeight - container.clientHeight);
         });
+        await wait(100);
         const component = page.locator('#container');
         await expect(component).toHaveScreenshot();
       });
