@@ -30,7 +30,7 @@ const NAME        = 'composer';
 const UPDATE      = 'update';
 const SVG         = 'SVG';
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
-
+const isNotSize   = (size) => !size || size.baseVal?.value === 0;
 /**
  * gy-svg class
  * @element gy-svg
@@ -75,8 +75,9 @@ export default class Composer extends Base {
     const svg = ctx.content.querySelector(SVG);
     if (svg) {
       this.#svg = gSVG(svg);
-      if (!this.#svg.width() || this.#svg.width()?.baseVal?.value === 0) {
+      if (isNotSize(this.#svg.width()) && isNotSize(this.#svg.height())) {
         this.#svg.width('100%');
+        this.#svg.height('100%');
       }
     }
     return true;
