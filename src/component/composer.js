@@ -28,7 +28,7 @@ gSVG.install(render)
 
 const NAME        = 'composer';
 const UPDATE      = 'update';
-const SVG         = 'SVG';
+const SVG         = 'svg';        // Keep in lowercase for Safari
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
 const isNotSize   = (size) => !size || size.baseVal?.value === 0;
 /**
@@ -152,7 +152,7 @@ export default class Composer extends Base {
         if (target === this && !mutation.attributeName) {
           return this.load();
         }
-        if (target.tagName === SVG) {
+        if (target.tagName.toLowerCase() === SVG) {
           promises.push(this.#loadSVG());
         } else if (target.tagName === 'SCRIPT') {
           const load = {
