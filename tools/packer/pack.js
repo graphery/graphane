@@ -3,15 +3,21 @@ const fs                     = require('fs').promises;
 const build                  = require('esbuild').build;
 const optimizeTemplateString = require('./optimizeTemplateString.js');
 
-async function pack (from, to, packagejson, options) {
 
-  console.log(options);
+async function pack (from, to, packagejson, options) {
 
   //-------------------------------------------------------
   // Original size
   //-------------------------------------------------------
-  let prev = (await fs.readFile(to)).toString();
-  !options.silence && console.log('                 previous size:', prev.length);
+  let prev;
+  try {
+    prev = (await fs.readFile(to)).toString();
+    !options.silence && console.log('                 previous size:', prev.length);
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      console.error(err);
+    }
+  }
 
   //-------------------------------------------------------
   // Open to file
@@ -83,7 +89,7 @@ async function pack (from, to, packagejson, options) {
   }
 
   // Compare size
-  !options.silence && console.log('                    difference:', content.length - prev.length);
+  !options.silence && prev && console.log('                    difference:', content.length - prev.length);
 
   // Last message
   !options.silence && console.log(`
