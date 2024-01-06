@@ -32,7 +32,7 @@
     "test:plugin.template.engine": "playwright test test/plugins/template.engine/index.test.js --project=template.engine",
     "test:plugin.load": "playwright test test/plugins/load/index.test.js --project=load",
     "test:core.intersection": "playwright test test/core.intersection/index.test.js --project=core.intersection",
-    "test:test.intersection": "playwright test test/plugins.intersection/index.test.js --project=plugin.intersection",
+    "test:plugin.intersection": "playwright test test/plugins.intersection/index.test.js --project=plugin.intersection",
     "build": "concurrently -m 1 npm:build:*",
     "build:composer": "node ./tools/packer/index.js src/component/composer.js ./dist/component/composer.js ./package.json",
     "build:gsvg": "node ./tools/packer/index.js ./src/lib/gsvg.script.js ./dist/lib/gsvg.js ./package.json",

@@ -23,11 +23,11 @@ const resend = (el, event) => {
 }
 
 function observer () {
+  const ctx       = this[CONTEXT];
   if (this[OBSERVER]) {
-    return;
+    return intersection.call(this, ctx.intersectionRatio);
   }
   this[OBSERVER] = true;
-  const ctx       = this[CONTEXT];
   const classList = this.classList;
   this.addEventListener('intersection.enter', (event) => {
     add(classList, ctx.intersectionOnceClass);
