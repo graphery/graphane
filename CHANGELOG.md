@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.1.0-alpha.7 (xx/01/2024)
+## 0.1.0-alpha.7 (06/01/2024)
 
 - BREAKING CHANGE: the attribute `viewport-ratio` is now `intersection-ratio`.
 - BREAKING CHANGE: the attribute `viewport-class` is now `intersection-class`.
@@ -13,9 +13,9 @@
   library.
 - Added `g-intersection="ratio"` and events `intersection.enter`/`intersection.exit` to the SVG
   Template Engine.
-- Added events `load` and `update` in `g-composer`.
-- Added static `import()` method in `g-composer`.
-- Update plugins script for call to `g-composer.import()`.
+- Add event `load` and improve event `render` in `g-composer`.
+- Added static `install()` method in `g-composer` for load plugins.
+- Update plugins script for call to `g-composer.install()`.
 - Added `module` distribution folder and files.
 - Refactored `animateTo`.
 - Fixed errors in `animateTo` with FireFox.
