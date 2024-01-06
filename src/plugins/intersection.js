@@ -1,11 +1,13 @@
 import intersection from "../helpers/intersection.js";
 
-export function svgPlugin (setup) {
+function install (setup) {
+
   // Update gSVGObject
   setup.extendInstance({
     intersection
   });
-  // Add directive
+
+  // Add template directive
   if (setup.extendTemplate) {
     setup.extendTemplate.defineDirective({
       name : 'g-intersection',
@@ -16,3 +18,5 @@ export function svgPlugin (setup) {
     });
   }
 }
+
+export default install;

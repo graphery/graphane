@@ -40,7 +40,9 @@ const delayExecution = (src) => {
   return proxy;
 }
 
-export function svgPlugin (setup) {
+function install (setup) {
+
+  // Add template directive
   if (setup.extendTemplate) {
     setup.extendTemplate.defineDirective({
       name : 'g-load',
@@ -69,3 +71,5 @@ export function svgPlugin (setup) {
     });
   }
 }
+
+export default install;

@@ -24,7 +24,7 @@ export default `
           g-content="n"
           g-keep-aspect="size"/>
   </svg>
-  <script type="plugin" src="../plugins/observe.resize.js"></script>
+  <script type="plugin" src="./src/plugins/observe.resize.js"></script>
   <script type="methods">
     function add(evt) {
       if (evt.detail.currentMatrix.a > evt.detail.prevMatrix.a) {

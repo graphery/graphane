@@ -260,9 +260,11 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
 }
 
 
-export function svgPlugin (setup) {
+function install (setup) {
   // Update gSVGObject
   setup.extendInstance({
     animateTo
   });
 }
+
+export default install;

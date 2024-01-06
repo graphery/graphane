@@ -405,7 +405,7 @@ function converter (key, val) {
 
 const LOGGER = Symbol('svg.debug logger');
 
-export function svgPlugin (setup) {
+function install (setup) {
   // Update gSVG
   setup.extendConstructor(
     {
@@ -454,3 +454,6 @@ export function svgPlugin (setup) {
     }
   );
 }
+
+
+export default install;

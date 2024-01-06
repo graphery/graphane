@@ -1,4 +1,4 @@
-import { svgPlugin as observeResize } from './observe.resize.js';
+import observeResize from './observe.resize.js';
 
 const KEEP_ASPECT = Symbol();
 const interpreter = (s) => s?.split(/\)\s*/)
@@ -94,14 +94,14 @@ function keepStroke (svg, el) {
   el.vector_effect('non-scaling-stroke');
 }
 
-export function svgPlugin (setup) {
+function install (setup) {
 
   // Install dependencies
   setup.install(observeResize);
 
   // Update gSVGObject
   setup.extendInstance({
-    keepAspect(option) {
+    keepAspect (option) {
       if (option === 'stroke') {
         console.warn('".keepAspect(\'stroke\')" is deprecated; use ".vector_effect(\'non-scaling-stroke\')" instead.');
       } else {
@@ -109,9 +109,10 @@ export function svgPlugin (setup) {
       }
       return keepAspect.call(this, option)
     },
-    nonScalingSize: keepAspect
+    nonScalingSize : keepAspect
   });
 
+  // Add template directive
   if (setup.extendTemplate) {
     setup.extendTemplate.defineDirective({
       name : 'g-keep-aspect',
@@ -129,3 +130,5 @@ export function svgPlugin (setup) {
   }
 
 }
+
+export default install;

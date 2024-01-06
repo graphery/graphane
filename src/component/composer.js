@@ -42,6 +42,10 @@ const isNotSize   = (size) => !size || size.baseVal?.value === 0;
  */
 export default class Composer extends Base {
 
+  /**
+   * Installs the given plugin.
+   * @param {Object|Function} svgPlugin - The plugin to install.
+   */
   static install (svgPlugin) {
     gSVG.install(svgPlugin);
   }
@@ -50,6 +54,12 @@ export default class Composer extends Base {
   #loaded     = false;
   isRendering = false;
 
+  /**
+   * Fetches the content from the specified URL.
+   * @param {string} url - The URL to fetch data from.
+   * @throws {Error} If the fetch request failed or the status code is not 200.
+   * @returns {Promise<string>} A promise that resolves to the fetched content as text.
+   */
   async #fetch (url) {
     const res = await fetch(url)
     if (res.status !== 200) {
