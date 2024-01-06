@@ -194,7 +194,7 @@ export default class Composer extends Base {
    * @private
    */
   [RENDER] () {
-    return this.load();
+    return !this.load();
   }
 
   /**
@@ -285,6 +285,7 @@ export default class Composer extends Base {
       return;
     }
     if (this.#svg) {
+      this.rendered    = false;
       this.isRendering = true;
       const ctx        = this [CONTEXT];
       const data       = operations(
@@ -300,7 +301,7 @@ export default class Composer extends Base {
       };
       await this.#svg.render(renderCtx);
       this.isRendering = false;
-      this[FIRE_EVENT]('update');
+      this.rendered    = true;
     }
   }
 
