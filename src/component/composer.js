@@ -79,12 +79,10 @@ export default class Composer extends Base {
       const src = plugin.getAttribute('src');
       if (src) {
         const url = new URL(src, document.location.href);
-        // .then is necessary for an error of espima-next
-        await import(url.href).then(lib => {
-          if (lib) {
-            gSVG.install(lib.default);
-          }
-        });
+        const lib = await import(url.href);
+        if (lib) {
+          gSVG.install(lib.default);
+        }
       }
     }
   }
