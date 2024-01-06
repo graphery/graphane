@@ -1,10 +1,10 @@
 import {
   ARRAY, OBJECT, NUMBER,
   isArray, isObject, isNumber, isFunction, isUndefined
-}                                       from '../helpers/types.js';
-import { createFunction }               from '../helpers/function.create.js';
-import { isValidIdentifier }            from "../helpers/identifier.js";
-import { svgPlugin as animateToPlugin } from './animateto.js';
+}                            from '../helpers/types.js';
+import { createFunction }    from '../helpers/function.create.js';
+import { isValidIdentifier } from "../helpers/identifier.js";
+import animateToPlugin       from './animateto.js';
 
 const INIT       = Symbol();
 const CLONED     = Symbol();
@@ -353,14 +353,17 @@ function render (context = {}) {
  * @param {object} setup
  * @example gSVG.install(templateEngine)
  */
-export function svgPlugin (setup) {
+function install (setup) {
 
   // Dependencies
   setup.install(animateToPlugin);
-  // Install
+
+  // Install plugin
   setup.extendInstance({
     render
   });
+
+  // Template plugins
   setup.extendSetup({
     extendTemplate : {
       defineDirective,
@@ -368,5 +371,7 @@ export function svgPlugin (setup) {
         return directives.find(directive => directive.name === name);
       }
     }
-  })
+  });
 }
+
+export default install;

@@ -44,11 +44,11 @@ export default `
       </defs>
     </g>
   </svg>
-  <script type="plugin" src="../plugins/non.scaling.size.js"></script>
+  <script type="plugin" src="./src/plugins/non.scaling.size.js"></script>
   <script type="methods">
     function render() {
       $.svg.querySelectorAll(':not(defs) > line').forEach(el => {
-        el.vectorEffect('non-scaling-stroke');
+        el.vector_effect('non-scaling-stroke');
       });
       $.svg.querySelectorAll(':not(defs) > text').forEach(el => {
         el.nonScalingSize();

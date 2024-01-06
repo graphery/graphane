@@ -1,17 +1,17 @@
 import {
   Base, define,
   RENDER, CONTEXT, FIRE_EVENT, CHANGE
-}                              from '../core/base.js';
+}                         from '../core/base.js';
 import {
   STRING, OBJECT, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
-}                              from '../helpers/types.js';
-import viewport                from "../core/viewport.js";
-import gSVG                    from '../lib/gsvg.js';
-import { svgPlugin as render } from '../plugins/template.engine.js';
-import { debounceMethod }      from "../helpers/functions.js";
-import { getFunctions }        from "../helpers/function.create.js";
-import { operations }          from "../helpers/array.operations.js";
-import { clone }               from "../helpers/objects.js";
+}                         from '../helpers/types.js';
+import intersection       from "../core/intersection.js";
+import gSVG               from '../lib/gsvg.js';
+import render             from '../plugins/template.engine.js';
+import { debounceMethod } from "../helpers/functions.js";
+import { getFunctions }   from "../helpers/function.create.js";
+import { operations }     from "../helpers/array.operations.js";
+import { clone }          from "../helpers/objects.js";
 
 const composerPlugin = (setup) => {
   setup.extendSetup({
@@ -28,19 +28,38 @@ gSVG.install(render)
 
 const NAME        = 'composer';
 const UPDATE      = 'update';
-const SVG         = 'SVG';
+const SVG         = 'svg';        // Keep in lowercase for Safari
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
+const isNotSize   = (size) => !size || size.baseVal?.value === 0;
 
 /**
- * gy-svg class
- * @element gy-svg
+ * Class representing a Graphane Composer.
+ * @fires 'load' - This event fires when the component load the external resources.
+ * @fires 'update' - This event fires when the component update the content.
+ * @property {object} svg - Return the gSVG object for the graph.
+ * @property {boolean} [isRendering] - It's true if the component is rendering.
+ * @property {boolean} [loaded] - It's true if the component is loaded.
  */
 export default class Composer extends Base {
+
+  /**
+   * Installs the given plugin.
+   * @param {Object|Function} svgPlugin - The plugin to install.
+   */
+  static install (svgPlugin) {
+    gSVG.install(svgPlugin);
+  }
 
   #svg        = null;
   #loaded     = false;
   isRendering = false;
 
+  /**
+   * Fetches the content from the specified URL.
+   * @param {string} url - The URL to fetch data from.
+   * @throws {Error} If the fetch request failed or the status code is not 200.
+   * @returns {Promise<string>} A promise that resolves to the fetched content as text.
+   */
   async #fetch (url) {
     const res = await fetch(url)
     if (res.status !== 200) {
@@ -49,16 +68,30 @@ export default class Composer extends Base {
     return res.text();
   }
 
+  /**
+   * Loads plugins.
+   * @private
+   * @returns {Promise<void>} - A promise that resolves when all plugins are loaded.
+   */
   async #loadPlugins () {
     const plugins = [...this.querySelectorAll(queryScript('plugin'))];
     for (let plugin of plugins) {
       const src = plugin.getAttribute('src');
       if (src) {
-        gSVG.install((await import(src))?.svgPlugin);
+        const url = new URL(src, document.location.href);
+        const lib = await import(url.href);
+        if (lib) {
+          gSVG.install(lib.default);
+        }
       }
     }
   }
 
+  /**
+   * Loads an SVG into the element's content area.
+   * @private
+   * @returns {Promise<boolean>} A promise that resolves to true if SVG loading is successful, or false otherwise.
+   */
   async #loadSVG () {
     const ctx             = this [CONTEXT];
     this.#svg             = null;
@@ -75,13 +108,20 @@ export default class Composer extends Base {
     const svg = ctx.content.querySelector(SVG);
     if (svg) {
       this.#svg = gSVG(svg);
-      if (!this.#svg.width() || this.#svg.width()?.baseVal?.value === 0) {
+      if (isNotSize(this.#svg.width()) && isNotSize(this.#svg.height())) {
         this.#svg.width('100%');
+        this.#svg.height('100%');
       }
     }
     return true;
   }
 
+  /**
+   * Asynchronously loads a script based on the given `kind`.
+   * @private
+   * @param {string} kind - The type of script to load.
+   * @return {Promise<string>} - A Promise that resolves with the loaded script content.
+   */
   async #loadScript (kind) {
     const ctx = this[CONTEXT];
     const key = kind + 'Src';
@@ -95,6 +135,10 @@ export default class Composer extends Base {
     return el?.textContent;
   }
 
+  /**
+   * Load methods.
+   * @return {Promise<void>} A Promise that resolves once the methods are loaded.
+   */
   async #loadMethods () {
     const content = await this.#loadScript('methods');
     if (content) {
@@ -102,6 +146,11 @@ export default class Composer extends Base {
     }
   }
 
+  /**
+   * Loads the configuration.
+   * @private
+   * @return {Promise<void>} A promise that resolves after loading the configuration.
+   */
   async #loadConfig () {
     const content = await this.#loadScript('config');
     if (content) {
@@ -109,6 +158,11 @@ export default class Composer extends Base {
     }
   }
 
+  /**
+   * Loads the data.
+   * @private
+   * @returns {Promise<void>} A promise that resolves when the data is loaded.
+   */
   async #loadData () {
     const content = await this.#loadScript('data');
     if (content) {
@@ -140,9 +194,16 @@ export default class Composer extends Base {
    * @private
    */
   [RENDER] () {
-    return this.load();
+    return !this.load();
   }
 
+  /**
+   * Handles changes to the mutations.
+   *
+   * @async
+   * @param {Array} mutations - The mutations to be handled.
+   * @returns {boolean} - True if the mutations were successfully handled, false otherwise.
+   */
   async [CHANGE] (mutations) {
     const promises = [];
     try {
@@ -151,7 +212,7 @@ export default class Composer extends Base {
         if (target === this && !mutation.attributeName) {
           return this.load();
         }
-        if (target.tagName === SVG) {
+        if (target.tagName.toLowerCase() === SVG) {
           promises.push(this.#loadSVG());
         } else if (target.tagName === 'SCRIPT') {
           const load = {
@@ -175,6 +236,11 @@ export default class Composer extends Base {
     }
   }
 
+  /**
+   * Loads necessary resources and initializes the component.
+   *
+   * @returns {Promise<boolean|void>} A promise that resolves to true if the loading is successful, or false if an error occurs.
+   */
   async load () {
     try {
 
@@ -195,6 +261,7 @@ export default class Composer extends Base {
       ]);
 
       this.#loaded = true;
+      this[FIRE_EVENT]('load');
 
     } catch (err) {
       console.error(err.message);
@@ -208,15 +275,17 @@ export default class Composer extends Base {
   }
 
   /**
-   *
-   * @param {boolean} [forced=false]
-   * @returns {Promise<void>}
+   * Updates the SVG if rendering is not in progress, unless when forced parameter is set to true.
+   * If update is allowed, it clones the current data object, performs operations on it, and then renders the SVG.
+   * @param {boolean} [forced=false] - Determines whether the update should be forced even if rendering is in progress.
+   * @return {Promise<void>} - A promise that resolves once the SVG is rendered.
    */
   async update (forced = false) {
     if (this.isRendering && !forced) {
       return;
     }
     if (this.#svg) {
+      this.rendered    = false;
       this.isRendering = true;
       const ctx        = this [CONTEXT];
       const data       = operations(
@@ -232,13 +301,22 @@ export default class Composer extends Base {
       };
       await this.#svg.render(renderCtx);
       this.isRendering = false;
+      this.rendered    = true;
     }
   }
 
+  /**
+   * Returns the SVG object associated with this instance.
+   * @returns {object} The SVG object.
+   */
   get svg () {
     return this.#svg;
   }
 
+  /**
+   * Retrieves the loaded status of the resource.
+   * @returns {boolean} The loaded status of the resource.
+   */
   get loaded () {
     return this.#loaded;
   }
@@ -249,7 +327,7 @@ Composer.prototype.update = debounceMethod(Composer.prototype.update, 1)
 
 // Define the component
 define(Composer)
-  .extension(viewport)
+  .extension(intersection)
   .attribute({name : 'svg-src', type : STRING, value : '', posUpdate : RENDER})
   .attribute({name : 'data', type : OBJECT, value : [], posUpdate : UPDATE})
   .attribute({name : 'data-src', type : STRING, posUpdate : RENDER})

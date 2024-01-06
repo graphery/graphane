@@ -40,7 +40,7 @@ function observeResize (svg) {
  * resizeObserver plugins installer
  * @usage gySVG.install( resizeObserver )
  */
-export function svgPlugin (setup) {
+function install (setup) {
   // Update gySVGObject
   setup.extendInstance((proto) => {
     proto.addEventListener = function(type, listener, options) {
@@ -51,3 +51,5 @@ export function svgPlugin (setup) {
     }
   });
 }
+
+export default install;

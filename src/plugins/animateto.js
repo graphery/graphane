@@ -1,22 +1,16 @@
 import { isObject, isString, isFunction, isArray, toCamel } from '../helpers/types.js';
 
-const SVG       = 'SVG';
-const ANIMATE   = 'animate';
-const FILL      = 'none';
-const FREEZE    = 'freeze';
-const PATH      = 'path';
-const D         = 'd';
-const TRANSFORM = 'transform';
-const ROTATE    = 'rotate';
-const TRANSLATE = 'translate';
-const OFFSET    = 'offset';
-const INHERIT   = 'inherit';
-const FINISHED  = 'finished';
-const DEG_TYPES = [ROTATE, 'skewX', 'skewY'];
-const DEG       = 'deg';
-const PX        = 'px';
-const MS        = 'ms';
-const TO_PIXELS = ['width', 'height', 'x' , 'y', 'cx', 'cy', 'r', 'rx', 'ry'];
+const ANIMATE     = 'animate';
+const PATH        = 'path';
+const D           = 'd';
+const TRANSFORM   = 'transform';
+const ROTATE      = 'rotate';
+const TRANSLATE   = 'translate';
+const INHERIT     = 'inherit';
+const FINISHED    = 'finished';
+const TO_DEG      = [ROTATE, 'skewX', 'skewY'];
+const TO_PIXELS   = [TRANSLATE, 'width', 'height', 'x', 'y', 'cx', 'cy', 'r', 'rx', 'ry', 'dx', 'dy'];
+const isException = (tag, key) => ['text', 'tspan'].includes(tag) && ['x', 'y'].includes(key);
 
 /**
  * The reduced-motion flag
@@ -60,7 +54,7 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     if (reduceMotion) {
       normalizedConfig.duration = 0;
     }
-    normalizedConfig.fill = FILL;
+    normalizedConfig.fill = 'none';
     return normalizedConfig;
   }
 
@@ -79,12 +73,9 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     for (let keyframe of originalKeyframes) {
       const normalized = {};
       for (let rawKey in keyframe) {
-        const key = toCamel(rawKey);
-        normalized[key] = keyframe[rawKey];
-        if (TO_PIXELS.includes(key)) {
-          normalized[key] = normalized[key] + 'px';
-        }
-        if (!(key in computedStyle)) {
+        const key       = toCamel(rawKey);
+        normalized[key] = valueUnit(keyframe[rawKey], key);
+        if (!(key in computedStyle) || isException(this.tagName(), key)) {
           alternativeKeys.add(key);
         } else if (key === D) {
           normalized.d = `${ PATH }("${ normalized.d }")`
@@ -107,13 +98,11 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
   const addAlternatives = (keys, normalizeFrames) => {
     if (keys.size) {
       const computedFrames = new KeyframeEffect(null, normalizeFrames).getKeyframes();
-      const initialTime    = this.closest(SVG) ? this.closest(SVG).getCurrentTime() * 1000 : 0;
       for (let key of keys) {
         const altAnimate = gSVG(ANIMATE)
           .attributeName(key)
-          .dur(config.duration + MS)
-          .begin((0 | initialTime + (options.delay || 0)) + MS)
-          .fill(FREEZE);
+          .dur(config.duration + 'ms')
+          .fill('freeze');
         if (normalizeFrames.length === 1) {
           altAnimate.to(normalizeFrames[0][key]);
         } else {
@@ -137,7 +126,8 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
           altAnimate.keyTimes(keyTimes.join(';')).values(values.join(';'));
         }
         alternatives.push(altAnimate);
-        altAnimate.attachTo(this)
+        altAnimate.attachTo(this);
+        altAnimate.beginElementAt(config.delay || 0);
       }
     }
   };
@@ -163,14 +153,14 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
       if (key === ROTATE) {
         const values = transformValue(property[key]);
         if (values.length > 1) {
-          result += `${ TRANSLATE }(${ values[1] }${ PX },${ values[2] }${ PX }) `
+          result += `${ TRANSLATE }(${ valueUnit(values[1], TRANSLATE) },${ valueUnit(values[2], TRANSLATE) }) `
         }
-        result += `${ key }(${ values[0] }${ transformUnit(key) }) `
+        result += `${ key }(${ valueUnit(values[0], key) }) `
         if (values.length > 1) {
-          result += `${ TRANSLATE }(-${ values[1] }${ PX },-${ values[2] }${ PX }) `
+          result += `${ TRANSLATE }(-${ valueUnit(values[1], TRANSLATE) },-${ valueUnit(values[2], TRANSLATE) }) `
         }
       } else {
-        result += `${ key }(${ transformValue(property[key]).map(v => v + transformUnit(key)).join(',') }) `
+        result += `${ key }(${ transformValue(property[key]).map(v => valueUnit(v, key)).join(',') }) `
       }
     }
     return result;
@@ -184,13 +174,15 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
   const transformValue = (value) => (isArray(value) ? value : String(value).split(/\s+|,/));
 
   /**
-   * Return the transform value
+   * Return the value with unit
+   * @param {number|string} value
    * @param {string} type
    * @returns {string}
    */
-  const transformUnit = (type) => DEG_TYPES.includes(type) ?
-    DEG :
-    type === TRANSLATE ? PX : '';
+  const valueUnit = (value, type) =>
+    TO_DEG.includes(type) ? value + 'deg' :
+      TO_PIXELS.includes(type) ? value + 'px' :
+        value;
 
   /**
    * Convert to valida attribute value
@@ -222,7 +214,7 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
     const regex = /translate\((.*)px,(.*)px\) rotate\((.*)deg\) translate\((.*)px,(.*)px\)\s+/;
     const match = regex.exec(transform);
     if (match && Number(match[1]) === Number(match[4]) * -1 && Number(match[2]) === Number(match[5]) * -1) {
-      transform = transform.replace(regex, `rotate(${match[3]}, ${match[1]}, ${match[2]})`)
+      transform = transform.replace(regex, `rotate(${ match[3] }, ${ match[1] }, ${ match[2] })`)
     } else {
       transform = value2attribute(transform);
     }
@@ -243,7 +235,7 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
       const attrKey = toHyphen(attr);
       if (attrKey.startsWith("text-")) {
         this._el.style[attr] = lastAttributes[attr];
-      } else if (attr !== OFFSET && attr in lastAttributes) {
+      } else if (attr !== 'offset' && attr in lastAttributes) {
         this._el.setAttribute(
           attrKey,
           attrKey === D ?
@@ -268,9 +260,11 @@ function animateTo (keyframes, options = {duration : 200}, startCallback = null,
 }
 
 
-export function svgPlugin (setup) {
+function install (setup) {
   // Update gSVGObject
   setup.extendInstance({
     animateTo
   });
 }
+
+export default install;
