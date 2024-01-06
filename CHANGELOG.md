@@ -13,6 +13,9 @@
   library.
 - Added `g-intersection="ratio"` and events `intersection.enter`/`intersection.exit` to the SVG
   Template Engine.
+- Added events `load` and `update` in `g-composer`.
+- Added static `import()` method in `g-composer`.
+- Update plugins script for call to `g-composer.import()`.
 - Added `module` distribution folder and files.
 - Refactored `animateTo`.
 - Fixed errors in `animateTo` with FireFox.
