@@ -80,7 +80,7 @@ export default class Composer extends Base {
       if (src) {
         const url = new URL(src, document.location.href);
         const lib = await import(url.href);
-        if (lib) {
+        if (lib?.default) {
           gSVG.install(lib.default);
         }
       }
