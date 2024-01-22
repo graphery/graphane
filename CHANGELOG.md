@@ -1,5 +1,10 @@
 # Change Log
 
+
+## 0.1.0-alpha.9 (2024-xx-xx)
+
+- Added `g-object` directive from Object Plugin.
+
 ## 0.1.0-alpha.8 (2024-01-12)
 
 - Fixed error loading plugin from `g-composer`.
