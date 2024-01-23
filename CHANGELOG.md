@@ -5,6 +5,7 @@
 
 - Improve the handling error in `g-composer` and the SVG Template Engine.
 - Added `g-object` directive from Object Plugin.
+- Fixed error in Firefox when the SVG and `g-composer` don't have `width` or `height` values.
 
 ## 0.1.0-alpha.8 (2024-01-12)
 
