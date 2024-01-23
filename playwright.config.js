@@ -60,8 +60,13 @@ if (process.argv.includes('--project=composer')) {
 } else if (process.argv.includes('--project=plugin.intersection')) {
   process.env.port = '7212';
   options          = '-t ./test/plugin.intersection/cases';
+} else if (process.argv.includes('--project=object')) {
+  process.env.port = '7213';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/plugins/template.engine.script.js ' +
+                     '-i /src/plugins/object.script.js ' +
+                     '-t test/plugins/object/cases';
 }
-
 const webServer = process.env.port ? {
   command             : `node ./tools/workbench ${ options } -p ${ process.env.port }`,
   url                 : `http://localhost:${ process.env.port }/`,
@@ -85,6 +90,7 @@ export default defineConfig({
     {name : 'load'},
     {name : 'core.intersection'},
     {name : 'plugin.intersection'},
+    {name : 'object'},
   ],
   testDir       : './test',
   fullyParallel : true,
