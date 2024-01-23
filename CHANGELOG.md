@@ -3,6 +3,7 @@
 
 ## 0.1.0-alpha.9 (2024-xx-xx)
 
+- Improve the handling error in `g-composer` and the SVG Template Engine.
 - Added `g-object` directive from Object Plugin.
 
 ## 0.1.0-alpha.8 (2024-01-12)
