@@ -254,30 +254,25 @@ export default class Composer extends Base {
    * @returns {Promise<boolean|void>} A promise that resolves to true if the loading is successful, or false if an error occurs.
    */
   async load () {
-    try {
 
-      this.#loaded = false;
+    this.#loaded = false;
 
-      // Plugins
-      await this.#loadPlugins();
+    // Plugins
+    await this.#loadPlugins();
 
-      await Promise.all([
-        // SVG
-        this.#loadSVG(),
-        // Config
-        this.#loadConfig(),
-        // Methods
-        this.#loadMethods(),
-        // Data
-        this.#loadData()
-      ]);
+    await Promise.all([
+      // SVG
+      this.#loadSVG(),
+      // Config
+      this.#loadConfig(),
+      // Methods
+      this.#loadMethods(),
+      // Data
+      this.#loadData()
+    ]);
 
-      this.#loaded = true;
-      this[FIRE_EVENT]('load');
-
-    } catch (err) {
-      return false;
-    }
+    this.#loaded = true;
+    this[FIRE_EVENT]('load');
 
     // Call to update
     return this.update(true);
@@ -336,7 +331,7 @@ export default class Composer extends Base {
    *
    * @return {Array} An array containing the errors.
    */
-  get errors() {
+  get errors () {
     return [...this.#errors];
   }
 
