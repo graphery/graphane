@@ -29,8 +29,13 @@ gSVG.install(render)
 const NAME        = 'composer';
 const UPDATE      = 'update';
 const SVG         = 'svg';        // Keep in lowercase for Safari
+const METHODS     = 'methods';
+const CONFIG      = 'config';
+const DATA        = 'data';
+const SRC         = '-src';
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
 const isNotSize   = (size) => !size || size.baseVal?.value === 0;
+
 
 /**
  * Class representing a Graphane Composer.
@@ -52,7 +57,23 @@ export default class Composer extends Base {
 
   #svg        = null;
   #loaded     = false;
+  #errors     = [];
   isRendering = false;
+
+
+  /**
+   * Logs an error message and triggers the 'error' event.
+   * @param {string} message - The error message.
+   * @param {string} scope - The scope in which the error occurred.
+   * @param {string} [code=''] - Additional code related to the error. (Optional)
+   * @return {void}
+   */
+  #error (message, scope = '', code = '') {
+    const errMsg = `${ message }${ scope ? ` in ${ scope }` : '' }\n${ code }`;
+    this.#errors.push(errMsg);
+    console.warn(`Graphane Composer - Error:\n${ errMsg }`);
+    this[FIRE_EVENT]('error', errMsg);
+  }
 
   /**
    * Fetches the content from the specified URL.
@@ -79,9 +100,13 @@ export default class Composer extends Base {
       const src = plugin.getAttribute('src');
       if (src) {
         const url = new URL(src, document.location.href);
-        const lib = await import(url.href);
-        if (lib?.default) {
-          gSVG.install(lib.default);
+        try {
+          const lib = await import(url.href);
+          if (lib?.default) {
+            gSVG.install(lib.default);
+          }
+        } catch (err) {
+          this.#error(err.message, 'plugin', url);
         }
       }
     }
@@ -96,9 +121,12 @@ export default class Composer extends Base {
     const ctx             = this [CONTEXT];
     this.#svg             = null;
     ctx.content.innerHTML = '';
-
     if (ctx.svgSrc) {
-      ctx.content.innerHTML = await this.#fetch(ctx.svgSrc);
+      try {
+        ctx.content.innerHTML = await this.#fetch(ctx.svgSrc);
+      } catch (err) {
+        this.#error(err.message, SVG, ctx.svgSrc);
+      }
     } else {
       const template = this.querySelector('template')?.content || this.querySelector(SVG);
       if (template) {
@@ -116,34 +144,30 @@ export default class Composer extends Base {
     return true;
   }
 
-  /**
-   * Asynchronously loads a script based on the given `kind`.
-   * @private
-   * @param {string} kind - The type of script to load.
-   * @return {Promise<string>} - A Promise that resolves with the loaded script content.
-   */
-  async #loadScript (kind) {
+  async #loadScript (kind, reviver) {
     const ctx = this[CONTEXT];
     const key = kind + 'Src';
     const el  = this.querySelector(queryScript(kind));
     if (el) {
       ctx[key] = el.getAttribute('src');
     }
-    if (ctx[key]) {
-      return this.#fetch(ctx[key]);
+    let content = '';
+    try {
+      content = ctx[key] ? await this.#fetch(ctx[key]) : el?.textContent;
+      if (content) {
+        ctx[kind] = reviver(content);
+      }
+    } catch (err) {
+      this.#error(err.message, kind, content);
     }
-    return el?.textContent;
   }
 
   /**
    * Load methods.
    * @return {Promise<void>} A Promise that resolves once the methods are loaded.
    */
-  async #loadMethods () {
-    const content = await this.#loadScript('methods');
-    if (content) {
-      this [CONTEXT].methods = getFunctions({$ : this}, content);
-    }
+  #loadMethods () {
+    return this.#loadScript(METHODS, (content) => getFunctions({$ : this}, content));
   }
 
   /**
@@ -151,11 +175,8 @@ export default class Composer extends Base {
    * @private
    * @return {Promise<void>} A promise that resolves after loading the configuration.
    */
-  async #loadConfig () {
-    const content = await this.#loadScript('config');
-    if (content) {
-      this [CONTEXT].config = jsStr2obj(content);
-    }
+  #loadConfig () {
+    return this.#loadScript(CONFIG, jsStr2obj);
   }
 
   /**
@@ -163,13 +184,10 @@ export default class Composer extends Base {
    * @private
    * @returns {Promise<void>} A promise that resolves when the data is loaded.
    */
-  async #loadData () {
-    const content = await this.#loadScript('data');
-    if (content) {
-      this [CONTEXT].data = isLikeObject(content) || isLikeArray(content) ?
-        jsStr2obj(content) :
-        csvStr2obj(content);
-    }
+  #loadData () {
+    return this.#loadScript(DATA, (content) => isLikeObject(content) || isLikeArray(content) ?
+      jsStr2obj(content) :
+      csvStr2obj(content));
   }
 
   constructor () {
@@ -191,7 +209,7 @@ export default class Composer extends Base {
 
   /**
    * Render method
-   * @private
+   * private
    */
   [RENDER] () {
     return !this.load();
@@ -206,29 +224,23 @@ export default class Composer extends Base {
    */
   async [CHANGE] (mutations) {
     const promises = [];
-    try {
-      for (let mutation of mutations) {
-        const target = mutation.target;
-        if (target === this && !mutation.attributeName) {
-          return this.load();
-        }
-        if (target.tagName.toLowerCase() === SVG) {
-          promises.push(this.#loadSVG());
-        } else if (target.tagName === 'SCRIPT') {
-          const load = {
-            data    : this.#loadData,
-            methods : this.#loadMethods,
-            config  : this.#loadConfig
-          }[target.type.toLowerCase()];
-          if (load) {
-            promises.push(load());
-          }
+    for (let mutation of mutations) {
+      const target = mutation.target;
+      if (target === this && !mutation.attributeName) {
+        return this.load();
+      }
+      if (target.tagName.toLowerCase() === SVG) {
+        promises.push(this.#loadSVG());
+      } else if (target.tagName === 'SCRIPT') {
+        const load = {
+          data    : this.#loadData,
+          methods : this.#loadMethods,
+          config  : this.#loadConfig
+        }[target.type.toLowerCase()];
+        if (load) {
+          promises.push(load());
         }
       }
-    } catch (err) {
-      console.error(err.message);
-      this[FIRE_EVENT]('error', err.message);
-      return false;
     }
     if (promises.length) {
       await Promise.all(promises);
@@ -264,8 +276,6 @@ export default class Composer extends Base {
       this[FIRE_EVENT]('load');
 
     } catch (err) {
-      console.error(err.message);
-      this[FIRE_EVENT]('error', err.message);
       return false;
     }
 
@@ -289,7 +299,7 @@ export default class Composer extends Base {
       this.isRendering = true;
       const ctx        = this [CONTEXT];
       const data       = operations(
-        ctx.methods.data ?
+        ctx.methods?.data ?
           ctx.methods.data(clone(ctx.data)) :
           clone(ctx.data)
       );
@@ -299,7 +309,7 @@ export default class Composer extends Base {
         data,
         $ : this
       };
-      await this.#svg.render(renderCtx);
+      await this.#svg.render(renderCtx, this.#error.bind(this));
       this.isRendering = false;
       this.rendered    = true;
     }
@@ -309,7 +319,7 @@ export default class Composer extends Base {
    * Returns the SVG object associated with this instance.
    * @returns {object} The SVG object.
    */
-  get svg () {
+  get [SVG] () {
     return this.#svg;
   }
 
@@ -321,6 +331,15 @@ export default class Composer extends Base {
     return this.#loaded;
   }
 
+  /**
+   * Retrieves the list of errors.
+   *
+   * @return {Array} An array containing the errors.
+   */
+  get errors() {
+    return [...this.#errors];
+  }
+
 }
 
 Composer.prototype.update = debounceMethod(Composer.prototype.update, 1)
@@ -328,11 +347,11 @@ Composer.prototype.update = debounceMethod(Composer.prototype.update, 1)
 // Define the component
 define(Composer)
   .extension(intersection)
-  .attribute({name : 'svg-src', type : STRING, value : '', posUpdate : RENDER})
-  .attribute({name : 'data', type : OBJECT, value : [], posUpdate : UPDATE})
-  .attribute({name : 'data-src', type : STRING, posUpdate : RENDER})
-  .property({name : 'methods', type : OBJECT, value : {}, posUpdate : UPDATE})
-  .attribute({name : 'methods-src', type : STRING, posUpdate : RENDER})
-  .attribute({name : 'config', type : OBJECT, value : {}, posUpdate : UPDATE})
-  .attribute({name : 'config-src', type : STRING, posUpdate : RENDER})
+  .attribute({name : SVG + SRC, type : STRING, value : '', posUpdate : RENDER})
+  .attribute({name : DATA, type : OBJECT, value : [], posUpdate : UPDATE})
+  .attribute({name : DATA + SRC, type : STRING, posUpdate : RENDER})
+  .property({name : METHODS, type : OBJECT, value : {}, posUpdate : UPDATE})
+  .attribute({name : METHODS + SRC, type : STRING, posUpdate : RENDER})
+  .attribute({name : CONFIG, type : OBJECT, value : {}, posUpdate : UPDATE})
+  .attribute({name : CONFIG + SRC, type : STRING, posUpdate : RENDER})
   .tag(NAME);
