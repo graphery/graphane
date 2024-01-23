@@ -12,8 +12,11 @@ const CLONES     = Symbol();
 const TEMPLATE   = Symbol();
 const EVENTS     = Symbol();
 const UNKNOWN    = 'unknown';
-const LABEL      = 'Graphane SVG Template Engine:';
 const directives = [];
+const throwError = (message, scope, code) => {
+  throw new Error(message + ` in ${ scope }\n` + code);
+}
+
 
 /**
  * g-context
@@ -107,16 +110,20 @@ defineDirective({
   name     : 'g-on',
   alias    : '@',
   argument : true,
-  execute (gObject, {expression, argument : event, data, evalExpression}) {
+  execute (gObject, {expression, argument : event, data, evalExpression, error, outerCode}) {
     gObject[EVENTS] = gObject[EVENTS] || {};
     const manager   = gObject[EVENTS][event] = gObject[EVENTS][event] || new Map();
     if (manager.has(expression)) {
       gObject.removeEventListener(event, manager.get(expression));
     }
     const handler = function (evt) {
-      let fn = evalExpression(expression, data, gObject);
-      if (isFunction(fn)) {
-        fn.call(gObject, evt);
+      try {
+        let fn = evalExpression(expression, data, gObject);
+        if (isFunction(fn)) {
+          fn.call(gObject, evt);
+        }
+      } catch (err) {
+        error(err.message, `g-on:${ event }="${ expression }"`, outerCode);
       }
     };
     gObject.addEventListener(event, handler);
@@ -140,7 +147,7 @@ defineDirective({
 defineDirective({
   name     : 'g-for',
   template : true,
-  execute (def, {expression, data}) {
+  execute (def, {expression, data, error}) {
     def[CLONES] = def[CLONES] || [];
     let n       = 0;
     evalForExpression(
@@ -148,13 +155,13 @@ defineDirective({
       data,
       (subData) => {
         if (def[CLONES][n]) {
-          process(def[CLONES][n], subData, false);
+          process(def[CLONES][n], subData, error, false);
         } else {
           const g = def.gSVG('g');
           def.children().forEach(child => {
             g.add(child.cloneNode(true));
           });
-          process(g, subData);
+          process(g, subData, error);
           def.before(g.el);
           g[CLONED] = true;
           def[CLONES].push(g);
@@ -253,16 +260,12 @@ function toArray (v) {
  * @returns {*}
  */
 function evalExpression (code, data, context = null) {
-  try {
-    const keys = Object.keys(data).filter(isValidIdentifier);
-    const fn   = createFunction(
-      keys,
-      `return ( ${ code } ); `
-    );
-    return fn.apply(context, keys.map(key => data[key]));
-  } catch (err) {
-    console.warn(LABEL, err.message, '\n', code);
-  }
+  const keys = Object.keys(data).filter(isValidIdentifier);
+  const fn   = createFunction(
+    keys,
+    `return ( ${ code } ); `
+  );
+  return fn.apply(context, keys.map(key => data[key]));
 }
 
 /**
@@ -275,49 +278,50 @@ function evalExpression (code, data, context = null) {
  * @returns {*}
  */
 function evalForExpression (code, data, each, final) {
-  const iteratorName = '__$$iterator';
-  const callbackName = '__$$callback';
-  const finalName    = '__$$final';
-  try {
-    let [left, right]      = code.split(' of ');
-    left                   = left.trim();
-    right                  = right.trim();
-    const value            = evalExpression(right, data) || [];
-    const {iterator, type} = toArray(value);
-    if (type === OBJECT && !left.startsWith('[')) {
-      left = `[${ left.replace(/(^\()|(\)$)/g, '') }]`;
-    }
-    const variables    = getVariables(left);
-    const args         = !left.startsWith('(') ? `(${ left })` : left;
-    const dataKeys     = Object.keys(data).filter(isValidIdentifier);
-    const codeFunction = `
-      ${ iteratorName }.forEach(${ args } => {
-        ${ callbackName }({${ dataKeys }${ dataKeys.length ?
-      ',' :
-      '' }${ variables.join(',') }});
-      });
-      ${ finalName }(${ iteratorName });
-    `;
-    const fn           = createFunction([...dataKeys, iteratorName, callbackName, finalName], codeFunction);
-    return fn(...dataKeys.map(key => data[key]), iterator, each, final);
-  } catch (err) {
-    console.warn(LABEL, err);
+  const iteratorName     = '__$$iterator';
+  const callbackName     = '__$$callback';
+  const finalName        = '__$$final';
+  let [left, right]      = code.split(' of ');
+  left                   = left.trim();
+  right                  = right.trim();
+  const value            = evalExpression(right, data) || [];
+  const {iterator, type} = toArray(value);
+  if (type === OBJECT && !left.startsWith('[')) {
+    left = `[${ left.replace(/(^\()|(\)$)/g, '') }]`;
   }
+  const variables    = getVariables(left);
+  const args         = !left.startsWith('(') ? `(${ left })` : left;
+  const dataKeys     = Object.keys(data).filter(isValidIdentifier);
+  const codeFunction = `
+    ${ iteratorName }.forEach(${ args } => {
+      ${ callbackName }({${ dataKeys }${ dataKeys.length ?
+    ',' :
+    '' }${ variables.join(',') }});
+    });
+    ${ finalName }(${ iteratorName });
+  `;
+  const fn           = createFunction([...dataKeys, iteratorName, callbackName, finalName], codeFunction);
+  return fn(...dataKeys.map(key => data[key]), iterator, each, final);
 }
 
+
 /**
- * process - evaluates a gObject object and renders the content with the directives, creating new
- * elements, adding content, filling in attributes, etc.
- * @param {Object} el
- * @param {Object} data
- * @param {boolean} [checkCloned=true]
+ * The process function processes the given element and its children by finding directives in its attributes
+ * and executing the corresponding directive functions.
+ *
+ * @param {HTMLElement} el - The element to be processed
+ * @param {object} data - The data to be used by the directive functions
+ * @param {function} error - The error handler function
+ * @param {boolean} [checkCloned=true] - Flag indicating whether to check if the element is cloned
+ * @returns {void}
  */
-function process (el, data, checkCloned = true) {
+function process (el, data, error, checkCloned = true) {
   if (checkCloned && el[CLONED]) {
     return
   }
-  el[TEMPLATE] = el[TEMPLATE] || [];
-  const attrs  = el.attributes();
+  const outerCode = el.outerHTML();
+  el[TEMPLATE]    = el[TEMPLATE] || [];
+  const attrs     = el.attributes();
   for (let attr of [...attrs]) {
     const attributeName = attr.name;
     const result        = findDirective(attributeName);
@@ -328,22 +332,31 @@ function process (el, data, checkCloned = true) {
   }
   let template = false;
   for (let directive of el[TEMPLATE]) {
-    directive.execute(el, {...directive, data, evalExpression});
+    try {
+      directive.execute(el, {...directive, data, evalExpression, error, outerCode});
+    } catch (err) {
+      error(err.message, `${ directive.name }${ directive.argument ?
+        ':' + directive.argument :
+        '' }="${ directive.expression }"`, outerCode);
+    }
     template = directive.template || template;
   }
   if (!template) {
     for (const child of el.children()) {
-      process(child, data);
+      process(child, data, error);
     }
   }
 }
 
+
 /**
- *
- * @param {Object|Array} [context]
+ * Renders the content in the given context.
+ * @param {Object} context - The context object containing the data for rendering.
+ * @param {Function} [error=throwError()] - The error handling function to be called in case of errors.
+ * @return {undefined}
  */
-function render (context = {}) {
-  process(this, context);
+function render (context = {}, error = throwError) {
+  process(this, context, error);
   this.dispatchEvent(new Event('render'));
 }
 
