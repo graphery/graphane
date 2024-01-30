@@ -67,7 +67,7 @@
     "@playwright/test": "^1.41.1",
     "commander": "^11.1.0",
     "concurrently": "^8.2.2",
-    "esbuild": "^0.19.11",
+    "esbuild": "^0.20.0",
     "esprima-next": "6.0.2",
     "playwright": "^1.41.1",
     "ws": "^8.16.0"
