@@ -148,6 +148,7 @@ defineDirective({
   name     : 'g-for',
   template : true,
   execute (def, {expression, data, error}) {
+    def.setAttribute('data-type', 'graphane');
     def[CLONES] = def[CLONES] || [];
     let n       = 0;
     evalForExpression(
@@ -360,6 +361,18 @@ function render (context = {}, error = throwError) {
   this.dispatchEvent(new Event('render'));
 }
 
+function source () {
+  const removeDefs = (node) => {
+    if (node.tagName?.toLowerCase() === 'defs' && node.getAttribute('data-type') === 'graphane') {
+      return node.remove();
+    }
+    node.childNodes.forEach(removeDefs);
+  }
+  const el         = this._el.cloneNode(true);
+  removeDefs(el);
+  return el.outerHTML;
+}
+
 
 /**
  * Install template plugin
@@ -373,7 +386,8 @@ function install (setup) {
 
   // Install plugin
   setup.extendInstance({
-    render
+    render,
+    source
   });
 
   // Template plugins
