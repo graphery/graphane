@@ -19,6 +19,7 @@
     "workbench:core.intersection": "node ./tools/workbench -l core.viewport -t test/core.intersection/cases -p 7011",
     "workbench:plugin.intersection": "node ./tools/workbench -l plugin.intersection -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/intersection.script.js -t test/plugins/intersection/cases -p 7012",
     "workbench:plugin.object": "node ./tools/workbench -l plugin.object -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/object.script.js -t test/plugins/object/cases -p 7013",
+    "workbench:tosource": "node ./tools/workbench -l toSource -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/tosource.script.js -t test/plugins/tosource/cases -p 7014",
     "test": "concurrently -m 1 npm:test:*",
     "test:helpers": "playwright test ./test/helpers/ --project=helpers",
     "test:composer": "playwright test test/component/composer/index.test.js --project=composer",
@@ -35,6 +36,7 @@
     "test:core.intersection": "playwright test test/core.intersection/index.test.js --project=core.intersection",
     "test:plugin.intersection": "playwright test test/plugins.intersection/index.test.js --project=plugin.intersection",
     "test:plugin.object": "playwright test test/plugins/object/index.test.js --project=object",
+    "test:plugin.tosource": "playwright test test/plugins/tosource/index.test.js --project=tosource",
     "build": "concurrently -m 1 npm:build:*",
     "build:composer": "node ./tools/packer/index.js src/component/composer.js ./dist/component/composer.js ./package.json",
     "build:gsvg": "node ./tools/packer/index.js ./src/lib/gsvg.script.js ./dist/lib/gsvg.js ./package.json",
@@ -61,15 +63,16 @@
     "build:module:plugin.load": "node ./tools/packer/index.js -m src/plugins/load.js ./dist/module/plugins/load.js",
     "build:module:plugin.intersection": "node ./tools/packer/index.js -m src/plugins/intersection.js ./dist/module/plugins/intersection.js",
     "build:module:plugin.object": "node ./tools/packer/index.js -m src/plugins/object.js ./dist/module/plugins/object.js",
+    "build:module:plugin.tosource": "node ./tools/packer/index.js -m src/plugins/tosource.js ./dist/module/plugins/tosource.js",
     "update:playwright": "npx playwright install"
   },
   "devDependencies": {
-    "@playwright/test": "^1.45.1",
+    "@playwright/test": "^1.45.3",
     "commander": "^12.1.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.23.0",
     "esprima-next": "6.0.3",
-    "playwright": "^1.45.1",
+    "playwright": "^1.45.3",
     "ws": "^8.18.0"
   },
   "type": "module"
