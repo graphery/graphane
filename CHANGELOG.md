@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.0-alpha.10 (2024-8-02)
+
+- Added the `.toSource()` plugin to get a formal SVG format.
+- Fixed `.source()` with template engine and `defs g-for` elements.
 
 ## 0.1.0-alpha.9 (2024-01-23)
 

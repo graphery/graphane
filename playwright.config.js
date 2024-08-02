@@ -66,6 +66,12 @@ if (process.argv.includes('--project=composer')) {
                      '-i /src/plugins/template.engine.script.js ' +
                      '-i /src/plugins/object.script.js ' +
                      '-t test/plugins/object/cases';
+} else if (process.argv.includes('--project=tosource')) {
+  process.env.port = '7214';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/plugins/template.engine.script.js ' +
+                     '-i /src/plugins/tosource.script.js ' +
+                     '-t test/plugins/tosource/cases';
 }
 const webServer = process.env.port ? {
   command             : `node ./tools/workbench ${ options } -p ${ process.env.port }`,
@@ -91,6 +97,7 @@ export default defineConfig({
     {name : 'core.intersection'},
     {name : 'plugin.intersection'},
     {name : 'object'},
+    {name : 'tosource'},
   ],
   testDir       : './test',
   fullyParallel : true,
