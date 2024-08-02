@@ -50,6 +50,7 @@
     "build:plugin.load": "node ./tools/packer/index.js src/plugins/load.script.js ./dist/plugins/load.js",
     "build:plugin.intersection": "node ./tools/packer/index.js src/plugins/intersection.script.js ./dist/plugins/intersection.js",
     "build:plugin.object": "node ./tools/packer/index.js src/plugins/object.script.js ./dist/plugins/object.js",
+    "build:plugin.tosource": "node ./tools/packer/index.js src/plugins/tosource.script.js ./dist/plugins/tosource.js",
     "build:module:core": "node ./tools/packer/index.js -m ./src/core/index.js ./dist/module/core/index.js ./package.json",
     "build:module:composer": "node ./tools/packer/index.js -m src/component/composer.js ./dist/module/component/composer.js ./package.json",
     "build:module:gsvg": "node ./tools/packer/index.js -m ./src/lib/gsvg.js ./dist/module/lib/gsvg.js ./package.json",
