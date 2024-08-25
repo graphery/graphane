@@ -14,7 +14,7 @@ const results = {
   case01       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <rect x="10" y="10" width="80" height="80" fill="red"></rect> </svg>`,
   case02       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <text x="0" y="50">hello world</text> </svg>`,
   case03       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <g> <rect x="40" y="40" width="20" height="20" fill="green"></rect> </g> </svg>`,
-  case04       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="25" cy="50" r="20" fill="violet" style="visibility: inherit;"></circle> <circle cx="75" cy="50" r="20" fill="orange" style="visibility: hidden;"></circle> </svg>`,
+  case04       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="25" cy="50" r="20" fill="violet"></circle> </svg>`,
   case05       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <rect x="10" y="10" width="80" height="80" fill="red"></rect> </svg>`,
   case06       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <rect x="10" y="10" width="80" height="80" fill="red"></rect> </svg>`,
   case07       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <rect style="cursor: pointer" x="10" y="10" width="80" height="80" fill="red"></rect> </svg>`,
@@ -36,8 +36,8 @@ const results = {
   case23       : `<svg id="svg" style="border: 1px solid black; width: 125px; height: 125px;" viewbox="0 0 125 100"> <g> <circle r="25" id="circle_0" cx="25" cy="25" fill="red"></circle> <text fill="white" x="22" y="31">0</text> </g> <g> <circle r="25" id="circle_1" cx="50" cy="50" fill="green"></circle> <text fill="white" x="47" y="56">1</text> </g> <g> <circle r="25" id="circle_2" cx="75" cy="75" fill="blue"></circle> <text fill="white" x="72" y="81">2</text> </g> <g> <circle r="25" id="circle_3" cx="100" cy="100" fill="orange"></circle> <text fill="white" x="97" y="106">3</text> </g> </svg>`,
   case24       : `<svg id="svg" viewBox="0 0 200 200" width="200" height="200"> <g> <rect id="rect" height="18" width="18" fill="#00D800" x="0" y="0"></rect> </g> <g> <rect id="rect" height="18" width="18" fill="#00D800" x="20" y="0"></rect> </g> <g> <rect id="rect" height="18" width="18" fill="#00D800" x="40" y="0"></rect> </g> <g> <rect id="rect" height="18" width="18" fill="#00D800" x="60" y="0"></rect> </g> <g> <rect id="rect" height="18" width="18" fill="#00D800" x="80" y="0"></rect> </g> </svg>`,
   case25       : `<svg id="svg" viewBox="0 0 200 200" width="200" height="200"> <!-- safe ---> <defs> <rect id="rect" height="18" width="18" fill="#00D800"></rect> </defs> <g> <use href="#rect" x="0" y="0"></use> </g> <g> <use href="#rect" x="20" y="0"></use> </g> <g> <use href="#rect" x="40" y="0"></use> </g> <g> <use href="#rect" x="60" y="0"></use> </g> <g> <use href="#rect" x="80" y="0"></use> </g> </svg>`,
-  case26       : `<svg id="svg" viewBox="0 0 400 200" width="200" height="100"> <g> <rect y="0" height="200" width="38" fill="#00D800" x="0" style="visibility: inherit;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="40" style="visibility: inherit;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="80" style="visibility: inherit;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="120" style="visibility: inherit;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="160" style="visibility: inherit;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="200" style="visibility: hidden;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="240" style="visibility: hidden;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="280" style="visibility: hidden;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="320" style="visibility: hidden;"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="360" style="visibility: hidden;"></rect> </g> </svg>`,
-  case30       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <g transform="translate(0, 25)" style="visibility: inherit;"> <circle cx="20" cy="20" r="20" fill="red"></circle> <g transform="translate(0, 30)" style="visibility: hidden;"> <circle cx="20" cy="20" r="20" fill="blue"></circle> </g> </g> <g transform="translate(50, 25)" style="visibility: hidden;"> <circle cx="20" cy="20" r="20" fill="orange"></circle> <g transform="translate(0, 30)" style="visibility: inherit;"> <circle cx="20" cy="20" r="20" fill="violet"></circle> </g> </g> </svg>`,
+  case26       : `<svg id="svg" viewBox="0 0 400 200" width="200" height="100"> <g> <rect y="0" height="200" width="38" fill="#00D800" x="0"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="40"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="80"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="120"></rect> </g> <g> <rect y="0" height="200" width="38" fill="#00D800" x="160"></rect> </g> <g></g> <g></g> <g></g> <g></g> <g></g> </svg>`,
+  case30       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <g transform="translate(0, 25)"> <circle cx="20" cy="20" r="20" fill="red"></circle> </g> </svg>`,
   case31       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="20" cy="20" fill="red"></circle> <circle cx="40" cy="40" fill="blue"></circle> <circle cx="60" cy="60" fill="green"></circle> <circle cx="80" cy="80" fill="orange"></circle> </svg>`,
   case32       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="20" cy="20" fill="red"></circle> <circle cx="40" cy="40" fill="blue"></circle> <circle cx="60" cy="60" fill="green"></circle> <circle cx="80" cy="80" fill="orange"></circle> </svg>`,
   case33       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="20" cy="20" r="20" fill="red"></circle> <circle cx="40" cy="40" r="20" fill="blue"></circle> <circle cx="60" cy="60" r="20" fill="green"></circle> <circle cx="80" cy="80" r="20" fill="orange"></circle> </svg>`,
@@ -50,6 +50,10 @@ const results = {
   case39_after : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <rect x="20" y="20" width="40" height="40" fill="blue"></rect> </svg>`,
   case40       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <g> <circle r="25" cx="25" cy="25" fill="red"></circle> </g> <g> <circle r="25" cx="50" cy="50" fill="green"></circle> </g> <g> <circle r="25" cx="75" cy="75" fill="blue"></circle> </g> </svg>`,
   case40_after : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <g> <circle r="25" cx="75" cy="25" fill="red"></circle> </g> <g> <circle r="25" cx="50" cy="50" fill="green"></circle> </g> <g> <circle r="25" cx="25" cy="75" fill="blue"></circle> </g> </svg>`,
+  case41       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="25" cy="50" r="20" fill="violet"></circle> </svg>`,
+  case41_after : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="75" cy="50" r="20" fill="orange"></circle> </svg>`,
+  case42       : `<svg id="svg" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" style="width: 200px;"> <rect width="10" height="10"></rect> </svg>`,
+  case42_after : `<svg id="svg" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" style="width: 200px;"> <rect width="10" height="10"> <animate attributeName="rx" values="0;5;0" dur="10s" repeatCount="indefinite"></animate> </rect> </svg>`,
 }
 
 const dir = await opendir(FOLDER);
@@ -78,7 +82,7 @@ for await (const dirent of dir) {
       await expect(show).toHaveScreenshot()
     });
 
-    if (['case39', 'case40'].includes(code)) {
+    if (['case39', 'case40', 'case41', 'case42'].includes(code)) {
       test('compare source code result after update', async ({page}) => {
         const run = page.locator('#update');
         await run.click();
@@ -86,6 +90,8 @@ for await (const dirent of dir) {
         const result = page.locator('#result');
         await expect(result).toHaveText(results[code+'_after']);
       });
+    }
+    if (['case39', 'case40', 'case41'].includes(code)) {
       test('compare image after update', async ({page}) => {
         const run = page.locator('#update');
         await run.click();

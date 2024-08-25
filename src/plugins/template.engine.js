@@ -12,12 +12,12 @@ const CLONES     = Symbol();
 const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
 const REPLACE    = Symbol();
+const COMMENT    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = [];
 const throwError = (message, scope, code) => {
   throw new Error(message + ` in ${ scope }\n` + code);
 }
-window.REPLACE = REPLACE;
 
 /**
  * Replaces an element with a comment node and stores references to both the element and the comment node.
@@ -31,7 +31,7 @@ function replace (element) {
   element.parentNode().insertBefore(comment, element.el);
   element.remove();
   comment[REPLACE] = element;
-  element[REPLACE] = comment;
+  element[COMMENT] = comment;
   return comment;
 }
 
@@ -59,7 +59,17 @@ defineDirective({
 defineDirective({
   name : 'g-if',
   execute (gObject, {expression, data, evalExpression}) {
-    gObject.style.visibility(evalExpression(expression, data) ? 'inherit' : 'hidden');
+    if (evalExpression(expression, data)) {
+      if (gObject[COMMENT]) {
+        gObject[COMMENT].parentNode.insertBefore(gObject.el, gObject[COMMENT]);
+        gObject[COMMENT].remove();
+        gObject[COMMENT] = null;
+      }
+    } else {
+      if (!gObject[COMMENT]) {
+        replace(gObject);
+      }
+    }
   }
 });
 
@@ -181,7 +191,6 @@ defineDirective({
             g.add(child.cloneNode(true));
           });
           process(g, subData, error);
-          // def.before(g.el);
           comment.parentNode.insertBefore(g.el, comment);
           g[CLONED] = true;
           def[CLONES].push(g);
@@ -363,7 +372,6 @@ function process (el, data, error, checkCloned = true) {
   }
   if (!template) {
     for (const child of el.childNodes()) {
-      console.log(child, child[REPLACE])
       if (child.el[REPLACE]) {
         process(child.el[REPLACE], data, error);
       } else if (child.el?.nodeType === 1) {
@@ -385,8 +393,14 @@ function render (context = {}, error = throwError) {
   this.dispatchEvent(new Event('render'));
 }
 
+
+/**
+ * Removes all occurrences of the '<!-- ref -->' string from the outer HTML of the current element.
+ *
+ * @return {string} The modified outer HTML string with the '<!-- ref -->' string removed.
+ */
 function source () {
-  return this.outerHTML().replace('<!-- ref -->', '');
+  return this.outerHTML().replaceAll('<!-- ref -->', '');
 }
 
 
