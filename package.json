@@ -10,7 +10,7 @@
     "workbench:gsvg": "node ./tools/workbench -l gSVG -i /src/lib/gsvg.script.js -t test/lib/gsvg/cases -p 7002",
     "workbench:plugin.animateto": "node ./tools/workbench -l plugin.animateTo -i /src/lib/gsvg.script.js -i /src/plugins/animateto.script.js -t test/plugins/animateto/cases -p 7003",
     "workbench:plugin.debug": "node ./tools/workbench -l plugin.debug -i /src/lib/gsvg.script.js -i /src/plugins/debug.script.js -t test/plugins/debug/cases -p 7004",
-    "workbench:plugin.keep.aspect": "node ./tools/workbench -l plugin.keep.aspect -i /src/lib/gsvg.script.js -i /src/plugins/keep.aspect.script.js -t test/plugins/non.scaling.size/cases -p 7005",
+    "workbench:plugin.non.scaling.size": "node ./tools/workbench -l plugin.keep.aspect -i /src/lib/gsvg.script.js -i /src/plugins/non.scaling.size.script.js -t test/plugins/non.scaling.size/cases -p 7005",
     "workbench:plugin.observe.resize": "node ./tools/workbench -l plugin.observe.resize -i /src/lib/gsvg.script.js -i /src/plugins/observe.resize.script.js -t test/plugins/observe.resize/cases -p 7006",
     "workbench:plugin.observe.style": "node ./tools/workbench -l plugin.observe.style -i /src/lib/gsvg.script.js -i /src/plugins/observe.style.script.js -t test/plugins/observe.style/cases -p 7007",
     "workbench:plugin.shapes": "node ./tools/workbench -l plugin.shapes -i /src/lib/gsvg.script.js -i /src/plugins/shapes.script.js -t test/plugins/shapes/cases -p 7009",

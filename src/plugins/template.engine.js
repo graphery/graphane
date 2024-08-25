@@ -12,7 +12,6 @@ const CLONES     = Symbol();
 const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
 const REPLACE    = Symbol();
-const COMMENT    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = [];
 const throwError = (message, scope, code) => {
@@ -20,21 +19,34 @@ const throwError = (message, scope, code) => {
 }
 
 /**
- * Replaces an element with a comment node and stores references to both the element and the comment node.
+ * Replaces an element with a comment element containing a reference to the original element.
+ * The original element is removed from the DOM.
  *
- * @param {Element} element - The element to be replaced.
- * @returns {Comment} - The comment node that replaces the element.
+ * @param {Object} element - The element to be replaced.
  */
-function replace (element) {
-  if (!element?.el?.parentNode) return;
+function replaceWithComment (element) {
+  if (!element?.el?.parentNode) {
+    return;
+  }
   const comment = document.createComment(` ref `);
   element.parentNode().insertBefore(comment, element.el);
   element.remove();
   comment[REPLACE] = element;
-  element[COMMENT] = comment;
-  return comment;
 }
 
+/**
+ * Restore an element with its reference comment.
+ * The comment is removed from the DOM and the element is returned.
+ *
+ * @param {Node} comment - The comment reference to be restored.
+ * @return {Node} - The element that the comment is a reference.
+ */
+function restoreFromComment (comment) {
+  const element = comment[REPLACE];
+  comment.parentNode.insertBefore(element.el, comment);
+  comment.remove();
+  return element;
+}
 
 /**
  * g-context
@@ -59,16 +71,8 @@ defineDirective({
 defineDirective({
   name : 'g-if',
   execute (gObject, {expression, data, evalExpression}) {
-    if (evalExpression(expression, data)) {
-      if (gObject[COMMENT]) {
-        gObject[COMMENT].parentNode.insertBefore(gObject.el, gObject[COMMENT]);
-        gObject[COMMENT].remove();
-        gObject[COMMENT] = null;
-      }
-    } else {
-      if (!gObject[COMMENT]) {
-        replace(gObject);
-      }
+    if (!evalExpression(expression, data)) {
+      replaceWithComment(gObject);
     }
   }
 });
@@ -176,9 +180,8 @@ defineDirective({
   name     : 'g-for',
   template : true,
   execute (def, {expression, data, error}) {
-    const comment = replace(def);
-    def[CLONES]   = def[CLONES] || [];
-    let n         = 0;
+    def[CLONES] = def[CLONES] || [];
+    let n       = 0;
     evalForExpression(
       expression,
       data,
@@ -191,7 +194,7 @@ defineDirective({
             g.add(child.cloneNode(true));
           });
           process(g, subData, error);
-          comment.parentNode.insertBefore(g.el, comment);
+          def.before(g.el);
           g[CLONED] = true;
           def[CLONES].push(g);
         }
@@ -201,7 +204,9 @@ defineDirective({
         while (def[CLONES].length > subData.length) {
           def[CLONES].pop().remove();
         }
-      });
+      }
+    );
+    replaceWithComment(def);
   }
 });
 
@@ -373,7 +378,7 @@ function process (el, data, error, checkCloned = true) {
   if (!template) {
     for (const child of el.childNodes()) {
       if (child.el[REPLACE]) {
-        process(child.el[REPLACE], data, error);
+        process(restoreFromComment(child.el), data, error);
       } else if (child.el?.nodeType === 1) {
         process(child, data, error);
       }
