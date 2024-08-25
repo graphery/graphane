@@ -9,12 +9,30 @@ import animateToPlugin       from './animateto.js';
 const INIT       = Symbol();
 const CLONED     = Symbol();
 const CLONES     = Symbol();
-const TEMPLATE   = Symbol();
+const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
+const REPLACE    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = [];
 const throwError = (message, scope, code) => {
   throw new Error(message + ` in ${ scope }\n` + code);
+}
+window.REPLACE = REPLACE;
+
+/**
+ * Replaces an element with a comment node and stores references to both the element and the comment node.
+ *
+ * @param {Element} element - The element to be replaced.
+ * @returns {Comment} - The comment node that replaces the element.
+ */
+function replace (element) {
+  if (!element?.el?.parentNode) return;
+  const comment = document.createComment(` ref `);
+  element.parentNode().insertBefore(comment, element.el);
+  element.remove();
+  comment[REPLACE] = element;
+  element[REPLACE] = comment;
+  return comment;
 }
 
 
@@ -148,9 +166,9 @@ defineDirective({
   name     : 'g-for',
   template : true,
   execute (def, {expression, data, error}) {
-    def.setAttribute('data-type', 'graphane');
-    def[CLONES] = def[CLONES] || [];
-    let n       = 0;
+    const comment = replace(def);
+    def[CLONES]   = def[CLONES] || [];
+    let n         = 0;
     evalForExpression(
       expression,
       data,
@@ -163,7 +181,8 @@ defineDirective({
             g.add(child.cloneNode(true));
           });
           process(g, subData, error);
-          def.before(g.el);
+          // def.before(g.el);
+          comment.parentNode.insertBefore(g.el, comment);
           g[CLONED] = true;
           def[CLONES].push(g);
         }
@@ -321,18 +340,18 @@ function process (el, data, error, checkCloned = true) {
     return
   }
   const outerCode = el.outerHTML();
-  el[TEMPLATE]    = el[TEMPLATE] || [];
+  el[DIRECTIVES]  = el[DIRECTIVES] || [];
   const attrs     = el.attributes();
   for (let attr of [...attrs]) {
     const attributeName = attr.name;
     const result        = findDirective(attributeName);
     if (result) {
-      el[TEMPLATE].push({...result, expression : attr.value});
+      el[DIRECTIVES].push({...result, expression : attr.value});
       el.removeAttribute(attributeName);
     }
   }
   let template = false;
-  for (let directive of el[TEMPLATE]) {
+  for (let directive of el[DIRECTIVES]) {
     try {
       directive.execute(el, {...directive, data, evalExpression, error, outerCode});
     } catch (err) {
@@ -343,8 +362,13 @@ function process (el, data, error, checkCloned = true) {
     template = directive.template || template;
   }
   if (!template) {
-    for (const child of el.children()) {
-      process(child, data, error);
+    for (const child of el.childNodes()) {
+      console.log(child, child[REPLACE])
+      if (child.el[REPLACE]) {
+        process(child.el[REPLACE], data, error);
+      } else if (child.el?.nodeType === 1) {
+        process(child, data, error);
+      }
     }
   }
 }
@@ -362,15 +386,7 @@ function render (context = {}, error = throwError) {
 }
 
 function source () {
-  const removeDefs = (node) => {
-    if (node.tagName?.toLowerCase() === 'defs' && node.getAttribute('data-type') === 'graphane') {
-      return node.remove();
-    }
-    node.childNodes.forEach(removeDefs);
-  }
-  const el         = this._el.cloneNode(true);
-  removeDefs(el);
-  return el.outerHTML;
+  return this.outerHTML().replace('<!-- ref -->', '');
 }
 
 
