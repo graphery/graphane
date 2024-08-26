@@ -10,16 +10,6 @@
 - Added the `.toSource()` plugin to get a formal SVG format.
 - Fixed `.source()` with template engine and `defs g-for` elements.
 
-## 0.1.0-alpha.10 (2024-8-26)
-
-- Improve `g-for` and `g-if` directives.
-- Rewrite `.source()` and `.toSource()` for the new internal reference comment (`<!-- ref -->`).
-
-## 0.1.0-alpha.10 (2024-8-02)
-
-- Added the `.toSource()` plugin to get a formal SVG format.
-- Fixed `.source()` with template engine and `defs g-for` elements.
-
 ## 0.1.0-alpha.9 (2024-01-23)
 
 - Improve the handling error in `g-composer` and the SVG Template Engine.
