@@ -54,6 +54,8 @@ const results = {
   case41_after : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <circle cx="75" cy="50" r="20" fill="orange"></circle> </svg>`,
   case42       : `<svg id="svg" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" style="width: 200px;"> <rect width="10" height="10"></rect> </svg>`,
   case42_after : `<svg id="svg" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" style="width: 200px;"> <rect width="10" height="10"> <animate attributeName="rx" values="0;5;0" dur="10s" repeatCount="indefinite"></animate> </rect> </svg>`,
+  case43       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <g> <g> <circle r="25" cx="25" cy="25" fill="red"></circle> </g> <g> <circle r="25" cx="50" cy="50" fill="green"></circle> </g> <g> <circle r="25" cx="75" cy="75" fill="blue"></circle> </g> </g> </svg>`,
+  case43_after : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"></svg>`,
 }
 
 const dir = await opendir(FOLDER);
@@ -82,7 +84,7 @@ for await (const dirent of dir) {
       await expect(show).toHaveScreenshot()
     });
 
-    if (['case39', 'case40', 'case41', 'case42'].includes(code)) {
+    if (['case39', 'case40', 'case41', 'case42', 'case43'].includes(code)) {
       test('compare source code result after update', async ({page}) => {
         const run = page.locator('#update');
         await run.click();
@@ -91,7 +93,7 @@ for await (const dirent of dir) {
         await expect(result).toHaveText(results[code+'_after']);
       });
     }
-    if (['case39', 'case40', 'case41'].includes(code)) {
+    if (['case39', 'case40', 'case41', 'case43'].includes(code)) {
       test('compare image after update', async ({page}) => {
         const run = page.locator('#update');
         await run.click();
