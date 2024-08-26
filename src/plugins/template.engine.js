@@ -9,14 +9,44 @@ import animateToPlugin       from './animateto.js';
 const INIT       = Symbol();
 const CLONED     = Symbol();
 const CLONES     = Symbol();
-const TEMPLATE   = Symbol();
+const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
+const REPLACE    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = [];
 const throwError = (message, scope, code) => {
   throw new Error(message + ` in ${ scope }\n` + code);
 }
 
+/**
+ * Replaces an element with a comment element containing a reference to the original element.
+ * The original element is removed from the DOM.
+ *
+ * @param {Object} element - The element to be replaced.
+ */
+function replaceWithComment (element) {
+  if (!element?.el?.parentNode) {
+    return;
+  }
+  const comment = document.createComment(` ref `);
+  element.parentNode().insertBefore(comment, element.el);
+  element.remove();
+  comment[REPLACE] = element;
+}
+
+/**
+ * Restore an element with its reference comment.
+ * The comment is removed from the DOM and the element is returned.
+ *
+ * @param {Node} comment - The comment reference to be restored.
+ * @return {Node} - The element that the comment is a reference.
+ */
+function restoreFromComment (comment) {
+  const element = comment[REPLACE];
+  comment.parentNode.insertBefore(element.el, comment);
+  comment.remove();
+  return element;
+}
 
 /**
  * g-context
@@ -41,7 +71,9 @@ defineDirective({
 defineDirective({
   name : 'g-if',
   execute (gObject, {expression, data, evalExpression}) {
-    gObject.style.visibility(evalExpression(expression, data) ? 'inherit' : 'hidden');
+    if (!evalExpression(expression, data)) {
+      replaceWithComment(gObject);
+    }
   }
 });
 
@@ -173,7 +205,9 @@ defineDirective({
         while (def[CLONES].length > subData.length) {
           def[CLONES].pop().remove();
         }
-      });
+      }
+    );
+    replaceWithComment(def);
   }
 });
 
@@ -321,18 +355,18 @@ function process (el, data, error, checkCloned = true) {
     return
   }
   const outerCode = el.outerHTML();
-  el[TEMPLATE]    = el[TEMPLATE] || [];
+  el[DIRECTIVES]  = el[DIRECTIVES] || [];
   const attrs     = el.attributes();
   for (let attr of [...attrs]) {
     const attributeName = attr.name;
     const result        = findDirective(attributeName);
     if (result) {
-      el[TEMPLATE].push({...result, expression : attr.value});
+      el[DIRECTIVES].push({...result, expression : attr.value});
       el.removeAttribute(attributeName);
     }
   }
   let template = false;
-  for (let directive of el[TEMPLATE]) {
+  for (let directive of el[DIRECTIVES]) {
     try {
       directive.execute(el, {...directive, data, evalExpression, error, outerCode});
     } catch (err) {
@@ -343,8 +377,12 @@ function process (el, data, error, checkCloned = true) {
     template = directive.template || template;
   }
   if (!template) {
-    for (const child of el.children()) {
-      process(child, data, error);
+    for (const child of el.childNodes()) {
+      if (child.el[REPLACE]) {
+        process(restoreFromComment(child.el), data, error);
+      } else if (child.el?.nodeType === 1) {
+        process(child, data, error);
+      }
     }
   }
 }
@@ -371,6 +409,16 @@ function source () {
   const el         = this._el.cloneNode(true);
   removeDefs(el);
   return el.outerHTML;
+}
+
+
+/**
+ * Removes all occurrences of the '<!-- ref -->' string from the outer HTML of the current element.
+ *
+ * @return {string} The modified outer HTML string with the '<!-- ref -->' string removed.
+ */
+function source () {
+  return this.outerHTML().replaceAll('<!-- ref -->', '');
 }
 
 

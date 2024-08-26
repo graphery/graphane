@@ -49,7 +49,7 @@ export default `
       </defs>
     </g>
   </svg>
-  <script type="plugin" src="/src/plugins/non.scaling.size.js"></script>
+  <script type="plugin" src="./src/plugins/non.scaling.size.js"></script>
 </g-composer>
 <p>
   <button id="run">up size</button>
