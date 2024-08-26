@@ -180,6 +180,7 @@ defineDirective({
   name     : 'g-for',
   template : true,
   execute (def, {expression, data, error}) {
+    def.setAttribute('data-type', 'graphane');
     def[CLONES] = def[CLONES] || [];
     let n       = 0;
     evalForExpression(
@@ -396,6 +397,28 @@ function process (el, data, error, checkCloned = true) {
 function render (context = {}, error = throwError) {
   process(this, context, error);
   this.dispatchEvent(new Event('render'));
+}
+
+function source () {
+  const removeDefs = (node) => {
+    if (node.tagName?.toLowerCase() === 'defs' && node.getAttribute('data-type') === 'graphane') {
+      return node.remove();
+    }
+    node.childNodes.forEach(removeDefs);
+  }
+  const el         = this._el.cloneNode(true);
+  removeDefs(el);
+  return el.outerHTML;
+}
+
+
+/**
+ * Removes all occurrences of the '<!-- ref -->' string from the outer HTML of the current element.
+ *
+ * @return {string} The modified outer HTML string with the '<!-- ref -->' string removed.
+ */
+function source () {
+  return this.outerHTML().replaceAll('<!-- ref -->', '');
 }
 
 
