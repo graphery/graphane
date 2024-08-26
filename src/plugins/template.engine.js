@@ -399,18 +399,6 @@ function render (context = {}, error = throwError) {
   this.dispatchEvent(new Event('render'));
 }
 
-function source () {
-  const removeDefs = (node) => {
-    if (node.tagName?.toLowerCase() === 'defs' && node.getAttribute('data-type') === 'graphane') {
-      return node.remove();
-    }
-    node.childNodes.forEach(removeDefs);
-  }
-  const el         = this._el.cloneNode(true);
-  removeDefs(el);
-  return el.outerHTML;
-}
-
 
 /**
  * Removes all occurrences of the '<!-- ref -->' string from the outer HTML of the current element.
@@ -420,6 +408,7 @@ function source () {
 function source () {
   return this.outerHTML().replaceAll('<!-- ref -->', '');
 }
+
 
 /**
  * Install template plugin
