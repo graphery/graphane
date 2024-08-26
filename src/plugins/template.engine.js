@@ -421,17 +421,6 @@ function source () {
   return this.outerHTML().replaceAll('<!-- ref -->', '');
 }
 
-
-/**
- * Removes all occurrences of the '<!-- ref -->' string from the outer HTML of the current element.
- *
- * @return {string} The modified outer HTML string with the '<!-- ref -->' string removed.
- */
-function source () {
-  return this.outerHTML().replaceAll('<!-- ref -->', '');
-}
-
-
 /**
  * Install template plugin
  * @param {object} setup
