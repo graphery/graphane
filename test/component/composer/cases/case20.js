@@ -3,7 +3,7 @@ export const description = 'Render with g-bind on svg element';
 
 export default `<g-composer>
   <svg id="svg" 
-       :viewBox="\`0 0 \${(data.length + 1) * 25} 100\`" 
+       :viewBox="\`0 0 \${(data.length + 1) * 25} \${(data.length + 1) * 25}\`" 
        :style="{
          width: ((data.length + 1) * 25) + 'px', 
          height: ((data.length + 1) * 25) + 'px'
