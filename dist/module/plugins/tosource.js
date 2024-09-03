@@ -1,1 +1,1 @@
-/* graphane - 0.1.0-alpha.10 */ function n(){let t=e=>e.nodeType===1&&e.getAttribute("data-type")==="graphane"?e.remove():(e.childNodes.forEach(t),e),r=t(this._el.cloneNode(!0));return new XMLSerializer().serializeToString(r)}function i(t){t.extendInstance({toSource:n})}var o=i;export{o as default};
+/* graphane - 0.1.0-alpha.11 */ function t(){return new XMLSerializer().serializeToString(this.el).replaceAll("<!-- ref -->","")}function n(e){e.extendInstance({toSource:t})}var l=n;export{l as default};

@@ -124,7 +124,8 @@ function install (setup) {
     setup.extendTemplate.defineDirective({
       name : 'g-non-scaling-size',
       execute (gObject) {
-        gObject.nonScalingSize('size');
+        // gObject.nonScalingSize('size');
+        keepAspect.call(gObject, 'size')
       }
     })
   }
