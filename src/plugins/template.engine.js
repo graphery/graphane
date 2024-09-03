@@ -407,8 +407,7 @@ function process (el, data, error, checkCloned = true) {
   }
   const outerCode = el.outerHTML();
   el[DIRECTIVES]  = el[DIRECTIVES] || [];
-  const attrs     = [...el.el.attributes];
-  console.log(attrs);
+  const attrs     = el.attributes();
   for (let attr of [...attrs]) {
     const attributeName = attr.name;
     const result        = findDirective(attributeName);
