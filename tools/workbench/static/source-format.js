@@ -21,9 +21,10 @@ function sourceFormat (source) {
         n += i + 1
         i += 2;
       }
+    } else if (transformed[n - 1] === '/' && transformed[n] === '>') {
+      i -= 2;
     }
     n++;
   }
-  transformed = transformed.replace(/</g, "&lt;");
-  return transformed;
+  return transformed.replace(/</g, "&lt;");
 }
