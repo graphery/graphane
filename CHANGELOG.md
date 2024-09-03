@@ -1,6 +1,11 @@
 # Change Log
 
-## 0.1.0-alpha.7 (06/01/2024)
+## 0.1.0-alpha.8 (2024-01-12)
+
+- Fixed error loading plugin from `g-composer`.
+- Fixed error building plugins.
+
+## 0.1.0-alpha.7 (2024-01-06)
 
 - BREAKING CHANGE: the attribute `viewport-ratio` is now `intersection-ratio`.
 - BREAKING CHANGE: the attribute `viewport-class` is now `intersection-class`.
@@ -21,7 +26,7 @@
 - Fixed errors in `animateTo` with FireFox.
 - Fixed a bug with Safari and the 'SVG' selector (uppercase).
 
-## 0.1.0-alpha.6 (31/12/2023)
+## 0.1.0-alpha.6 (2023-12-31)
 
 - Added `$$()` in the `g-bind` directive to get the current value of the attribute.
 - Added reloading of the component when the Light DOM changes.
@@ -42,7 +47,7 @@
 - Removed support for `hidden` attribute in `g-component`.
 - Refactor the array operators.
 
-## 0.1.0-alpha.5 (21/11/2023)
+## 0.1.0-alpha.5 (2023-11-21)
 
 - BREAKING CHANGE: the `d` attribute is reset when the `.d` object is obtained.
 - BREAKING CHANGE: the `$.min()`, `$.max()` and other data helpers was change to `data.$min()`,
@@ -71,7 +76,7 @@
 - Fixed an SVG library bug with `.content()` and `innerHTML()` when including tags ending in `/>`.
 - Removed support for the ancient plugin model (deprecated).
 
-## 0.1.0-alpha.4 (08/11/2023)
+## 0.1.0-alpha.4 (2023-11-08)
 
 - BREAKING CHANGE: Renamed `g-template` as `g-composer`!
 - BREAKING CHANGE: Redesigned plugin model!
@@ -83,7 +88,7 @@
 - Added `d.circleSlice()` to the shape plugin.
 - Optimized the lengths of the shape plugin with only four decimal places.
 
-## 0.1.0-alpha.3 (26/10/2023)
+## 0.1.0-alpha.3 (2023-10-26)
 
 - Added special function `data()` in `script type="method"` for normalize and transform data before
   the rendering.
@@ -93,7 +98,7 @@
 - Added direction to `d.arc()` shape plugin.
 - Updated develop dependencies.
 
-## 0.1.0-alpha.2 (18/10/2023)
+## 0.1.0-alpha.2 (2023-18-10)
 
 - Renamed `$.animate()` to `$.dynamic()` in `g-bind` directive.
 - Added support for keyframes in `$.dynamic()`.s
@@ -110,6 +115,6 @@
 - Fixed a bug when data has line return with Windows format.
 - Fixed a bug with `height` and `width` values and `animateTo()`.
 
-## 0.1.0-alpha.1 (30/09/2023)
+## 0.1.0-alpha.1 (2023-09-30)
 
 - Initial version.

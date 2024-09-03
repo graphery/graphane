@@ -1,7 +1,7 @@
 import svgPlugin from './load.js';
 
-if (gSVG) {
-  gSVG.install(svgPlugin);
+if (globalThis.gSVG) {
+  globalThis.gSVG.install(svgPlugin);
 }
 
 customElements
