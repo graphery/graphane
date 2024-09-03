@@ -3,8 +3,6 @@ import {
   isArray, isObject, isNumber, isFunction, isUndefined
 }                                       from '../helpers/types.js';
 import { createFunction }               from '../helpers/function.create.js';
-import { Operations }                   from '../helpers/array.operations.js';
-import { clone }                        from '../helpers/objects.js';
 import { svgPlugin as animateToPlugin } from './animateto.js';
 
 const INIT       = Symbol();
@@ -55,27 +53,23 @@ defineDirective({
   alias    : ':',
   argument : true,
   execute (gObject, {expression, argument, data, evalExpression}) {
-    const context = {
+    const context      = {
       ...data,
-      $  : {
-        ...data.$,
-        dynamic (value, duration = 200, delay = 0) {
-          gObject.animateTo(
-            (isArray(value) ? value : [value]).map(v =>
-              isObject(v) && 'offset' in v ?
-                {[argument] : v.value, offset : v.offset} :
-                {[argument] : v}
-            ),
-            {duration, delay}
-          );
-        }
-      },
-      $$ :
-        argument === 'd' ? gObject.$d :
-          argument === 'transform' ? gObject.$transform :
-            undefined
+      $$ : argument === 'd' ? gObject.$d :
+        argument === 'transform' ? gObject.$transform :
+          {}
     };
-    const value   = evalExpression(expression, context);
+    context.$$.dynamic = (value, duration = 200, delay = 0) => {
+      gObject.animateTo(
+        (isArray(value) ? value : [value]).map(v =>
+          isObject(v) && 'offset' in v ?
+            {[argument] : v.value, offset : v.offset} :
+            {[argument] : v}
+        ),
+        {duration, delay}
+      );
+    };
+    let value          = evalExpression(expression, context);
     if (argument === 'class') {
       if (isArray(value)) {
         gObject.classList.add(...value.filter(val => !!val));
@@ -97,7 +91,7 @@ defineDirective({
       return;
     }
     if (!isUndefined(value)) {
-      gObject[argument](argument === 'd' || argument === 'transform' ? '' + value : value);
+      gObject[argument](value);
     }
   }
 });
@@ -119,9 +113,9 @@ defineDirective({
       gObject.removeEventListener(event, manager.get(expression));
     }
     const handler = function (evt) {
-      let handler = evalExpression(expression, data);
-      if (isFunction(handler)) {
-        handler.call(gObject, evt);
+      let fn = evalExpression(expression, data, gObject);
+      if (isFunction(fn)) {
+        fn.call(gObject, evt);
       }
     };
     gObject.addEventListener(event, handler);
@@ -254,15 +248,16 @@ function toArray (v) {
  * evalExpression - evaluate an expression with a data context
  * @param {string} code
  * @param {object} data
+ * @param {object} [context=null]
  * @returns {*}
  */
-function evalExpression (code, data) {
+function evalExpression (code, data, context = null) {
   try {
     const fn = createFunction(
       Object.keys(data).filter(n => !isNumber(n)),
       `return ( ${ code } ); `
     );
-    return fn(...Object.values(data));
+    return fn.apply(context, Object.values(data));
   } catch (err) {
     console.warn(LABEL, err.message);
   }
@@ -314,8 +309,6 @@ function evalForExpression (code, data, each, final) {
  * @param {Object} el
  * @param {Object} data
  * @param {boolean} [checkCloned=true]
- * @example
- * svg.render(records)
  */
 function process (el, data, checkCloned = true) {
   if (checkCloned && el[CLONED]) {
@@ -348,16 +341,8 @@ function process (el, data, checkCloned = true) {
  * @param {Object|Array} [context]
  */
 function render (context = {}) {
-  process(this, {
-    ...context,
-    ...(Array.isArray(context.data) ? {} : context.data),
-    $ : context.data ? {
-      ...context.$,
-      ...Operations(context.data),
-      data    : context.data,
-      rawData : clone(context.data),
-    } : {}
-  });
+  process(this, context);
+  this.dispatchEvent(new Event('render'));
 }
 
 

@@ -6,7 +6,7 @@ export function script () {
   svg.render({
     source : '<rect x="40" y="40" width="20" height="20" fill="green">'
   });
-  document.querySelector('#result').innerHTML = svg.source().replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 
 }
 

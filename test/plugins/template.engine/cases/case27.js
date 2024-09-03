@@ -7,7 +7,7 @@ export function script () {
   const updateB = document.querySelector('#updateB');
   const updateC = document.querySelector('#updateC');
 
-  function updateSource () {
+  async function updateSource () {
     svg.render({data : [Number(updateA.value), Number(updateB.value), Number(updateC.value)]});
   }
 

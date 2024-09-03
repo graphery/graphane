@@ -138,6 +138,13 @@ export function svgPlugin (setup) {
     degrees2radians
   });
 
+  if (setup.extendComposer) {
+    setup.extendComposer({
+      polar2cartesian,
+      degrees2radians
+    });
+  }
+
   setup.extendPath({
     arc,
     barArc,
@@ -146,4 +153,5 @@ export function svgPlugin (setup) {
     star,
     circle
   });
+
 }

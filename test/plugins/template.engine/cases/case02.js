@@ -6,10 +6,10 @@ export function script () {
   svg.render({
     title : 'hello world'
   });
-  document.querySelector('#change').addEventListener('input', function () {
+  document.querySelector('#change').addEventListener('input', async function () {
     svg.render({title: this.value});
   })
-  document.querySelector('#result').innerHTML = svg.source().replace(/</g, "&lt;");
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 
 }
 

@@ -9,7 +9,7 @@ export function script () {
   const path = svg.add('path').fill('none').stroke_width(1).stroke('black').id('path');
   path.d.regularPolygon(100, 100, 100, 4);
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

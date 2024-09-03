@@ -1,4 +1,4 @@
-export const title       = '42) Create SVG path with pseudo functions';
+export const title       = '43) Create SVG path with pseudo functions';
 export const description = 'use .d.M().L()';
 
 export function script () {
@@ -8,7 +8,7 @@ export function script () {
   svg.add('path').stroke('black').stroke_width(10).fill('none')
      .d.M(10,10).L(10,90).L(90,90).L(90,10).Z();
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

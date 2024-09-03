@@ -11,7 +11,7 @@ export function script () {
   svg.add('text')
      .add('textPath').href(path.ref()).method('align').content('testing the path');
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

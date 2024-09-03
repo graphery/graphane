@@ -341,7 +341,7 @@ const CLASSLIST = [
 ];
 
 const EXTRA = [
-  'class'
+  'class', 'add', 'addBefore'
 ]
 
 const D           = [

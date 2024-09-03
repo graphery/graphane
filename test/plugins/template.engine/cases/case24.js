@@ -5,7 +5,7 @@ export function script () {
   const svg     = gSVG(document.querySelector('#svg'));
   const update = document.querySelector('#update');
 
-  function updateSource () {
+  async function updateSource () {
     svg.render({value: Number(update.value)});
     document.querySelector('#result').innerHTML = sourceFormat(svg.source());
   }

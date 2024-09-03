@@ -8,7 +8,7 @@ export function script () {
   svg.add('path').stroke('black').stroke_width(10).fill('none')
      .d("M10,10L10,90L90,90L90,10Z");
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

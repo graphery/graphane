@@ -8,13 +8,13 @@ export function script () {
   const svg  = gSVG().viewBox(0, 0, 100, 100).width(100).height(100);
   const line = svg.add('line').x1(10).y1(10).x2(10).y2(90).stroke('black');
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
   run.addEventListener('click', () => {
     line.animateTo(
       {x1 : 90},
       1000,
       () => code.innerHTML = 'moving...',
-      () => code.innerHTML = div.innerHTML.replace(/</g, "&lt;")
+      () => code.innerHTML = sourceFormat(svg.source())
     );
   });
 }

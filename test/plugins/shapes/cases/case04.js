@@ -10,7 +10,7 @@ export function script () {
   svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 70, 180)
   svg.add('path').fill('none').stroke_width(10).stroke('black').d.arc(100, 250, 100, 80, 270)
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>

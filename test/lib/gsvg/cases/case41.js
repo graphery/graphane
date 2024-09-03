@@ -11,7 +11,7 @@ export function script () {
   const line = svg.add('line').x1(10).y1(50).x2(90).y2(50).stroke('black').stroke_width(10);
   line.stroke_width(false);
   svg.attachTo(div);
-  code.innerHTML = div.innerHTML.replace(/</g, "&lt;");
+  code.innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>
