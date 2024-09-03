@@ -205,7 +205,7 @@ class Base extends Simple {
  */
 function defineStyleProperty (Class, def) {
   const definition = {
-    name         : def.name.substring(0, 2) === '--' ?
+    name         : def.name.startsWith('--') ?
       def.name :
       `--${ COMPONENT_PREFIX }${ def.name }`,
     initialValue : def.initialValue ?? def.value ?? '',
@@ -289,7 +289,7 @@ function define (Class) {
   defineComponent(Class);
   const def = defineSimple(Class, {
     style : (...styles) => {
-      styles.forEach(style => defineStyleProperty(Class, Object.assign({}, style)));
+      styles.forEach(style => defineStyleProperty(Class, {...style}));
       return def;
     }
   });

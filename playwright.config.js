@@ -9,6 +9,9 @@ if (process.argv.includes('--project=composer')) {
 } else if (process.argv.includes('--project=core')) {
   process.env.port = '7201';
   options          = '-t ./test/core/cases';
+} else if (process.argv.includes('--project=core.viewport')) {
+  process.env.port = '7211';
+  options          = '-t ./test/core.viewport/cases';
 } else if (process.argv.includes('--project=svg')) {
   process.env.port = '7202';
   options          = '-i /src/lib/gsvg.script.js ' +
@@ -23,11 +26,11 @@ if (process.argv.includes('--project=composer')) {
   options          = '-i /src/lib/gsvg.script.js ' +
                      '-i /src/plugins/debug.script.js ' +
                      '-t test/plugins/debug/cases';
-} else if (process.argv.includes('--project=keep.aspect')) {
+} else if (process.argv.includes('--project=non.scaling.size')) {
   process.env.port = '7205';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-i /src/plugins/keep.aspect.script.js ' +
-                     '-t test/plugins/keep.aspect/cases';
+                     '-i /src/plugins/non.scaling.size.script.js ' +
+                     '-t test/plugins/non.scaling.size/cases';
 } else if (process.argv.includes('--project=observe.resize')) {
   process.env.port = '7206';
   options          = '-i /src/lib/gsvg.script.js ' +
@@ -67,11 +70,12 @@ export default defineConfig({
   projects      : [
     {name : 'helpers'},
     {name : 'core'},
+    {name : 'core.viewport'},
     {name : 'composer'},
     {name : 'svg'},
     {name : 'animateto'},
     {name : 'debug'},
-    {name : 'keep.aspect'},
+    {name : 'non.scaling.size'},
     {name : 'observe.resize'},
     {name : 'observe.style'},
     {name : 'template.engine'},

@@ -1,5 +1,26 @@
 # Change Log
 
+## 0.1.0-alpha.6 (31/12/2023)
+
+- Added `$$()` in the `g-bind` directive to get the current value of the attribute.
+- Added reloading of the component when the Light DOM changes.
+- Improved the code resulting of running `.animateTo()` or `$$.dynamic()` with `transform=rotate()`.
+- Improved Javascript identifier validation in template directives.
+- Improved error description in console messages.
+- Improved CSV format support.
+- Refactor and renamed `keep-aspect` plugin to `non-scaling-size`. As a result:
+  - `g-keep-aspect` custom directive is now `g-non-scaling-size`.
+  - `.keepAspect()` method is now `nonScalingSize()`.
+  - `.keepAspect('stroke')` method is deprecated and must be used the standard
+    attribute `vector-effect="non-scaling-stroke"`.
+- Fixed errors with `animateTo` in Firefox.
+- Fixed the `width` behaviour when not defined by SVG or component size.
+- Fixed an error with decimal values as `g-for="n of 10.1"`.
+- Fixed an error with load plugin and its internal cache.
+- Removed `--internal-width` CSS variable.
+- Removed support for `hidden` attribute in `g-component`.
+- Refactor the array operators.
+
 ## 0.1.0-alpha.5 (21/11/2023)
 
 - BREAKING CHANGE: the `d` attribute is reset when the `.d` object is obtained.
@@ -17,9 +38,9 @@
 - Added keep-aspect plugin:
   - `g-keep-aspect` custom directive to the template engine.
   - `.keepAspect()` method.
- - Added load plugin:
-  - `g-load` custom directive to the template engine.
-  - `load` event.
+- Added load plugin:
+- `g-load` custom directive to the template engine.
+- `load` event.
 - Change the object observer behavior, now it doesn't launch the callback when the property is
   updated with the previous value.
 - Refactored `.add()` and `.addBefore()` methods.

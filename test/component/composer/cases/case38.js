@@ -1,7 +1,7 @@
 export const title       = '38) $$.function with transform';
 export const description = `move path elements`;
 
-export default `<g-composer>
+export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
     <path fill="none" stroke="#D80000" stroke-width="2" 
       d="M42.5,4.35L55,26L42.5,47.65L17.5,47.65L5,26L17.5,4.35Z"/>

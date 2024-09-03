@@ -2,7 +2,7 @@ export const title       = '34) load init with @';
 export const description = `Use the @init event for build a circle`;
 
 export default `
-<g-composer>
+<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" @init="init()">
   </svg>
   <script type="methods">

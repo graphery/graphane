@@ -20,9 +20,9 @@ const results = {
   case04       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="0" y="0" width="20" height="20" fill="black"></rect> </svg>`,
   case04_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="0" y="0" width="20" height="20" fill="black" transform="translate(80,80)"></rect> </svg>`,
   case05       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="40" y="40" width="20" height="20" fill="black"></rect> </svg>`,
-  case05_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="40" y="40" width="20" height="20" fill="black" transform="translate(50,50) rotate(315) translate(-50,-50)"></rect> </svg>`,
+  case05_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="40" y="40" width="20" height="20" fill="black" transform="rotate(315, 50, 50)"></rect> </svg>`,
   case06       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="40" y="40" width="20" height="20" fill="black"></rect> </svg>`,
-  case06_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="40" y="40" width="20" height="20" fill="black" transform="translate(50,50) rotate(315) translate(-50,-50)"></rect> </svg>`,
+  case06_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="40" y="40" width="20" height="20" fill="black" transform="rotate(315, 50, 50)"></rect> </svg>`,
   case07       : `<svg viewBox="0,0,500,500" width="100" height="100"> <path stroke="black" stroke-width="10" d="M100,100L400,400M100,400L400,100"></path> </svg>`,
   case07_after : `<svg viewBox="0,0,500,500" width="100" height="100"> <path stroke="black" stroke-width="10" d="M150,300L225,400M225,400L400,100"></path> </svg>`,
   case08       : `<svg viewBox="0,0,100,100" width="100" height="100"> <line x1="10" y1="10" x2="10" y2="90" stroke="black"></line> </svg>`,
@@ -33,6 +33,10 @@ const results = {
   case10_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <line x1="90" y1="10" x2="10" y2="90" stroke="black"></line> </svg>`,
   case11       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="0" y="0" width="40" height="40" fill="black"></rect> </svg>`,
   case11_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="0" y="0" width="40" height="40" fill="black"></rect> </svg>`,
+  case12       : `<svg viewBox="0,0,100,100" width="100" height="100"> <circle cx="10" cy="10" r="10" fill="black" stroke="red" stroke-width="1"></circle> </svg>`,
+  case12_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <circle cx="10" cy="10" r="10" fill="black" stroke="red" stroke-width="1"></circle> </svg>`,
+  case13       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="20" y="20" width="60" height="60" fill="black"></rect> </svg>`,
+  case13_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="20" y="20" width="60" height="60" fill="black" rx="0" ry="0"></rect> </svg>`,
 }
 
 const dir = await opendir(FOLDER);

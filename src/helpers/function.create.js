@@ -16,9 +16,13 @@ export function createFunction (args, code, async = false) {
 
 export function getFunctions (globals, code) {
   const names = [...code.matchAll(functionName)].map(x => x[1]);
-  const fn    = createFunction(Object.keys(globals), `${ code };
+  try {
+    const fn = createFunction(Object.keys(globals), `${ code };
   
     return {${ names.map(n => `${ n }: typeof ${ n } === 'function' ? ${ n } : undefined`) }};
   `);
-  return fn(...Object.values(globals));
+    return fn(...Object.values(globals));
+  } catch (err) {
+    console.warn(err.message, '\n', code);
+  }
 }

@@ -9,7 +9,7 @@ const EQUAL     = true;
 /**
  * Create a new object (empty) with same constructor
  * @param {object} obj - object as seed
- * @returns {object}   - new object
+ * @returns {object}   - a new object
  */
 export function createOther (obj) {
   if (obj === null) return null;
@@ -149,67 +149,63 @@ export function Schema (schema) {
   walker(schema, (obj, key) => {
     if (!obj.$schema && (key === 'properties' || key === 'items')) {
       obj.$schema = {};
-      obj.$schema = Schema(obj)
+      obj.$schema = Schema(obj);
     }
   });
-  return {
-    normalize : (
-      schema.items ?
-        (obj) => { // Array
-          if (!Array.isArray(obj)) {
-            obj = [];
-          }
-          for (let key in obj) {
-            // Update type
-            const type = getType(obj[key]);
-            if (type !== schema.items.type.name) {
-              obj[key] = new schema.items.type(obj[key]).valueOf();
-            }
-            // Sub schema
-            if (schema.items.$schema) {
-              obj[key] = schema.items.$schema.normalize(obj[key]);
-            }
-          }
-          return obj;
-        } :
-        (obj) => { // Object
-          if (!isObject(obj)) {
-            obj = {};
-          }
-          const {properties} = schema;
-          for (let key in obj) {
-            const property = properties[key];
-            // Remove unknown values
-            if (!property) {
-              delete obj[key];
-              continue;
-            }
-            // Update type
-            if (getType(obj[key]) !== property.type.name) {
-              obj[key] = new property.type(obj[key]).valueOf();
-              if (getType(obj[key]) !== property.type.name || (property.type === Number && Number.isNaN(obj[key]))) {
-                delete obj[key];
-              }
-            }
-            // Sub schema
-            if (property.$schema) {
-              obj[key] = property.$schema.normalize(obj[key]);
-            }
-          }
-          // Add missing values
-          for (let key in properties) {
-            const property = properties[key];
-            if (isUndefined(obj[key]) && !isUndefined(property.default)) {
-              obj[key] = new property.type(property.default).valueOf();
-            }
-            if (property.$schema) {
-              obj[key] = property.$schema.normalize(obj[key]);
-            }
-          }
-          return obj;
+  const arrayNormalization  = (obj) => { // Array
+    if (!Array.isArray(obj)) {
+      obj = [];
+    }
+    for (let key in obj) {
+      // Update type
+      const type = getType(obj[key]);
+      if (type !== schema.items.type.name) {
+        obj[key] = new schema.items.type(obj[key]).valueOf();
+      }
+      // Sub schema
+      if (schema.items.$schema) {
+        obj[key] = schema.items.$schema.normalize(obj[key]);
+      }
+    }
+    return obj;
+  };
+  const objectNormalization = (obj) => { // Object
+    if (!isObject(obj)) {
+      obj = {};
+    }
+    const {properties} = schema;
+    for (let key in obj) {
+      const property = properties[key];
+      // Remove unknown values
+      if (!property) {
+        delete obj[key];
+        continue;
+      }
+      // Update type
+      if (getType(obj[key]) !== property.type.name) {
+        obj[key] = new property.type(obj[key]).valueOf();
+        if (getType(obj[key]) !== property.type.name || (property.type === Number && Number.isNaN(obj[key]))) {
+          delete obj[key];
         }
-    )
-  }
+      }
+      // Sub schema
+      if (property.$schema) {
+        obj[key] = property.$schema.normalize(obj[key]);
+      }
+    }
+    // Add missing values
+    for (let key in properties) {
+      const property = properties[key];
+      if (isUndefined(obj[key]) && !isUndefined(property.default)) {
+        obj[key] = new property.type(property.default).valueOf();
+      }
+      if (property.$schema) {
+        obj[key] = property.$schema.normalize(obj[key]);
+      }
+    }
+    return obj;
+  };
+  return {normalize : schema.items ? arrayNormalization : objectNormalization}
 }
 
 /**

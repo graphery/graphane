@@ -3,17 +3,15 @@ import { isFunction } from "../helpers/types.js";
 const cache = {};
 
 const getSVG = async (gObject, src) => {
-  if (cache[src]) {
-    return cache[src];
-  }
-  const res = await fetch(src);
-  if (res.status === 200) {
-    const code = await res.text();
-    cache[src] = code;
-    if (code) {
-      gObject.content(code);
-      return gObject.querySelector('svg');
+  if (!cache[src]) {
+    const res = await fetch(src);
+    if (res.status === 200) {
+      cache[src] = await res.text();
     }
+  }
+  if (cache[src]) {
+    gObject.content(cache[src]);
+    return gObject.querySelector('svg');
   }
   return null;
 }

@@ -141,7 +141,17 @@ test.describe(name, () => {
     expect(isLikeArray('{}')).toBe(false);
   });
 
-  test('csvStr2obj', () => {
+  test('csvStr2obj simple', () => {
+    const str = `
+a,b,c
+1,2,3
+d,e,"f,g"
+`;
+    expect(csvStr2obj(str)).toStrictEqual([{a : 1, b : 2, c : 3}, {a : 'd', b : 'e', c : 'f,g'}])
+  });
+
+
+  test('csvStr2obj Excel', () => {
     const str = `
 "a";"b";"c"
 1;2;3

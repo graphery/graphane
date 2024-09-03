@@ -11,7 +11,7 @@ export function script () {
   code.innerHTML = sourceFormat(svg.source());
   run.addEventListener('click', () => {
     rect.animateTo(
-      rect.transform() !== 'translate(50,50) rotate(315) translate(-50,-50)' ?
+      rect.transform() !== 'rotate(315, 50, 50)' ?
         [{transform : 'rotate(0, 50, 50)'}, {transform : 'rotate(315, 50, 50)'}] :
         [{transform : 'rotate(315, 50, 50)'}, {transform : 'rotate(0, 50, 50)'}],
       1000,

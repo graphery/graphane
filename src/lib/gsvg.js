@@ -23,7 +23,7 @@ const readonlyProp = new Set();
  * @param {string} prop
  * @returns {boolean}
  */
-const directAccess = (prop) => prop[0] === '_' || isSymbol(prop) || ['el', 'gSVG', 'then'].includes(prop);
+const directAccess = (prop) => isSymbol(prop) || prop.startsWith('_') || ['el', 'gSVG', 'then'].includes(prop);
 
 /**
  * Check the instance

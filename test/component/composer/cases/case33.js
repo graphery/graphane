@@ -2,7 +2,7 @@ export const title       = '33) init event';
 export const description = `Use the init event a method for build a circle`;
 
 export default `
-<g-composer>
+<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" g-on:init="init()">
   </svg>
   <script type="methods">

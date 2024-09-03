@@ -38,7 +38,7 @@ export const toCamel = name => name.replace(/-([a-z0-9])/g, (x, y) => y.toUpperC
  */
 export const toHyphen = name => {
   name = name.replace(/([A-Z])/g, '-$1').toLowerCase();
-  return name[0] === '-' ? name.slice(1) : name;
+  return name.startsWith('-') ? name.slice(1) : name;
 };
 
 
@@ -69,8 +69,8 @@ export function attribute2object (value) {
   if (isString(value)) {
     try {
       const normalized = value
-        .replace(/^\s*{/,'')
-        .replace(/}\s*$/,'')
+        .replace(/^\s*{/, '')
+        .replace(/}\s*$/, '')
         .split(/((?:[^;^,"']|"[^"]*"|'[^']*')+)/)
         .filter(partial => !['', ';', ','].includes(partial.trim()))
         .map(partial => partial.split(':'))
@@ -98,7 +98,7 @@ export function attribute2object (value) {
  */
 export function attribute2array (value) {
   if (isString(value)) {
-    if (value.trim()[0] === '[') {
+    if (value.trim().startsWith('[')) {
       return (value.match(/\[(.*?)[^\]]]/g) || []).map(arr => attribute2array(arr.substring(
         1,
         arr.length - 1
@@ -119,7 +119,7 @@ export function attribute2array (value) {
  */
 export function attribute2arrayObject (value) {
   if (isString(value)) {
-    if (value.trim()[0] === '[') {
+    if (value.trim().startsWith('[')) {
       return (value.match(/\[(.*?)[^\]]]/g) || []).map(arr => attribute2object(arr.substring(
         1,
         arr.length - 1
@@ -136,13 +136,13 @@ export function attribute2arrayObject (value) {
 
 /**
  *
- * @param {Object} value
+ * @param {Object|string} value
  * @return {string|undefined}
  */
 export function array2attribute (value) {
   if (isArray(value)) {
     let str = JSON.stringify(value);
-    return str.substr(1, str.length - 2)
+    return str.substring(1, str.length - 1)
               .replace(/,/g, ', ')
               .replace(/"/g, '');
   } else if (isString(value)) {
@@ -223,7 +223,7 @@ function removeDoubleQuote (str) {
  * @param {string} str
  * @returns {boolean}
  */
-export function isLikeObject(str) {
+export function isLikeObject (str) {
   return /^\s*{(.|\s)*}\s*$/.test(str);
 }
 
@@ -232,7 +232,7 @@ export function isLikeObject(str) {
  * @param {string} str
  * @returns {boolean}
  */
-export function isLikeArray(str) {
+export function isLikeArray (str) {
   return /^\s*\[(.|\s)*]\s*$/.test(str);
 }
 
@@ -250,11 +250,11 @@ export function csvStr2obj (str) {
           .split(/((?:[^;^,"']|"[^"]*"|'[^']*')+)/)
           .filter(partial => ![EMPTY_STRING, SEMICOLON, COMA].includes(partial.trim()));
         if (idx === 0) {
-          keys = [...parts.map(p => JSON.parse(p))];
+          keys = [...parts.map(x => str2value(x))];
           return result;
         }
         parts.forEach((part, i) => {
-          obj[keys[i]] = JSON.parse(part);
+          obj[keys[i]] = str2value(part);
         });
         result.push(obj);
         return result;
