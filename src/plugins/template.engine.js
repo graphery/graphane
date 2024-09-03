@@ -231,7 +231,6 @@ defineDirective({
   name     : 'g-for',
   template : true,
   execute (def, {expression, data, error}) {
-    def.setAttribute('data-type', 'graphane');
     def[CLONES] = def[CLONES] || [];
     let n       = 0;
     evalForExpression(
