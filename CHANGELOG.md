@@ -1,5 +1,26 @@
 # Change Log
 
+## 0.1.0-alpha.7 (06/01/2024)
+
+- BREAKING CHANGE: the attribute `viewport-ratio` is now `intersection-ratio`.
+- BREAKING CHANGE: the attribute `viewport-class` is now `intersection-class`.
+- BREAKING CHANGE: the attribute `viewport-once-class` is now `intersection-once-class`.
+- BREAKING CHANGE: the event `enterViewport` is now `intersection.enter`.
+- BREAKING CHANGE: the event `exitViewport` is now `intersection.exit`.
+- BREAKING CHANGE: plugins now export a default function.
+- BREAKING CHANGE: removed `script` distribution files.
+- Added `.intersection(ratio)` and events `intersection.enter`/`intersection.exit` to the SVG
+  library.
+- Added `g-intersection="ratio"` and events `intersection.enter`/`intersection.exit` to the SVG
+  Template Engine.
+- Add event `load` and improve event `render` in `g-composer`.
+- Added static `install()` method in `g-composer` for load plugins.
+- Update plugins script for call to `g-composer.install()`.
+- Added `module` distribution folder and files.
+- Refactored `animateTo`.
+- Fixed errors in `animateTo` with FireFox.
+- Fixed a bug with Safari and the 'SVG' selector (uppercase).
+
 ## 0.1.0-alpha.6 (31/12/2023)
 
 - Added `$$()` in the `g-bind` directive to get the current value of the attribute.

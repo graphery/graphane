@@ -27,7 +27,7 @@ export default `
           g-content="n"
           g-keep-aspect="size"/>
   </svg>
-  <script type="plugin" src="../plugins/keep.aspect.js"></script>
+  <script type="plugin" src="./src/plugins/non.scaling.size.js"></script>
 </g-composer>
 <p>
   <button id="run">up size</button>

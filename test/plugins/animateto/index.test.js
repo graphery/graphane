@@ -37,6 +37,14 @@ const results = {
   case12_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <circle cx="10" cy="10" r="10" fill="black" stroke="red" stroke-width="1"></circle> </svg>`,
   case13       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="20" y="20" width="60" height="60" fill="black"></rect> </svg>`,
   case13_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="20" y="20" width="60" height="60" fill="black" rx="0" ry="0"></rect> </svg>`,
+  case14       : `<svg viewBox="0,0,100,100" width="100" height="100"> <text x="10" y="10" fill="black">test</text> </svg>`,
+  case14_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <text x="10" y="80" fill="black">test</text> </svg>`,
+  case15       : `<svg viewBox="0,0,100,100" width="100" height="100"> <text dx="10" dy="10" rotate="0" fill="black">test</text> </svg>`,
+  case15_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <text dx="10" dy="80" rotate="0" fill="black">test</text> </svg>`,
+  case16       : `<svg viewBox="0,0,100,100" width="100" height="100"> <text x="0" y="0"> <tspan x="10" y="10" fill="black">test</tspan> </text> </svg>`,
+  case16_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <text x="0" y="0"> <tspan x="10" y="80" fill="black">test</tspan> </text> </svg>`,
+  case17       : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="0" y="0" width="10" height="10" fill="red"></rect> <rect x="90" y="0" width="10" height="10" fill="green"></rect> <rect x="90" y="90" width="10" height="10" fill="blue"></rect> <rect x="0" y="90" width="10" height="10" fill="violet"></rect> </svg>`,
+  case17_after : `<svg viewBox="0,0,100,100" width="100" height="100"> <rect x="0" y="0" width="10" height="10" fill="red"></rect> <rect x="90" y="0" width="10" height="10" fill="green"></rect> <rect x="90" y="90" width="10" height="10" fill="blue"></rect> <rect x="0" y="90" width="10" height="10" fill="violet"></rect> </svg>`,
 }
 
 const dir = await opendir(FOLDER);

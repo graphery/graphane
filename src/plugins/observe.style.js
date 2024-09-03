@@ -102,9 +102,11 @@ function observe (timestamp) {
  * @usage gySVG.extension( styleObserver )
  * @type {{styleObserver() : gySVGObject}}
  */
-export function svgPlugin (setup) {
+function install (setup) {
   // Update gSVGObject
   setup.extendInstance({
     styleObserver
   });
 }
+
+export default install;

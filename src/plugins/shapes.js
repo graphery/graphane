@@ -131,13 +131,15 @@ function circle (cx, cy, r) {
   return `M${ cx - r },${ cy }a${ r },${ r },0,1,0,${ r * 2 },0a${ r },${ r },0,1,0,-${ r * 2 },0`;
 }
 
-export function svgPlugin (setup) {
+function installer (setup) {
 
+  // Static methods
   setup.extendConstructor({
     polar2cartesian,
     degrees2radians
   });
 
+  // Composer plugin
   if (setup.extendComposer) {
     setup.extendComposer({
       polar2cartesian,
@@ -145,6 +147,7 @@ export function svgPlugin (setup) {
     });
   }
 
+  // Path plugin
   setup.extendPath({
     arc,
     barArc,
@@ -155,3 +158,5 @@ export function svgPlugin (setup) {
   });
 
 }
+
+export default installer;

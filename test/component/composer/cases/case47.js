@@ -17,7 +17,7 @@ export default `
        </defs>
      </defs>
    </svg>
-   <script type="plugin" src="../plugins/load.js"></script>
+   <script type="plugin" src="/src/plugins/load.js"></script>
    <script type="data">[
      {id: 'dog', image: '/test/component/composer/assets/dog.svg', value: 55, color: 'chocolate'},
      {id: 'cat', image: '/test/component/composer/assets/cat.svg', value: 35, color: 'darkslategray'}
