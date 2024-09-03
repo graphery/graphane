@@ -1,11 +1,15 @@
 # Change Log
 
-## 0.1.0-alpha.11 (2024-8-26)
+## 0.1.0-alpha.12 (2024-09-03)
+
+- Fix an error with `g-bind` with camelcase attributes as `viewBox`.
+
+## 0.1.0-alpha.11 (2024-08-26)
 
 - Improve `g-for` and `g-if` directives.
 - Rewrite `.source()` and `.toSource()` for the new internal reference comment (`<!-- ref -->`).
 
-## 0.1.0-alpha.10 (2024-8-02)
+## 0.1.0-alpha.10 (2024-08-02)
 
 - Added the `.toSource()` plugin to get a formal SVG format.
 - Fixed `.source()` with template engine and `defs g-for` elements.

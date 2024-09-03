@@ -14,9 +14,59 @@ const EVENTS     = Symbol();
 const REPLACE    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = [];
+
+/**
+ * Throws an error with a specified message, scope, and code context.
+ *
+ * @param {string} message - The error message to be thrown.
+ * @param {string} scope - The scope or context in which the error occurred.
+ * @param {string} code - The code snippet or reference causing the error.
+ * @throws {Error} Throws an error concatenating the message, scope, and code.
+ */
 const throwError = (message, scope, code) => {
   throw new Error(message + ` in ${ scope }\n` + code);
 }
+
+/**
+ * Normalizes an attribute name by converting it to a predefined case format, if applicable.
+ *
+ * This function takes an attribute name string, and checks it against a predefined list of
+ * attribute names. If the attribute name is found in the list, it returns the correctly formatted
+ * version of the attribute name. If the attribute name is not found, it returns the original
+ * attribute name.
+ *
+ * The list of attributes includes:
+ * - attributeName       - attributeType    - baseFrequency    - calcMode
+ * - clipPathUnits       - diffuseConstant  - edgeMode         - gradientTransform
+ * - gradientUnits       - kernelMatrix     - kernelUnitLength - lengthAdjust
+ * - limitingConeAngle   - markerHeight     - markerUnits      - markerWidth
+ * - maskContentUnits    - maskUnits        - numOctaves       - pathLength
+ * - patternContentUnits - patternTransform - patternUnits     - pointsAtX
+ * - pointsAtY           - pointsAtZ        - preserveAlpha    - preserveAspectRatio
+ * - primitiveUnits      - refX             - refY             - requiredExtensions
+ * - requiredFeatures    - specularConstant - specularExponent - spreadMethod
+ * - startOffset         - stdDeviation     - stitchTiles      - surfaceScale
+ * - systemLanguage      - tableValues      - targetX          - targetY
+ * - textLength          - viewBox          - xChannelSelector - yChannelSelector
+ * - zoomAndPan
+ *
+ * @param {string} attribute - The attribute name to normalize.
+ * @returns {string} The normalized attribute name if found, else the original attribute name.
+ */
+const normalizeAttribute = ((attributes) =>
+  (attribute) => attributes[attribute] || attribute
+)(
+  'attributeName attributeType baseFrequency calcMode clipPathUnits diffuseConstant edgeMode gradientTransform gradientUnits kernelMatrix kernelUnitLength lengthAdjust limitingConeAngle markerHeight markerUnits markerWidth maskContentUnits maskUnits numOctaves pathLength patternContentUnits patternTransform patternUnits pointsAtX pointsAtY pointsAtZ preserveAlpha preserveAspectRatio primitiveUnits refX refY requiredExtensions requiredFeatures specularConstant specularExponent spreadMethod startOffset stdDeviation stitchTiles surfaceScale systemLanguage tableValues targetX targetY textLength viewBox xChannelSelector yChannelSelector zoomAndPan'
+    .split(' ')
+    .reduce(
+      (a, c) => {
+        a[c.toLowerCase()] = c;
+        return a;
+      },
+      {}
+    )
+);
+
 
 /**
  * Replaces an element with a comment element containing a reference to the original element.
@@ -89,6 +139,7 @@ defineDirective({
   alias    : ':',
   argument : true,
   execute (gObject, {expression, argument, data, evalExpression}) {
+    argument           = normalizeAttribute(argument);
     const context      = {
       ...data,
       $$ : ['d', 'transform'].includes(argument) ?
@@ -356,7 +407,8 @@ function process (el, data, error, checkCloned = true) {
   }
   const outerCode = el.outerHTML();
   el[DIRECTIVES]  = el[DIRECTIVES] || [];
-  const attrs     = el.attributes();
+  const attrs     = [...el.el.attributes];
+  console.log(attrs);
   for (let attr of [...attrs]) {
     const attributeName = attr.name;
     const result        = findDirective(attributeName);
