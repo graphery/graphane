@@ -1,6 +1,6 @@
 {
   "name": "graphane",
-  "version": "0.1.0-alpha.8",
+  "version": "0.1.0-alpha.9",
   "description": "Data Visualization Microframework",
   "author": "Graphane",
   "license": "MIT",
@@ -18,6 +18,7 @@
     "workbench:plugin.load": "node ./tools/workbench -l plugin.load -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/load.script.js -t test/plugins/load/cases -p 7010",
     "workbench:core.intersection": "node ./tools/workbench -l core.viewport -t test/core.intersection/cases -p 7011",
     "workbench:plugin.intersection": "node ./tools/workbench -l plugin.intersection -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/intersection.script.js -t test/plugins/intersection/cases -p 7012",
+    "workbench:plugin.object": "node ./tools/workbench -l plugin.object -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/object.script.js -t test/plugins/object/cases -p 7013",
     "test": "concurrently -m 1 npm:test:*",
     "test:helpers": "playwright test ./test/helpers/ --project=helpers",
     "test:composer": "playwright test test/component/composer/index.test.js --project=composer",
@@ -33,6 +34,7 @@
     "test:plugin.load": "playwright test test/plugins/load/index.test.js --project=load",
     "test:core.intersection": "playwright test test/core.intersection/index.test.js --project=core.intersection",
     "test:plugin.intersection": "playwright test test/plugins.intersection/index.test.js --project=plugin.intersection",
+    "test:plugin.object": "playwright test test/plugins/object/index.test.js --project=object",
     "build": "concurrently -m 1 npm:build:*",
     "build:composer": "node ./tools/packer/index.js src/component/composer.js ./dist/component/composer.js ./package.json",
     "build:gsvg": "node ./tools/packer/index.js ./src/lib/gsvg.script.js ./dist/lib/gsvg.js ./package.json",
@@ -44,6 +46,8 @@
     "build:plugin.shapes": "node ./tools/packer/index.js src/plugins/shapes.script.js ./dist/plugins/shapes.js",
     "build:plugin.template.engine": "node ./tools/packer/index.js src/plugins/template.engine.script.js ./dist/plugins/template.engine.js",
     "build:plugin.load": "node ./tools/packer/index.js src/plugins/load.script.js ./dist/plugins/load.js",
+    "build:plugin.intersection": "node ./tools/packer/index.js src/plugins/intersection.script.js ./dist/plugins/intersection.js",
+    "build:plugin.object": "node ./tools/packer/index.js src/plugins/object.script.js ./dist/plugins/object.js",
     "build:module:core": "node ./tools/packer/index.js -m ./src/core/index.js ./dist/module/core/index.js ./package.json",
     "build:module:composer": "node ./tools/packer/index.js -m src/component/composer.js ./dist/module/component/composer.js ./package.json",
     "build:module:gsvg": "node ./tools/packer/index.js -m ./src/lib/gsvg.js ./dist/module/lib/gsvg.js ./package.json",
@@ -55,15 +59,17 @@
     "build:module:plugin.template.engine": "node ./tools/packer/index.js -m src/plugins/template.engine.js ./dist/module/plugins/template.engine.js",
     "build:module:plugin.shapes": "node ./tools/packer/index.js -m src/plugins/shapes.js ./dist/module/plugins/shapes.js",
     "build:module:plugin.load": "node ./tools/packer/index.js -m src/plugins/load.js ./dist/module/plugins/load.js",
+    "build:module:plugin.intersection": "node ./tools/packer/index.js -m src/plugins/intersection.js ./dist/module/plugins/intersection.js",
+    "build:module:plugin.object": "node ./tools/packer/index.js -m src/plugins/object.js ./dist/module/plugins/object.js",
     "update:playwright": "npx playwright install"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.1",
+    "@playwright/test": "^1.41.1",
     "commander": "^11.1.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.11",
     "esprima-next": "6.0.2",
-    "playwright": "^1.40.1",
+    "playwright": "^1.41.1",
     "ws": "^8.16.0"
   },
   "type": "module"
