@@ -315,8 +315,7 @@ function getVariables (expression) {
   return expression
     .replace(/[{}()[\]]/g, '')
     .split(',')
-    .map(k => k.includes(':') ? k.split(':')[1] : k)
-    .map(k => k.trim());
+    .map(k => (k.includes(':') ? k.split(':')[1].trim() : k).trim());
 }
 
 /**
