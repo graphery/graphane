@@ -1,9 +1,27 @@
 {
   "name": "graphane",
-  "version": "0.1.0-alpha.12",
+  "version": "1.0.0-beta.1",
   "description": "Data Visualization Microframework",
-  "author": "Graphane",
+  "author": "Graphery",
+  "homepage": "https://graphane.dev",
+  "bugs": "https://github.com/graphery/graphane/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphery/graphane.git"
+  },
   "license": "MIT",
+  "keywords": [
+    "dataviz",
+    "data-visualization",
+    "graphs",
+    "visualization",
+    "data",
+    "graph-library",
+    "dataviz-library",
+    "web-component",
+    "svg",
+    "graphery"
+  ],
   "scripts": {
     "workbench:composer": "node ./tools/workbench -l composer -i /src/component/composer.js -t test/component/composer/cases -p 7000",
     "workbench:core": "node ./tools/workbench -l core -t test/core/cases -p 7001",
@@ -76,5 +94,6 @@
     "playwright": "^1.46.1",
     "ws": "^8.18.0"
   },
+  "main": "dist/component/composer.js",
   "type": "module"
 }

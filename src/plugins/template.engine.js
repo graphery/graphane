@@ -231,7 +231,6 @@ defineDirective({
   name     : 'g-for',
   template : true,
   execute (def, {expression, data, error}) {
-    def.setAttribute('data-type', 'graphane');
     def[CLONES] = def[CLONES] || [];
     let n       = 0;
     evalForExpression(
@@ -316,8 +315,7 @@ function getVariables (expression) {
   return expression
     .replace(/[{}()[\]]/g, '')
     .split(',')
-    .map(k => k.includes(':') ? k.split(':')[1] : k)
-    .map(k => k.trim());
+    .map(k => (k.includes(':') ? k.split(':')[1].trim() : k).trim());
 }
 
 /**
@@ -407,8 +405,7 @@ function process (el, data, error, checkCloned = true) {
   }
   const outerCode = el.outerHTML();
   el[DIRECTIVES]  = el[DIRECTIVES] || [];
-  const attrs     = [...el.el.attributes];
-  console.log(attrs);
+  const attrs     = el.attributes();
   for (let attr of [...attrs]) {
     const attributeName = attr.name;
     const result        = findDirective(attributeName);
