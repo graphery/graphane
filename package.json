@@ -23,6 +23,8 @@
     "graphery"
   ],
   "scripts": {
+    "prepare": "node ./tools/npm-helpers/clean-pkg.js",
+    "postpublish": "node ./tools/npm-helpers/restore-pkg.js",
     "workbench:composer": "node ./tools/workbench -l composer -i /src/component/composer.js -t test/component/composer/cases -p 7000",
     "workbench:core": "node ./tools/workbench -l core -t test/core/cases -p 7001",
     "workbench:gsvg": "node ./tools/workbench -l gSVG -i /src/lib/gsvg.script.js -t test/lib/gsvg/cases -p 7002",
