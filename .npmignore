@@ -1,0 +1,12 @@
+### WebStorm
+.idea/
+
+### Project
+assets
+poc
+src
+test
+test-results
+tools
+DEVELOP.md
+playwright.config.js

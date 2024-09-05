@@ -1,29 +1,87 @@
-# Graphane
+# ![Graphane](./assets/img/graphane.png)
 
-## Description
+*See the complete documentation in [graphane.dev](https://graphane.dev/)*
 
-Graphane Data Visualization Microframework.
+Graphane is a free and open-source **data visualization low-level microframework** designed to
+facilitate the creation of custom and dynamic and interactive visualizations by:
 
-## Installation
+- **A web component** for combining:
+  - **SVG markup template** with the graphic
+  - **Data** with reactivity
+  - **Methods**, optionally, to handle interactivity and data transformation.
 
-For develop environment, run:
+![example](assets%2Fimg%2Fexample.png)
+  
+```html
+<g-composer id="example-starter">
+  <template>
+    <svg viewBox="0 0 200 100" width="200px" height="100px">
+      <g stroke-width="12" stroke-linecap="round">
+        <defs g-for="(record, index) of data">
+          <line x1="22"
+                g-bind:x2="record.value"
+                g-bind:y1="index * 20 + 30"
+                g-bind:y2="index * 20 + 30"
+                g-bind:stroke="record.color"/>
+        </defs>
+      </g>
+    </svg>
+  </template>
+  <script type="data">[ 
+    { color: "#D80000", value: 130 }, 
+    { color: "#00D800", value: 170 }, 
+    { color: "#0000D8", value: 100 }, 
+  ]
+  </script>
+</g-composer>
+```
+
+Graphane offers **flexibility in designs**, allowing creators to make unique aesthetic
+visualizations that are far from becoming monotonous charts seen everywhere.
+
+Graphane is based on SVG and directives, defining a **declarative way** to build **data-driven**
+graphics. This approach allows centering the effort on the design in a very natural form. Designers
+and developers achieve technical efficiency and gain the means to communicate their data story to
+their audience effectively.
+
+In addition, Graphane has a **smooth rendering** and **optimal performance** with a **tiny 
+overhead**. It is not just a tool but a complete system that includes specially designed mechanisms 
+to update the visualization efficiently when data are changed. This feature allows Graphane to 
+maintain high runtime performance without the need for pre-compilation processes.
+
+## Load
+
+To start, you must load Graphane on your HTML page. This is done by adding a `script` tag pointing
+to the Graphane file. The easiest and fastest is to use this URL from the CDN:
+
+```html
+
+<script src="https://cdn.graphery.online/graphane/1.0.0-beta/component/composer.js"></script>
+```
+
+You can install locally the Graphane package with:
 
 ```bash
-npm install
-npx playwright install
+npm i graphane
 ```
 
 ## Authors and acknowledgment
 
-This project is created by Graphane.
+This project is created by Graphery. Thanks to collaborators and friends for their support and help.
+If you have any questions or need support, feel free to reach out.
 
-Thanks to collaborators and friends for their support and help.
+## Contributing
+
+We appreciate any contributions to the project! Whether it's reporting bugs, suggesting new
+features, or submitting pull requests, your input is valuable.
 
 ## Project status
 
-Work in progress...
+Please note that GRAPHANE is currently in beta. While the core features are fully functional, there
+may still be bugs, and the API is subject to change. We welcome feedback and contributions from the
+community to help improve and refine the library.
 
 ## License
 
-MIT License
+GRAPHANE is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for more details.
 

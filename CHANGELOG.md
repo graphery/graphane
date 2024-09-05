@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.0-beta (2024-09-05)
+
+- First beta version.
+
 ## 0.1.0-alpha.12 (2024-09-03)
 
 - Fix an error with `g-bind` with camelcase attributes as `viewBox`.
