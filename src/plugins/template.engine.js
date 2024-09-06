@@ -13,7 +13,7 @@ const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
 const REPLACE    = Symbol();
 const UNKNOWN    = 'unknown';
-const directives = [];
+const directives = {};
 
 /**
  * Throws an error with a specified message, scope, and code context.
@@ -54,7 +54,7 @@ const throwError = (message, scope, code) => {
  * @returns {string} The normalized attribute name if found, else the original attribute name.
  */
 const normalizeAttribute = ((attributes) =>
-  (attribute) => attributes[attribute] || attribute
+    (attribute) => attributes[attribute] || attribute
 )(
   'attributeName attributeType baseFrequency calcMode clipPathUnits diffuseConstant edgeMode gradientTransform gradientUnits kernelMatrix kernelUnitLength lengthAdjust limitingConeAngle markerHeight markerUnits markerWidth maskContentUnits maskUnits numOctaves pathLength patternContentUnits patternTransform patternUnits pointsAtX pointsAtY pointsAtZ preserveAlpha preserveAspectRatio primitiveUnits refX refY requiredExtensions requiredFeatures specularConstant specularExponent spreadMethod startOffset stdDeviation stitchTiles surfaceScale systemLanguage tableValues targetX targetY textLength viewBox xChannelSelector yChannelSelector zoomAndPan'
     .split(' ')
@@ -280,14 +280,14 @@ function defineDirective ({name, alias, argument, template, execute}) {
   }`
   const check = new RegExp(source, 'i')
 
-  directives.push({
+  directives[name] = {
     name,
     alias,
     argument,
     template,
     execute,
     check
-  });
+  };
 
 }
 
@@ -297,8 +297,9 @@ function defineDirective ({name, alias, argument, template, execute}) {
  * @returns {Object}
  */
 function findDirective (key) {
-  for (const definition of directives) {
-    const match = definition.check.exec(key);
+  for (const name in directives) {
+    const definition = directives[name];
+    const match      = definition.check.exec(key);
     if (match) {
       let argument = match[2];
       return {...definition, argument}
@@ -480,7 +481,7 @@ function install (setup) {
     extendTemplate : {
       defineDirective,
       obtainDirective (name) {
-        return directives.find(directive => directive.name === name);
+        return directives[name];
       }
     }
   });
