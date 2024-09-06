@@ -10,6 +10,6 @@ export async function script () {
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">
-  <g g-load="$$.svg('/test/plugins/load/assets/image.svg')"></g>
+  <g g-load="$$.url('/test/plugins/load/assets/image.svg')"></g>
 </svg>
 <pre id="result"></pre>`;

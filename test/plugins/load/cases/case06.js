@@ -1,5 +1,5 @@
-export const title = '5) g-load and g-for with use';
-export const description = `load an external SVG in a g-for with use`;
+export const title = '6) g-load and text';
+export const description = `load an external TXT`;
 
 export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
@@ -10,10 +10,6 @@ export async function script () {
 }
 
 export default `<svg viewBox="0 0 500 50" id="svg" style="width: 500px; height: 100px">
-  <defs g-load="$$.url('/test/plugins/load/assets/image.svg').width(50).height(50).id('image')">
-  </defs>
-  <defs g-for="n of 10">
-    <use g-bind:transform="$$.translate(n * 50, 0)" href="#image"/>
-  </defs>
+  <text x="0" y="0" g-load="'/test/plugins/load/assets/text.txt'">hola, mundo</text>
 </svg>
 <pre id="result"></pre>`;

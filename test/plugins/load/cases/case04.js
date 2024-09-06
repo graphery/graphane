@@ -12,7 +12,7 @@ export function script () {
 export default `<svg viewBox="0 0 500 50" id="svg" style="width: 500px; height: 100px"">
   <defs g-for="n of 10">
     <g g-bind:transform="$$.translate(n * 50, 0)" 
-       g-load="$$.svg('/test/plugins/load/assets/image.svg').width(50).height(50)"></g>
+       g-load="$$.url('/test/plugins/load/assets/image.svg').width(50).height(50)"></g>
   </defs>
 </svg>
 <pre id="result"></pre>`;
