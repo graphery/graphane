@@ -13,17 +13,40 @@ npm install
 npx playwright install
 ```
 
-## Authors and acknowledgment
+## Run workbench
 
-This project is created by Graphane.
+To interactively test each of the cases, you can use the workbench tool.
+To run it with:
 
-Thanks to collaborators and friends for their support and help.
+```bash
+npm run workbench:<package-name>
+```
 
-## Project status
+## Run test
 
-Work in progress...
+To run the test, you need to execute:
 
-## License
+```bash
+npm run test
+```
 
-MIT License
+or
+
+```bash
+npm run test:<package-name>
+```
+
+## Build
+
+Para construir los ficheros de distribución, se debe ejecutar:
+
+```bash
+npm run build
+```
+
+or
+
+```bash
+npm run build:<package-name>
+```
 

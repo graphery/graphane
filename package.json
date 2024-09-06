@@ -9,21 +9,11 @@
     "type": "git",
     "url": "git+https://github.com/graphery/graphane.git"
   },
+  "main": "dist/component/composer.js",
+  "type": "module",
   "license": "MIT",
-  "keywords": [
-    "dataviz",
-    "data-visualization",
-    "graphs",
-    "visualization",
-    "data",
-    "graph-library",
-    "dataviz-library",
-    "web-component",
-    "svg",
-    "graphery"
-  ],
   "scripts": {
-    "prepare": "node ./tools/npm-helpers/clean-pkg.js",
+    "prepublishOnly": "node ./tools/npm-helpers/clean-pkg.js",
     "postpublish": "node ./tools/npm-helpers/restore-pkg.js",
     "workbench:composer": "node ./tools/workbench -l composer -i /src/component/composer.js -t test/component/composer/cases -p 7000",
     "workbench:core": "node ./tools/workbench -l core -t test/core/cases -p 7001",
@@ -88,14 +78,24 @@
     "update:playwright": "npx playwright install"
   },
   "devDependencies": {
-    "@playwright/test": "^1.46.1",
+    "@playwright/test": "^1.47.0",
     "commander": "^12.1.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.23.1",
     "esprima-next": "6.0.3",
-    "playwright": "^1.46.1",
+    "playwright": "^1.47.0",
     "ws": "^8.18.0"
   },
-  "main": "dist/component/composer.js",
-  "type": "module"
+  "keywords": [
+    "dataviz",
+    "data-visualization",
+    "graphs",
+    "visualization",
+    "data",
+    "graph-library",
+    "dataviz-library",
+    "web-component",
+    "svg",
+    "graphery"
+  ]
 }
