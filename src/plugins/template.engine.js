@@ -113,19 +113,19 @@ defineDirective({
     const context = {
       ...data,
       $$ : {
-        fromURL : async (src) => {
+        fromURL        : async (src) => {
           const res = await fetch(src);
           if (res.status === 200) {
             return res.text();
           }
           console.warn(`Failed to load URL: ${ src } (${ res.status })`);
         },
-        currentContent: gObject.content
+        currentContent : gObject.content
       }
     };
     const result  = evalExpression(expression, context);
     const event   = new CustomEvent('load', {bubbles : true, detail : gObject});
-    const norm   = c => isUndefined(c) ? '' : c;
+    const norm    = c => isUndefined(c) ? '' : c;
     if (typeof result === 'object' && result.then) {
       result.then(result => {
         gObject.content(norm(result));
@@ -165,14 +165,15 @@ defineDirective({
   alias    : ':',
   argument : true,
   execute (gObject, {expression, argument, data, evalExpression}) {
-    argument           = normalizeAttribute(argument);
-    const context      = {
+    argument                = normalizeAttribute(argument);
+    const context           = {
       ...data,
       $$ : ['d', 'transform'].includes(argument) ?
         gObject['$' + argument] :
-        () => gObject[argument]()
+        {}
     };
-    context.$$.dynamic = (value, duration = 200, delay = 0) => {
+    context.$$.currentValue = gObject[argument];
+    context.$$.dynamic      = (value, duration = 200, delay = 0) => {
       gObject.animateTo(
         (isArray(value) ? value : [value]).map(v =>
           isObject(v) && 'offset' in v ?
@@ -182,7 +183,7 @@ defineDirective({
         {duration, delay}
       );
     };
-    let value          = evalExpression(expression, context);
+    let value               = evalExpression(expression, context);
     if (argument === 'class') {
       if (isArray(value)) {
         gObject.classList.add(...value.filter(val => !!val));

@@ -1,4 +1,4 @@
-export const title       = '37) $$() get the current attribute value';
+export const title       = '37) $$.currentValue() get the current attribute value';
 export const description = 'Add value';
 
 export function script () {
@@ -15,9 +15,9 @@ export function script () {
 export default `
 <svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px; display: none">
   <circle    cx = "30"
-            :cx = "$$() + cx"
+            :cx = "$$.currentValue() + cx"
              cy = "40" 
-            :cy = "$$() + cy"
+            :cy = "$$.currentValue() + cy"
           :fill = "color"
               r = "25"/>
 </svg>

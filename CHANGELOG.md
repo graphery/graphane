@@ -2,6 +2,7 @@
 
 ## 1.0.0-beta.Next
 
+- BREAKING CHANGE: `$$()` in `g-content` directive is renamed to `$$.currentValue()`.
 - Added `$$.fromURL()` in `g-content` directive for load external resources.
 - Added `$$.currentContent()` in `g-content` directive for get the current content.
 - The `g-load` directive plugin has been removed, as this function is integrated in `g-content`.
