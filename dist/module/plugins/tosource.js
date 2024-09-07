@@ -1,1 +1,1 @@
-/* graphane - 1.0.0-beta.1 */ function t(){return new XMLSerializer().serializeToString(this.el).replaceAll("<!-- ref -->","")}function n(e){e.extendInstance({toSource:t})}var l=n;export{l as default};
+/* graphane - 1.0.0-beta.next */ function t(){return new XMLSerializer().serializeToString(this.el).replaceAll("<!-- ref -->","")}function n(e){e.extendInstance({toSource:t})}var l=n;export{l as default};

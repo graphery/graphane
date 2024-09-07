@@ -1,6 +1,6 @@
 {
   "name": "graphane",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.next",
   "description": "Data Visualization Microframework",
   "author": "Graphery",
   "homepage": "https://graphane.dev",
@@ -68,7 +68,6 @@
     "build:module:plugin.observe.style": "node ./tools/packer/index.js -m src/plugins/observe.style.js ./dist/module/plugins/observe.style.js",
     "build:module:plugin.template.engine": "node ./tools/packer/index.js -m src/plugins/template.engine.js ./dist/module/plugins/template.engine.js",
     "build:module:plugin.shapes": "node ./tools/packer/index.js -m src/plugins/shapes.js ./dist/module/plugins/shapes.js",
-    "build:module:plugin.load": "node ./tools/packer/index.js -m src/plugins/load.js ./dist/module/plugins/load.js",
     "build:module:plugin.intersection": "node ./tools/packer/index.js -m src/plugins/intersection.js ./dist/module/plugins/intersection.js",
     "build:module:plugin.object": "node ./tools/packer/index.js -m src/plugins/object.js ./dist/module/plugins/object.js",
     "build:module:plugin.tosource": "node ./tools/packer/index.js -m src/plugins/tosource.js ./dist/module/plugins/tosource.js",
