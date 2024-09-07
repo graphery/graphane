@@ -1,15 +1,16 @@
-export const title = '2) load a simple SVG with $$.svg()';
-export const description = `load an external SVG with $$.svg()`;
+export const title = '47) g-content with $$.fromURL() and g-on:load';
+export const description = `load an external SVG and configure width and height`;
 
 export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
-  svg.render();
+  await svg.render();
   svg.querySelector('g').addEventListener('load', () => {
     document.querySelector('#result').innerHTML = sourceFormat(svg.source());
   });
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">
-  <g g-load="$$.url('/test/plugins/load/assets/image.svg')"></g>
+  <g g-content="$$.fromURL('/test/plugins/template.engine/assets/image.svg')" 
+     g-on:load="(ev) => ev.detail.querySelector('svg').width(50).height(50)"></g>
 </svg>
 <pre id="result"></pre>`;

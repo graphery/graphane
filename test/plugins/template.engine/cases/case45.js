@@ -1,5 +1,5 @@
-export const title = '3) load a simple SVG with $$.svg() and change width and height';
-export const description = `load an external SVG with $$.svg().width().height()`;
+export const title = '45) g-content with $$.fromURL()';
+export const description = `load an external SVG`;
 
 export async function script () {
   const svg = gSVG(document.querySelector('#svg'));
@@ -10,6 +10,6 @@ export async function script () {
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">
-  <g g-load="$$.url('/test/plugins/load/assets/image.svg').width(50).height(50)"></g>
+  <g g-content="$$.fromURL('/test/plugins/template.engine/assets/image.svg')"></g>
 </svg>
 <pre id="result"></pre>`;

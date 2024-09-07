@@ -1,6 +1,12 @@
 # Change Log
 
-## 1.0.0-beta (2024-09-05)
+## Next
+
+- Added `$$.fromURL()` in `g-content` directive for load external resources.
+- Added `$$.currentContent()` in `g-content` directive for get the current content.
+- Refactored the template engine's directive storage to ensure that there is only one handler per directive.
+
+## 1.0.0-beta.1 (2024-09-05)
 
 - First beta version.
 

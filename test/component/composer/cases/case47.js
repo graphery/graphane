@@ -1,4 +1,4 @@
-export const title       = '47) load plugin';
+export const title       = '47) g-content with $$.fromURL()';
 export const description = 'load external SVGs and embed them';
 
 export default `
@@ -6,7 +6,7 @@ export default `
    <svg viewBox="0 0 100 100">
      <defs>
        <defs g-for="r of data">
-         <g g-load="r.image" @load="load(this, r)" ></g>
+         <g g-content="$$.fromURL(r.image)" @load="load(this, r)" ></g>
        </defs>
      </defs>
      <defs g-for="col of 10">
@@ -17,8 +17,6 @@ export default `
        </defs>
      </defs>
    </svg>
-   <script type="plugin" src="/src/plugins/load.js"></script>
-   <script type="plugin" src="/src/plugins/load.js?a=1"></script>
    <script type="data">[
      {id: 'dog', image: '/test/component/composer/assets/dog.svg', value: 55, color: 'chocolate'},
      {id: 'cat', image: '/test/component/composer/assets/cat.svg', value: 35, color: 'darkslategray'}

@@ -108,7 +108,33 @@ function restoreFromComment (comment) {
 defineDirective({
   name : 'g-content',
   execute (gObject, {expression, data, evalExpression}) {
-    gObject.content(evalExpression(expression, data));
+    // gObject.content(evalExpression(expression, data));
+    debugger;
+    const context = {
+      ...data,
+      $$ : {
+        fromURL : async (src) => {
+          const res = await fetch(src);
+          if (res.status === 200) {
+            return res.text();
+          }
+          console.warn(`Failed to load URL: ${ src } (${ res.status })`);
+        },
+        currentContent: gObject.content
+      }
+    };
+    const result  = evalExpression(expression, context);
+    const event   = new CustomEvent('load', {bubbles : true, detail : gObject});
+    const norm   = c => isUndefined(c) ? '' : c;
+    if (typeof result === 'object' && result.then) {
+      result.then(result => {
+        gObject.content(norm(result));
+        gObject.dispatchEvent(event);
+      });
+    } else {
+      gObject.content(norm(result));
+      gObject.dispatchEvent(event);
+    }
   }
 });
 
