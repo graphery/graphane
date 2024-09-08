@@ -1,6 +1,15 @@
 # Change Log
 
-## 1.0.0-beta (2024-09-05)
+## 1.0.0-beta.2 (2024-09-08)
+
+- BREAKING CHANGE: `$$()` in `g-content` directive is renamed to `$$.currentValue()`.
+- Added `$$.fromURL()` in `g-content` directive for load external resources.
+- Added `$$.currentContent()` in `g-content` directive for get the current content.
+- The `g-load` directive plugin has been removed, as this function is integrated in `g-content`.
+- Refactored the template engine's directive storage to ensure that there is only one handler per directive.
+- Improve README.md.
+
+## 1.0.0-beta.1 (2024-09-05)
 
 - First beta version.
 

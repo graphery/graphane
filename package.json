@@ -1,6 +1,6 @@
 {
   "name": "graphane",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Data Visualization Microframework",
   "author": "Graphery",
   "homepage": "https://graphane.dev",
@@ -9,20 +9,12 @@
     "type": "git",
     "url": "git+https://github.com/graphery/graphane.git"
   },
+  "main": "dist/component/composer.js",
+  "type": "module",
   "license": "MIT",
-  "keywords": [
-    "dataviz",
-    "data-visualization",
-    "graphs",
-    "visualization",
-    "data",
-    "graph-library",
-    "dataviz-library",
-    "web-component",
-    "svg",
-    "graphery"
-  ],
   "scripts": {
+    "prepublishOnly": "node ./tools/npm-helpers/clean-pkg.js",
+    "postpublish": "node ./tools/npm-helpers/restore-pkg.js",
     "workbench:composer": "node ./tools/workbench -l composer -i /src/component/composer.js -t test/component/composer/cases -p 7000",
     "workbench:core": "node ./tools/workbench -l core -t test/core/cases -p 7001",
     "workbench:gsvg": "node ./tools/workbench -l gSVG -i /src/lib/gsvg.script.js -t test/lib/gsvg/cases -p 7002",
@@ -33,7 +25,6 @@
     "workbench:plugin.observe.style": "node ./tools/workbench -l plugin.observe.style -i /src/lib/gsvg.script.js -i /src/plugins/observe.style.script.js -t test/plugins/observe.style/cases -p 7007",
     "workbench:plugin.shapes": "node ./tools/workbench -l plugin.shapes -i /src/lib/gsvg.script.js -i /src/plugins/shapes.script.js -t test/plugins/shapes/cases -p 7009",
     "workbench:plugin.template.engine": "node ./tools/workbench -l plugin.template.engine -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -t test/plugins/template.engine/cases -p 7008",
-    "workbench:plugin.load": "node ./tools/workbench -l plugin.load -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/load.script.js -t test/plugins/load/cases -p 7010",
     "workbench:core.intersection": "node ./tools/workbench -l core.viewport -t test/core.intersection/cases -p 7011",
     "workbench:plugin.intersection": "node ./tools/workbench -l plugin.intersection -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/intersection.script.js -t test/plugins/intersection/cases -p 7012",
     "workbench:plugin.object": "node ./tools/workbench -l plugin.object -i /src/lib/gsvg.script.js -i /src/plugins/template.engine.script.js -i /src/plugins/object.script.js -t test/plugins/object/cases -p 7013",
@@ -50,7 +41,6 @@
     "test:plugin.observe.style": "playwright test test/plugins/observe.style/index.test.js --project=observe.style",
     "test:plugin.shapes": "playwright test test/plugins/shapes/index.test.js --project=shapes",
     "test:plugin.template.engine": "playwright test test/plugins/template.engine/index.test.js --project=template.engine",
-    "test:plugin.load": "playwright test test/plugins/load/index.test.js --project=load",
     "test:core.intersection": "playwright test test/core.intersection/index.test.js --project=core.intersection",
     "test:plugin.intersection": "playwright test test/plugins.intersection/index.test.js --project=plugin.intersection",
     "test:plugin.object": "playwright test test/plugins/object/index.test.js --project=object",
@@ -65,7 +55,6 @@
     "build:plugin.observe.style": "node ./tools/packer/index.js src/plugins/observe.style.script.js ./dist/plugins/observe.style.js",
     "build:plugin.shapes": "node ./tools/packer/index.js src/plugins/shapes.script.js ./dist/plugins/shapes.js",
     "build:plugin.template.engine": "node ./tools/packer/index.js src/plugins/template.engine.script.js ./dist/plugins/template.engine.js",
-    "build:plugin.load": "node ./tools/packer/index.js src/plugins/load.script.js ./dist/plugins/load.js",
     "build:plugin.intersection": "node ./tools/packer/index.js src/plugins/intersection.script.js ./dist/plugins/intersection.js",
     "build:plugin.object": "node ./tools/packer/index.js src/plugins/object.script.js ./dist/plugins/object.js",
     "build:plugin.tosource": "node ./tools/packer/index.js src/plugins/tosource.script.js ./dist/plugins/tosource.js",
@@ -79,21 +68,30 @@
     "build:module:plugin.observe.style": "node ./tools/packer/index.js -m src/plugins/observe.style.js ./dist/module/plugins/observe.style.js",
     "build:module:plugin.template.engine": "node ./tools/packer/index.js -m src/plugins/template.engine.js ./dist/module/plugins/template.engine.js",
     "build:module:plugin.shapes": "node ./tools/packer/index.js -m src/plugins/shapes.js ./dist/module/plugins/shapes.js",
-    "build:module:plugin.load": "node ./tools/packer/index.js -m src/plugins/load.js ./dist/module/plugins/load.js",
     "build:module:plugin.intersection": "node ./tools/packer/index.js -m src/plugins/intersection.js ./dist/module/plugins/intersection.js",
     "build:module:plugin.object": "node ./tools/packer/index.js -m src/plugins/object.js ./dist/module/plugins/object.js",
     "build:module:plugin.tosource": "node ./tools/packer/index.js -m src/plugins/tosource.js ./dist/module/plugins/tosource.js",
     "update:playwright": "npx playwright install"
   },
   "devDependencies": {
-    "@playwright/test": "^1.46.1",
+    "@playwright/test": "^1.47.0",
     "commander": "^12.1.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.23.1",
     "esprima-next": "6.0.3",
-    "playwright": "^1.46.1",
+    "playwright": "^1.47.0",
     "ws": "^8.18.0"
   },
-  "main": "dist/component/composer.js",
-  "type": "module"
+  "keywords": [
+    "dataviz",
+    "data-visualization",
+    "graphs",
+    "visualization",
+    "data",
+    "graph-library",
+    "dataviz-library",
+    "web-component",
+    "svg",
+    "graphery"
+  ]
 }
