@@ -1,7 +1,7 @@
 # ![Graphane](./assets/img/graphane.png)
 
 See the complete documentation at [graphane.dev](https://graphane.dev/) and many editable examples
-at [playground.graphane.dev](https://graphane.dev/)*.
+at [playground.graphane.dev](https://playground.graphane.dev/).
 
 Graphane is a free and open-source **data visualization low-level microframework** designed to
 facilitate the creation of custom, dynamic and interactive visualizations. Graphane offers 
