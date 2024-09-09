@@ -224,7 +224,8 @@ function removeDoubleQuote (str) {
  * @returns {boolean}
  */
 export function isLikeObject (str) {
-  return /^\s*{(.|\s)*}\s*$/.test(str);
+  // // Catastrophic backtracking with /^\s*{(.|\s)*}\s*$/.test(str);
+  return /^\s*{/.test(str) && /}\s*$/.test(str);
 }
 
 /**
@@ -233,7 +234,8 @@ export function isLikeObject (str) {
  * @returns {boolean}
  */
 export function isLikeArray (str) {
-  return /^\s*\[(.|\s)*]\s*$/.test(str);
+  // Catastrophic backtracking with /^\s*\[(.|\s)*]\s*$/.test(str);
+  return /^\s*\[/.test(str) && /]\s*$/.test(str);
 }
 
 

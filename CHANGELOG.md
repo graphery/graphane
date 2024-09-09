@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.0-beta.next
+
+- Fix catastrophic backtracking in regex checks when data is processed.
+
 ## 1.0.0-beta.2 (2024-09-08)
 
 - BREAKING CHANGE: `$$()` in `g-content` directive is renamed to `$$.currentValue()`.
