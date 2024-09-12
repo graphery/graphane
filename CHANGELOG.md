@@ -3,6 +3,8 @@
 ## 1.0.0-beta.next
 
 - Fix catastrophic backtracking in regex checks when data is processed.
+- Added support for simple data (datum), i.e. `data`, in addition to objects and arrays, can be a 
+  simple number, string or boolean value.
 
 ## 1.0.0-beta.2 (2024-09-08)
 
