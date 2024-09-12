@@ -82,8 +82,12 @@ export function attribute2object (value) {
         .join(',');
       return JSON.parse(`{${ normalized }}`);
     } catch (err) {
-      console.error(err);
-      return undefined;
+      try {
+        return str2value(value);
+      } catch (err) {
+        console.error(err);
+        return undefined;
+      }
     }
   } else if (isObject(value)) {
     return value;
@@ -240,11 +244,18 @@ export function isLikeArray (str) {
 
 
 export function csvStr2obj (str) {
-  let keys = [];
-  return str
+  let keys    = [];
+  const parts = str
     .split(/(\r\n|\r|\n)/)
     .map(r => r.trim())
-    .filter(r => r)
+    .filter(r => r);
+  if (parts.length === 0) {
+    return [];
+  }
+  if (parts.length === 1) {
+    return str2value(parts[0]);
+  }
+  return parts
     .reduce(
       (result, row, idx) => {
         const obj   = {};
