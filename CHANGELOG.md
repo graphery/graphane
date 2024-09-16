@@ -2,9 +2,10 @@
 
 ## 1.0.0-beta.next
 
-- Fix catastrophic backtracking in regex checks when data is processed.
+- Fixed catastrophic backtracking in regex checks when wrong data is processed.
 - Added support for simple data (datum), i.e. `data`, in addition to objects and arrays, can be a 
   simple number, string or boolean value.
+- Added `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
 
 ## 1.0.0-beta.2 (2024-09-08)
 
@@ -13,7 +14,7 @@
 - Added `$$.currentContent()` in `g-content` directive for get the current content.
 - The `g-load` directive plugin has been removed, as this function is integrated in `g-content`.
 - Refactored the template engine's directive storage to ensure that there is only one handler per directive.
-- Improve README.md.
+- Improve `README.md`.
 
 ## 1.0.0-beta.1 (2024-09-05)
 
