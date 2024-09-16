@@ -1,5 +1,5 @@
-import { getProperty }           from "./objects.js";
-import { isUndefined, isString } from "./types.js";
+import { getProperty }                     from "./objects.js";
+import { isUndefined, isString, isObject } from "./types.js";
 
 const DIRECT  = Symbol();
 const INITIAL = Symbol();
@@ -26,12 +26,16 @@ function getValue (obj, prop) {
 
 /**
  *
- * @param {Object|Array} [data={}]
+ * @param {Array|Object} [data={}]
  * @returns {object}
  */
 export function operations (data = {}) {
 
-  const cache  = {}
+  if (!isObject(data)) {
+    return data;
+  }
+
+  const cache = {}
 
   /**
    *

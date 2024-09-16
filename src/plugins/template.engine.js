@@ -109,7 +109,6 @@ defineDirective({
   name : 'g-content',
   execute (gObject, {expression, data, evalExpression}) {
     // gObject.content(evalExpression(expression, data));
-    debugger;
     const context = {
       ...data,
       $$ : {

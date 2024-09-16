@@ -36,7 +36,7 @@ const SRC         = '-src';
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
 const isNotSize   = (el) => {
   const style = getComputedStyle(el);
-  const none  = ['0px','auto'];
+  const none  = ['0px', 'auto'];
   return none.includes(style.width) && none.includes(style.height);
 };
 
@@ -297,11 +297,9 @@ export default class Composer extends Base {
       this.rendered    = false;
       this.isRendering = true;
       const ctx        = this [CONTEXT];
-      const data       = operations(
-        ctx.methods?.data ?
-          ctx.methods.data(clone(ctx.data)) :
-          clone(ctx.data)
-      );
+      const data       = ctx.methods?.data ?
+        ctx.methods.data(operations(clone(ctx.data))) :
+        operations(clone(ctx.data));
       const renderCtx  = {
         ...ctx.methods,
         ...(isArray(data) ? {} : data),
