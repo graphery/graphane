@@ -8,6 +8,7 @@ import {
 import intersection       from "../core/intersection.js";
 import gSVG               from '../lib/gsvg.js';
 import render             from '../plugins/template.engine.js';
+import shapes             from '../plugins/shapes.js';
 import { debounceMethod } from "../helpers/functions.js";
 import { getFunctions }   from "../helpers/function.create.js";
 import { operations }     from "../helpers/array.operations.js";
@@ -24,6 +25,7 @@ const composerPlugin = (setup) => {
 };
 
 gSVG.install(render)
+    .install(shapes)
     .install(composerPlugin);
 
 const NAME        = 'composer';
