@@ -2,6 +2,11 @@
 
 ## 1.0.0-beta.next
 
+- Add the `.version` property to `g-composer`, it allows easy access to the version information of 
+  the Composer instance.
+
+## 1.0.0-beta.3 (2024-08-16)
+
 - Fixed catastrophic backtracking in regex checks when wrong data is processed.
 - Added support for simple data (datum), i.e. `data`, in addition to objects and arrays, can be a 
   simple number, string or boolean value.
