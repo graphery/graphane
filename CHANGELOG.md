@@ -4,6 +4,7 @@
 
 - Add the `.version` property to `g-composer`, it allows easy access to the version information of 
   the Composer instance.
+- Update attribute assignment for camelCase properties names.
 
 ## 1.0.0-beta.3 (2024-08-16)
 
