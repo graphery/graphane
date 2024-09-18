@@ -337,6 +337,10 @@ export default class Composer extends Base {
     return [...this.#errors];
   }
 
+  get version() {
+    return '%VERSION%';
+  }
+
 }
 
 Composer.prototype.update = debounceMethod(Composer.prototype.update, 1)
