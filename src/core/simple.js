@@ -439,7 +439,7 @@ function definePropertySet (property) {
 
     // Update attribute
     if (property.attribute && ![ARRAY, OBJECT].includes(property.type)) {
-      updateAttribute(this, property.name, value, property.type === BOOLEAN);
+      updateAttribute(this, property.attribute, value, property.type === BOOLEAN);
     }
 
     // Pos update
