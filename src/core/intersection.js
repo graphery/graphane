@@ -6,9 +6,9 @@ const OBSERVER = Symbol();
 
 export function intersectionCoreExtension (defineObject) {
   defineObject
-    .attribute({name : 'intersection-once-class', type : STRING, value : ''})
-    .attribute({name : 'intersection-class', type : STRING, value : ''})
-    .attribute({name : 'intersection-ratio', type : NUMBER, value : 0, posUpdate : observer})
+    .attr({name : 'intersection-once-class', type : STRING, value : ''})
+    .attr({name : 'intersection-class', type : STRING, value : ''})
+    .attr({name : 'intersection-ratio', type : NUMBER, value : 0, posUpdate : observer})
 }
 
 const add    = (classList, classes) => classes && classes.split(/\s+/).forEach(cl => classList.add(cl));

@@ -116,14 +116,14 @@ function install (setup) {
   if (setup.extendTemplate) {
     setup.extendTemplate.defineDirective({
       name : 'g-keep-aspect',
-      execute (gObject, {expression}) {
+      exec (gObject, {expr}) {
         console.warn('"g-keep-aspect" directive is deprecated; use "g-non-scaling-size" instead.');
-        gObject.nonScalingSize(expression);
+        gObject.nonScalingSize(expr);
       }
     })
     setup.extendTemplate.defineDirective({
       name : 'g-non-scaling-size',
-      execute (gObject) {
+      exec (gObject) {
         // gObject.nonScalingSize('size');
         keepAspect.call(gObject, 'size')
       }

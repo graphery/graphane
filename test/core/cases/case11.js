@@ -40,8 +40,8 @@ export async function script () {
   }
 
   define(MyComponent)
-    .attribute({name: 'delay', type: 'number', value: 0, posUpdate: 'load'})
-    .attribute({name: 'label', type: 'string', value: '', posUpdate: REFRESH})
+    .attr({name: 'delay', type: 'number', value: 0, posUpdate: 'load'})
+    .attr({name: 'label', type: 'string', value: '', posUpdate: REFRESH})
     .tag('my-component');
 }
 

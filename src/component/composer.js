@@ -46,7 +46,7 @@ const isNotSize   = (el) => {
  * @fires 'load' - This event fires when the component load the external resources.
  * @fires 'update' - This event fires when the component update the content.
  * @property {object} svg - Return the gSVG object for the graph.
- * @property {boolean} [isRendering] - It's true if the component is rendering.
+ * @property {boolean} [rendered] - It's true if the component is rendering.
  * @property {boolean} [loaded] - It's true if the component is loaded.
  */
 export default class Composer extends Base {
@@ -61,9 +61,8 @@ export default class Composer extends Base {
 
   #svg        = null;
   #loaded     = false;
+  #isRendering = false;
   #errors     = [];
-  isRendering = false;
-
 
   /**
    * Logs an error message and triggers the 'error' event.
@@ -290,12 +289,12 @@ export default class Composer extends Base {
    * @return {Promise<void>} - A promise that resolves once the SVG is rendered.
    */
   async update (forced = false) {
-    if (this.isRendering && !forced) {
+    if (this.#isRendering && !forced) {
       return;
     }
     if (this.#svg) {
       this.rendered    = false;
-      this.isRendering = true;
+      this.#isRendering = true;
       const ctx        = this [CONTEXT];
       const data       = ctx.methods?.data ?
         ctx.methods.data(operations(clone(ctx.data))) :
@@ -307,7 +306,7 @@ export default class Composer extends Base {
         $ : this
       };
       await this.#svg.render(renderCtx, this.#error.bind(this));
-      this.isRendering = false;
+      this.#isRendering = false;
       this.rendered    = true;
     }
   }
@@ -347,12 +346,12 @@ Composer.prototype.update = debounceMethod(Composer.prototype.update, 1)
 
 // Define the component
 define(Composer)
-  .extension(intersection)
-  .attribute({name : SVG + SRC, type : STRING, value : '', posUpdate : RENDER})
-  .attribute({name : DATA, type : OBJECT, value : [], posUpdate : UPDATE})
-  .attribute({name : DATA + SRC, type : STRING, posUpdate : RENDER})
-  .property({name : METHODS, type : OBJECT, value : {}, posUpdate : UPDATE})
-  .attribute({name : METHODS + SRC, type : STRING, posUpdate : RENDER})
-  .attribute({name : CONFIG, type : OBJECT, value : {}, posUpdate : UPDATE})
-  .attribute({name : CONFIG + SRC, type : STRING, posUpdate : RENDER})
+  .ext(intersection)
+  .attr({name : SVG + SRC, type : STRING, value : '', posUpdate : RENDER})
+  .attr({name : DATA, type : OBJECT, value : [], posUpdate : UPDATE})
+  .attr({name : DATA + SRC, type : STRING, posUpdate : RENDER})
+  .prop({name : METHODS, type : OBJECT, value : {}, posUpdate : UPDATE})
+  .attr({name : METHODS + SRC, type : STRING, posUpdate : RENDER})
+  .attr({name : CONFIG, type : OBJECT, value : {}, posUpdate : UPDATE})
+  .attr({name : CONFIG + SRC, type : STRING, posUpdate : RENDER})
   .tag(NAME);

@@ -18,8 +18,8 @@ export async function script () {
   }
 
   define (MyComponent)
-    .attribute ({name : 'delay', type : 'number', value : 0, posUpdate : 'load'})
-    .attribute ({name : 'href', type : 'string', value : ''})
+    .attr ({name : 'delay', type : 'number', value : 0, posUpdate : 'load'})
+    .attr ({name : 'href', type : 'string', value : ''})
     .tag ('my-component');
 }
 

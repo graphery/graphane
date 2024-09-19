@@ -5,6 +5,7 @@
 - Add the `.version` property to `g-composer`, it allows easy access to the version information of 
   the Composer instance.
 - Update attribute assignment for camelCase properties names.
+- The code is optimized to reduce size and increase speed.
 
 ## 1.0.0-beta.3 (2024-08-16)
 
