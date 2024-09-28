@@ -187,7 +187,6 @@ test.describe(name, () => {
     expect(data).toBe(obj);
   });
 
-
   test('try to observe a number', () => {
     const data = objectObserver(1, () => void(0));
     expect(data).toBe(1);
@@ -201,6 +200,11 @@ test.describe(name, () => {
   test('try to observe a boolean', () => {
     const data = objectObserver(false, () => void(0));
     expect(data).toBe(false);
+  });
+
+  test('try to observe a null', () => {
+    const data = objectObserver(null, () => void(0));
+    expect(data).toBe(null);
   });
 
 
