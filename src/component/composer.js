@@ -59,10 +59,10 @@ export default class Composer extends Base {
     gSVG.install(svgPlugin);
   }
 
-  #svg        = null;
-  #loaded     = false;
+  #svg         = null;
+  #loaded      = false;
   #isRendering = false;
-  #errors     = [];
+  #errors      = [];
 
   /**
    * Logs an error message and triggers the 'error' event.
@@ -293,13 +293,13 @@ export default class Composer extends Base {
       return;
     }
     if (this.#svg) {
-      this.rendered    = false;
+      this.rendered     = false;
       this.#isRendering = true;
-      const ctx        = this [CONTEXT];
-      const data       = ctx.methods?.data ?
+      const ctx         = this [CONTEXT];
+      const data        = ctx.methods?.data ?
         ctx.methods.data(operations(clone(ctx.data))) :
         operations(clone(ctx.data));
-      const renderCtx  = {
+      const renderCtx   = {
         ...ctx.methods,
         ...(isArray(data) ? {} : data),
         data,
@@ -307,7 +307,7 @@ export default class Composer extends Base {
       };
       await this.#svg.render(renderCtx, this.#error.bind(this));
       this.#isRendering = false;
-      this.rendered    = true;
+      this.rendered     = true;
     }
   }
 
@@ -336,7 +336,7 @@ export default class Composer extends Base {
     return [...this.#errors];
   }
 
-  get version() {
+  get version () {
     return '%VERSION%';
   }
 
@@ -354,4 +354,13 @@ define(Composer)
   .attr({name : METHODS + SRC, type : STRING, posUpdate : RENDER})
   .attr({name : CONFIG, type : OBJECT, value : {}, posUpdate : UPDATE})
   .attr({name : CONFIG + SRC, type : STRING, posUpdate : RENDER})
+  .attr({
+    name : 'value',
+    set (v) {
+      this.data = {value : v}
+    },
+    get () {
+      return this.data?.value;
+    }
+  })
   .tag(NAME);

@@ -2,9 +2,12 @@
 
 ## 1.0.0-beta.next
 
-- Add the `.version` property to `g-composer`, it allows easy access to the version information of 
+- Added the `.value` property and `value` property to `g-composer`. This `value` is a shortcut to
+  `.data={value: v}`.
+- Added the `.version` property to `g-composer`, it allows easy access to the version information of 
   the Composer instance.
-- Update attribute assignment for camelCase properties names.
+- Fixed a Proxy error when a simple `data` is returned.
+- Update attribute assignment for camelCase properties.
 - The code is optimized to reduce size and increase speed.
 
 ## 1.0.0-beta.3 (2024-08-16)
