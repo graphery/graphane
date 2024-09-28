@@ -490,7 +490,7 @@ function registreComponent (Class, name) {
  * @returns {object}
  */
 function define (Class, def = {}) {
-  def.property = def.prop  = (...properties) => {
+  def.prop  = (...properties) => {
     properties.forEach(property => defineProperty(Class, {...property}));
     return def;
   };
