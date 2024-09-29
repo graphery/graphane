@@ -74,12 +74,12 @@
     "update:playwright": "npx playwright install"
   },
   "devDependencies": {
-    "@playwright/test": "^1.47.1",
+    "@playwright/test": "^1.47.2",
     "commander": "^12.1.0",
     "concurrently": "^9.0.1",
-    "esbuild": "^0.23.1",
+    "esbuild": "^0.24.0",
     "esprima-next": "6.0.3",
-    "playwright": "^1.47.1",
+    "playwright": "^1.47.2",
     "ws": "^8.18.0"
   },
   "keywords": [
