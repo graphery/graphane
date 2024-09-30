@@ -59,23 +59,39 @@ export default class Composer extends Base {
     gSVG.install(svgPlugin);
   }
 
-  #svg         = null;
-  #loaded      = false;
-  #isRendering = false;
-  #errors      = [];
+  #svg           = null;
+  #loaded        = false;
+  #isRendering   = false;
+  #errorsRender  = [];
+  #errorsLoading = [];
 
   /**
    * Logs an error message and triggers the 'error' event.
    * @param {string} message - The error message.
-   * @param {string} scope - The scope in which the error occurred.
-   * @param {string} [code=''] - Additional code related to the error. (Optional)
+   * @param {string|object} scope - The scope in which the error occurred.
+   * @param {string} code - Additional code related to the error. (Optional)
+   * @param {Array} storage - Additional code related to the error. (Optional)
    * @return {void}
    */
-  #error (message, scope = '', code = '') {
-    const errMsg = `${ message }${ scope ? ` in ${ scope }` : '' }\n${ code }`;
-    this.#errors.push(errMsg);
+  #error (message, scope, code, storage) {
+    const errMsg = {
+      message,
+      scope,
+      code,
+      toString: () => `${ message }${ scope ? ` in ${ scope }` : '' }\n${ code }`
+    };
+    storage.push(errMsg);
     console.warn(`Graphane Composer - Error:\n${ errMsg }`);
     this[FIRE_EVENT]('error', errMsg);
+  }
+
+  /**
+   * Initializes a new array for storing errors and returns a bound version of the error handler method.
+   * @return {Function} A bound version of the error handler method that can be used to log errors.
+   */
+  #createErrorHandler(storage) {
+    storage.length = 0;
+    return (message, scope = '', code = '') => this.#error(message, scope, code, this.#errorsRender);
   }
 
   /**
@@ -109,7 +125,7 @@ export default class Composer extends Base {
             gSVG.install(lib.default);
           }
         } catch (err) {
-          this.#error(err.message, 'plugin', url);
+          this.#error(err.message, 'plugin', url, this.#errorsLoading);
         }
       }
     }
@@ -128,7 +144,7 @@ export default class Composer extends Base {
       try {
         ctx.content.innerHTML = await this.#fetch(ctx.svgSrc);
       } catch (err) {
-        this.#error(err.message, SVG, ctx.svgSrc);
+        this.#error(err.message, SVG, ctx.svgSrc, this.#errorsLoading);
       }
     } else {
       const template = this.querySelector('template')?.content || this.querySelector(SVG);
@@ -161,7 +177,7 @@ export default class Composer extends Base {
         ctx[kind] = reviver(content);
       }
     } catch (err) {
-      this.#error(err.message, kind, content);
+      this.#error(err.message, kind, content, this.#errorsLoading);
     }
   }
 
@@ -305,7 +321,7 @@ export default class Composer extends Base {
         data,
         $ : this
       };
-      await this.#svg.render(renderCtx, this.#error.bind(this));
+      await this.#svg.render(renderCtx, this.#createErrorHandler(this.#errorsRender));
       this.#isRendering = false;
       this.rendered     = true;
     }
@@ -333,7 +349,7 @@ export default class Composer extends Base {
    * @return {Array} An array containing the errors.
    */
   get errors () {
-    return [...this.#errors];
+    return [...this.#errorsLoading, ...this.#errorsRender];
   }
 
   get version () {

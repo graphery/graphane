@@ -376,7 +376,11 @@ function evalExpr (code, data, context = null) {
     keys,
     `return ( ${ code } ); `
   );
-  return fn.apply(context, keys.map(key => data[key]));
+  const evalResult = fn.apply(context, keys.map(key => data[key]));
+  if (Number.isNaN(evalResult)) {
+    throw new Error(`The expression "${code}" returned a NaN (Not a Number) value`);
+  }
+  return evalResult;
 }
 
 /**
@@ -446,9 +450,19 @@ function process (el, data, error, checkCloned = true) {
     try {
       directive.exec(el, {...directive, data, evalExpr, error, code});
     } catch (err) {
-      error(err.message, `${ directive.name }${ directive.arg ?
-        ':' + directive.arg :
-        '' }="${ directive.expr }"`, code);
+      error(
+        err.message,
+        {
+          directive  : directive.name,
+          argument   : directive.arg,
+          expression : directive.expr,
+          toString () {
+            return `${ directive.name }${ directive.arg ?
+              ':' + directive.arg :
+              '' }="${ directive.expr }"`
+          }
+        },
+        code);
     }
     tmpl = directive.tmpl || tmpl;
   }
