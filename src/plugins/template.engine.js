@@ -14,6 +14,7 @@ const EVENTS     = Symbol();
 const REPLACE    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = {};
+const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`)
 
 /**
  * Throws an error with a specified message, scope, and code context.
@@ -183,6 +184,9 @@ defineDirective({
       );
     };
     let value               = evalExpr(expr, context);
+    if (isUndefined(value)) {
+      throw exprError(expr, 'undefined');
+    }
     if (arg === 'class') {
       if (isArray(value)) {
         gObject.classList.add(...value.filter(val => !!val));
@@ -389,7 +393,7 @@ function evalExpr (code, data, context = null) {
   );
   const evalResult = fn.apply(context, keys.map(key => data[key]));
   if (Number.isNaN(evalResult)) {
-    throw new Error(`The expression "${code}" returned a NaN (Not a Number) value`);
+    throw exprError(code, 'NaN (Not a Number)');
   }
   return evalResult;
 }
