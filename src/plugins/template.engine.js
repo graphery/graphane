@@ -232,7 +232,18 @@ defineDirective({
           fn.call(gObject, evt);
         }
       } catch (err) {
-        error(err.message, `g-on:${ event }="${ expr }"`, code);
+        error(
+          err.message,
+          {
+            directive  : 'g-on',
+            argument   : event,
+            expression : expr,
+            toString () {
+              return `g-on:${ event }="${ expr }"`
+            }
+          },
+          code
+        );
       }
     };
     gObject.addEventListener(event, handler);
@@ -462,7 +473,8 @@ function process (el, data, error, checkCloned = true) {
               '' }="${ directive.expr }"`
           }
         },
-        code);
+        code
+      );
     }
     tmpl = directive.tmpl || tmpl;
   }
