@@ -6,8 +6,8 @@
   `.data={value: v}`.
 - Added the `.version` property to `g-composer`, it allows easy access to the version information of 
   the Composer instance.
-- Error messages have been improved.
-- Fixed a Proxy error when a simple `data` is returned.
+- Error detection and error messages have been improved.
+- Fixed a Proxy error when a primitive `data` is returned.
 - Update attribute assignment for camelCase properties.
 - The code is optimized to reduce size and increase speed.
 
