@@ -275,7 +275,8 @@ export default class Composer extends Base {
    */
   async load () {
 
-    this.#loaded = false;
+    this.#loaded        = false;
+    this.#errorsLoading = [];
 
     // Plugins
     await this.#loadPlugins();
