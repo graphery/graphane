@@ -78,7 +78,7 @@ export default class Composer extends Base {
       message,
       scope,
       code,
-      toString: () => `${ message }${ scope ? ` in ${ scope }` : '' }\n${ code }`
+      toString : () => `${ message }${ scope ? ` in ${ scope }` : '' }\n${ code }`
     };
     storage.push(errMsg);
     console.warn(`Graphane Composer - Error:\n${ errMsg }`);
@@ -89,7 +89,7 @@ export default class Composer extends Base {
    * Initializes a new array for storing errors and returns a bound version of the error handler method.
    * @return {Function} A bound version of the error handler method that can be used to log errors.
    */
-  #createErrorHandler(storage) {
+  #createErrorHandler (storage) {
     storage.length = 0;
     return (message, scope = '', code = '') => this.#error(message, scope, code, this.#errorsRender);
   }
@@ -170,14 +170,15 @@ export default class Composer extends Base {
     if (el) {
       ctx[key] = el.getAttribute('src');
     }
-    let content = '';
-    try {
-      content = ctx[key] ? await this.#fetch(ctx[key]) : el?.textContent;
-      if (content) {
+    let content = ctx[key] ?
+      await this.#fetch(ctx[key]).catch(err => this.#error(err.message, kind, ctx[key], this.#errorsLoading)) :
+      el?.textContent;
+    if (content) {
+      try {
         ctx[kind] = reviver(content);
+      } catch (err) {
+        this.#error(err.message, kind, content, this.#errorsLoading);
       }
-    } catch (err) {
-      this.#error(err.message, kind, content, this.#errorsLoading);
     }
   }
 
