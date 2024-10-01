@@ -125,7 +125,7 @@ export default class Composer extends Base {
             gSVG.install(lib.default);
           }
         } catch (err) {
-          this.#error(err.message, 'plugin', url, this.#errorsLoading);
+          this.#error(err.message, 'plugin', src, this.#errorsLoading);
         }
       }
     }
