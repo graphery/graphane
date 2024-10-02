@@ -2,7 +2,7 @@
 
 ## 1.0.0-beta.next
 
-- Added the `.value` property and `value` property to `g-composer`. This `value` is a shortcut to
+- Added the `.value` property and `value` attribute to `g-composer`. This `value` is a shortcut to
   `.data={value: v}`.
 - Added the `.version` property to `g-composer`, it allows easy access to the version information of 
   the Composer instance.
@@ -11,7 +11,7 @@
 - Update attribute assignment for camelCase properties.
 - The code is optimized to reduce size and increase speed.
 
-## 1.0.0-beta.3 (2024-08-16)
+## 1.0.0-beta.3 (2024-09-16)
 
 - Fixed catastrophic backtracking in regex checks when wrong data is processed.
 - Added support for simple data (datum), i.e. `data`, in addition to objects and arrays, can be a 
