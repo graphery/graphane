@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.0.0-beta.next
+## 1.0.0-beta.4 (2024-10-02)
 
 - Added the `.value` property and `value` attribute to `g-composer`. This `value` is a shortcut to
   `.data={value: v}`.
