@@ -132,7 +132,7 @@ class MyComponent extends Base {
 }
 
 define(MyComponent)
-  .property({name : 'label', posUpdate : REFRESH})
+  .prop({name : 'label', posUpdate : REFRESH})
   .tag('my-component');
 ```
 
@@ -196,7 +196,7 @@ by which it is happening. In particular, emit the events:
   }
 
   define(MyComponent)
-    .property({name : 'label', value : 'Hello', posUpdate : REFRESH})
+    .prop({name : 'label', value : 'Hello', posUpdate : REFRESH})
     .tag('my-component');
 
 </script>
@@ -222,7 +222,7 @@ the attribute:
 
 ```js
 define(MyComponent)
-  .attribute({name : 'label', type : 'string', value : 'Hello Graphane', posUpdate : REFRESH});
+  .attr({name : 'label', type : 'string', value : 'Hello Graphane', posUpdate : REFRESH});
 ```
 
 As a result of this call, our component will have an attribute `label` and to property mirror with
@@ -286,7 +286,7 @@ launches the event `refresh` automatically.
   }
 
   define(MyComponent)
-    .attribute({name : 'label', value : 'Hello', posUpdate : REFRESH})
+    .attr({name : 'label', value : 'Hello', posUpdate : REFRESH})
     .tag('my-component');
 
 </script>
@@ -307,25 +307,25 @@ class `Base` (`array` and `object`):
   be nested, and only accepted properties in the first level.
 
 For more information about the options for creating attributes, see the reference
-about [`define().attribute()`](#defineklassattributeattributedescriptor-function)
+about [`define().attr()`](#defineklassattributeattributedescriptor-function)
 
 ## Properties without attribute mirror
 
 In some cases, we want to define properties without an attribute mirror. In these cases we can use
 the usual mechanisms of the Javascript to create properties (with getter/setter or the constructor
-with `this`), but `Base` offers us the function `define().property()` which operates in a manner
+with `this`), but `Base` offers us the function `define().prop()` which operates in a manner
 very similar to
-`define().attribute()` and that simplifies quite this operation.
+`define().attr()` and that simplifies quite this operation.
 
 <!-- case05.html -->
 
 ```js
 define(MyComponent)
-  .property({name : 'value', type : 'number', value : 0, posUpdate : REFRESH});
+  .prop({name : 'value', type : 'number', value : 0, posUpdate : REFRESH});
 ```
 
 For more information about the options for creating properties, see the reference
-about [`define().property()`](#defineklasspropertypropertydescriptor-function)
+about [`define().prop()`](#defineklasspropertypropertydescriptor-function)
 
 ## Private information
 
@@ -373,7 +373,7 @@ component.
   }
 
   define(MyComponent)
-    .attribute({name : 'value', type : 'number', value : 0, posUpdate : REFRESH})
+    .attr({name : 'value', type : 'number', value : 0, posUpdate : REFRESH})
     .tag('my-component');
 
 </script>
@@ -666,8 +666,8 @@ from a remote server.
   }
 
   define(MyComponent)
-    .attribute({name : 'delay', type : 'number', value : 1, posUpdate : 'load'})
-    .attribute({name : 'label', type : 'string', value : '', posUpdate : REFRESH})
+    .attr({name : 'delay', type : 'number', value : 1, posUpdate : 'load'})
+    .attr({name : 'label', type : 'string', value : '', posUpdate : REFRESH})
     .tag('my-component');
 </script>
 ```
@@ -678,7 +678,7 @@ In some cases, we need to create a Web Component without a user interface. In th
 class is too big, and we can use `Simple`, a very small Web Component class without life cicle and
 other features related with the user interface.
 
-You can use `define().attribute()`, `define().property()` and `define().tag()` with classes inherit
+You can use `define().attr()`, `define().prop()` and `define().tag()` with classes inherit
 from `Simple`, but you cannot use ~~`define().style()`~~.
 
 <!-- case12 -->
@@ -706,8 +706,8 @@ from `Simple`, but you cannot use ~~`define().style()`~~.
   }
 
   define(MyComponent)
-    .attribute({name : 'delay', type : 'number', value : 0, posUpdate : 'load'})
-    .attribute({name : 'href', type : 'string', value : ''})
+    .attr({name : 'delay', type : 'number', value : 0, posUpdate : 'load'})
+    .attr({name : 'href', type : 'string', value : ''})
     .tag('my-component');
 </script>
 ```
@@ -721,9 +721,8 @@ from `Simple`, but you cannot use ~~`define().style()`~~.
 - [RESIZE :`Symbol`](#resize-symbol)
 - [CONTEXT :`Symbol`](#context-symbol)
 - [define(klass) :`function`](#defineklass-function)
-  - [.attribute(attributeDescriptor) :`function`](#defineklassattributeattributedescriptor-function)
-  - [.property(propertyDescriptor) :`function`](#defineklasspropertypropertydescriptor-function)
-  - [.collection(options) :`function`](#defineklasscollectionoptions-function)
+  - [.attr(attributeDescriptor) :`function`](#defineklassattributeattributedescriptor-function)
+  - [.prop(propertyDescriptor) :`function`](#defineklasspropertypropertydescriptor-function)
   - [.style(styleDescription) :`function`](#defineklassstylecsspropertydescriptor-function)
   - [.tag(name) :`function`](#defineklasstagname-function)
 - [Simple :`class`](#simple-class)
@@ -853,7 +852,7 @@ Extend the class as a component.
 
 Return a `define object` with these methods:
 
-#### define(klass).attribute(attributeDescriptor) :`function`
+#### define(klass).attr(attributeDescriptor) :`function`
 
 Defines an attribute and its property into the class
 
@@ -868,14 +867,14 @@ class X extends Base {
 }
 
 define(base)
-  .attribute({name : 'value', type : 'string', value : ''});
+  .attr({name : 'value', type : 'string', value : ''});
 ```
 
 Return a `define object` for method chaining.
 
 ##### attributeDescriptor :`Object`
 
-Attribute descriptor used into `defineAttribute()` function.
+Attribute descriptor used into `define().attr()` function.
 
 **Properties**
 
@@ -891,7 +890,7 @@ Attribute descriptor used into `defineAttribute()` function.
 | `[posUpdate]`      | `function` \| `string` \| `symbol` | Callback or method reference to be called after update.                                                                |
 | `[posUpdateEvent]` | `string`                           | Event name fired after the update.                                                                                     |
 
-#### define(klass).property(propertyDescriptor) :`function`
+#### define(klass).prop(propertyDescriptor) :`function`
 
 You define a property into the class
 
@@ -905,7 +904,7 @@ import { Base, define } from './/base.js';
 class X extends Base {
 }
 
-defineProperty(X, {name : 'value', type : 'string', value : ''});
+define(X).prop(X, {name : 'value', type : 'string', value : ''});
 ```
 
 Return a `define object` for method chaining.
@@ -989,7 +988,7 @@ class X extends Simple {
 
 **Definition**
 
-`define()`, `define().attribute()`, `define().property()`, `define().tag()` work with `Simple` class
+`define()`, `define().attr()`, `define().prop()`, `define().tag()` work with `Simple` class
 too.
 
 ./

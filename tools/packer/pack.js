@@ -52,7 +52,8 @@ async function pack (from, to, packagejson, options) {
     //-------------------------------------------------------
     packagejson = packagejson || './package.json';
     const pck   = require(path.resolve(process.cwd(), packagejson));
-    content     = `/* ${ pck.name }${ pck.version ? ` - ${ pck.version }` : '' } */ ` + content;
+    content     = `/* ${ pck.name }${ pck.version ? ` - ${ pck.version }` : '' } */ `
+                  + content.replace(/%VERSION%/g, pck.version);
     !options.silence && console.log('          size after commented:', content.length);
 
     //-------------------------------------------------------

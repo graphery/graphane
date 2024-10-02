@@ -34,7 +34,7 @@ export async function script () {
   }
 
   define (MyComponent)
-    .property({name:'label', posUpdate: REFRESH})
+    .prop({name:'label', posUpdate: REFRESH})
     .tag ('my-component');
 }
 

@@ -19,7 +19,7 @@ let ignore  = false;
  * @returns {Object}
  */
 export const objectObserver = (object, callback) => {
-  if (!isFunction(callback)) {
+  if (!isObject(object) || isNull(object) || !isFunction(callback)) {
     return object;
   }
   return (function observe (obj) {

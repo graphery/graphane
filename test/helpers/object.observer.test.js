@@ -170,7 +170,6 @@ test.describe(name, () => {
     expect(changed).toBe(true);
   });
 
-
   test('stop and start observer', () => {
     let tested = false;
     const data = objectObserver({a: 1}, (...args) => {
@@ -181,5 +180,32 @@ test.describe(name, () => {
     objectObserver.start();
     expect(tested).toBe(false);
   });
+
+  test('try to observe without callback', () => {
+    const obj = {a:1}
+    const data = objectObserver(obj);
+    expect(data).toBe(obj);
+  });
+
+  test('try to observe a number', () => {
+    const data = objectObserver(1, () => void(0));
+    expect(data).toBe(1);
+  });
+
+  test('try to observe a string', () => {
+    const data = objectObserver('s', () => void(0));
+    expect(data).toBe('s');
+  });
+
+  test('try to observe a boolean', () => {
+    const data = objectObserver(false, () => void(0));
+    expect(data).toBe(false);
+  });
+
+  test('try to observe a null', () => {
+    const data = objectObserver(null, () => void(0));
+    expect(data).toBe(null);
+  });
+
 
 });

@@ -1,6 +1,7 @@
 import { CSS_PROPS, COMPONENT_PREFIX } from './base.js';
+import { isUndefined, isObject }       from "../helpers/types.js";
 
-const buildName   = (name) => name.startsWith('--') ? name : `--${ COMPONENT_PREFIX }${ name }`;
+const buildName = (name) => name.startsWith('--') ? name : `--${ COMPONENT_PREFIX }${ name }`;
 
 
 /**
@@ -13,7 +14,7 @@ const buildName   = (name) => name.startsWith('--') ? name : `--${ COMPONENT_PRE
 export function getCSSPropertyValue (component, cssProps, name) {
   name         = typeof name === 'object' ? name.name : name;
   const result = getComputedStyle(component).getPropertyValue(name);
-  if ((typeof result === 'undefined' || result === '') &&
+  if ((isUndefined(result) || result === '') &&
       cssProps &&
       cssProps.hasOwnProperty(name)) {
     return cssProps[name].value;
@@ -47,7 +48,7 @@ export function getCSSProperties (component) {
  */
 export function getCSSProperty (component, name) {
   const cssProps = getCSSPropertyDescriptors(component);
-  name           = buildName(typeof name === 'object' ? name.name : name);
+  name           = buildName(isObject(name) ? name.name : name);
   return cssProps[name];
 }
 
@@ -63,7 +64,7 @@ export function getCSSVar (component, ...name) {
   for (let i = 0; i < name.length; i++) {
     const property = getCSSProperty(component, name[i]);
     result += `${ result ? ', ' : '' } var(${ buildName(property?.name || name[i]) }`;
-    defaultValue = property?.initialValue;
+    defaultValue   = property?.initialValue;
   }
   if (defaultValue) {
     result += `, ${ defaultValue }`;

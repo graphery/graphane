@@ -19,10 +19,12 @@ const errors = {
   case59: `Invalid or unexpected token in data {a": 10}`,
   case60: `y is not defined in methods x = y; `,
   case61: `x is not defined in config {conf: x + 10}`,
-  case62: `Failed to fetch dynamically imported module: http://localhost:7200/non-exist.js in plugin http://localhost:7200/non-exist.js`,
-  case63: `Not Found (404): http://localhost:7200/non-exist.json in data`,
-  case64: `Not Found (404): http://localhost:7200/non-exist.js in methods`,
+  case62: `Failed to fetch dynamically imported module: http://localhost:7200/non-exist.js in plugin ./non-exist.js`,
+  case63: `Not Found (404): http://localhost:7200/non-exist.json in data ./non-exist.json`,
+  case64: `Not Found (404): http://localhost:7200/non-exist.js in methods ./non-exist.js`,
   case65: `y is not defined in methods x = y * 10;`,
+  case89: `Failed to fetch dynamically imported module: http://localhost:7200/non-exist.js in plugin ./non-exist.js The expression "value * 2" return NaN (Not a Number) value in g-bind:x="value * 2" <rect :x="value * 2" @click="wrong()" y="0" width="100" height="100" fill="red"></rect> wrong is not defined in g-on:click="wrong()" <rect :x="value * 2" @click="wrong()" y="0" width="100" height="100" fill="red"></rect> `,
+  case90: `{"message":"Failed to fetch dynamically imported module: http://localhost:7200/non-exist.js","scope":"plugin","code":"./non-exist.js"} {"message":"The expression \\"value * 2\\" return NaN (Not a Number) value","scope":{"directive":"g-bind","argument":"x","expression":"value * 2"},"code":"<rect :x=\\"value * 2\\" @click=\\"wrong()\\" y=\\"0\\" width=\\"100\\" height=\\"100\\" fill=\\"red\\"></rect>"} {"message":"wrong is not defined","scope":{"directive":"g-on","argument":"click","expression":"wrong()"},"code":"<rect :x=\\"value * 2\\" @click=\\"wrong()\\" y=\\"0\\" width=\\"100\\" height=\\"100\\" fill=\\"red\\"></rect>"}`
 }
 
 const dir = await opendir(FOLDER);
@@ -93,7 +95,7 @@ for await (const dirent of dir) {
     if (errors[code]) {
       test('error', async({page}) => {
         const result = page.locator('#result');
-        if (code === 'case58') {
+        if (['case58', 'case89', 'case90'].includes(code)) {
           const run = page.locator('g-composer');
           await run.click();
           await wait(500);

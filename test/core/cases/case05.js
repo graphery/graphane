@@ -31,7 +31,7 @@ export async function script () {
   }
 
   define (MyComponent)
-    .attribute({name:'value', type: 'number', value: 0, posUpdate: REFRESH})
+    .attr({name:'value', type: 'number', value: 0, posUpdate: REFRESH})
     .tag ('my-component');
 
 }

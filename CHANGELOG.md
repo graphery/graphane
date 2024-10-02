@@ -1,6 +1,17 @@
 # Change Log
 
-## 1.0.0-beta.next
+## 1.0.0-beta.4 (2024-10-02)
+
+- Added the `.value` property and `value` attribute to `g-composer`. This `value` is a shortcut to
+  `.data={value: v}`.
+- Added the `.version` property to `g-composer`, it allows easy access to the version information of 
+  the Composer instance.
+- Error detection and error messages have been improved.
+- Fixed a Proxy error when a primitive `data` is returned.
+- Update attribute assignment for camelCase properties.
+- The code is optimized to reduce size and increase speed.
+
+## 1.0.0-beta.3 (2024-09-16)
 
 - Fixed catastrophic backtracking in regex checks when wrong data is processed.
 - Added support for simple data (datum), i.e. `data`, in addition to objects and arrays, can be a 
