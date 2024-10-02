@@ -12,6 +12,7 @@ const CLONES     = Symbol();
 const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
 const REPLACE    = Symbol();
+const DYNAMIC    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = {};
 const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`)
@@ -182,6 +183,7 @@ defineDirective({
         ),
         {duration, delay}
       );
+      return DYNAMIC;
     };
     let value               = evalExpr(expr, context);
     if (isUndefined(value)) {
@@ -207,7 +209,7 @@ defineDirective({
       Object.entries(value).forEach(([key, val]) => gObject.style[key](val));
       return;
     }
-    if (!isUndefined(value)) {
+    if (value !== DYNAMIC) {
       gObject[arg](value);
     }
   }
@@ -386,8 +388,8 @@ function toArray (v) {
  * @returns {*}
  */
 function evalExpr (code, data, context = null) {
-  const keys = Object.keys(data).filter(isValidIdentifier);
-  const fn   = createFunction(
+  const keys       = Object.keys(data).filter(isValidIdentifier);
+  const fn         = createFunction(
     keys,
     `return ( ${ code } ); `
   );
