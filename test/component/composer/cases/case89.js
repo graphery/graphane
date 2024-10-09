@@ -4,7 +4,7 @@ export const description = 'launch plugin and render errors';
 export function script () {
   const result    = document.querySelector('#result');
   const component = document.querySelector('g-composer');
-  const show      = () => result.innerHTML = component.errors
+  const show      = (evt) => result.innerHTML = (evt.detail || component.errors)
                                                       .map(r => String(r).replace(/</g, '&lt;'))
                                                       .join('\n');
   if (!component.rendered) {

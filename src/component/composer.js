@@ -1,17 +1,17 @@
 import {
   Base, define,
   RENDER, CONTEXT, FIRE_EVENT, CHANGE
-}                                   from '../core/base.js';
+}                         from '../core/base.js';
 import {
   STRING, OBJECT, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
-}                                   from '../helpers/types.js';
-import intersection                 from "../core/intersection.js";
-import gSVG                         from '../lib/gsvg.js';
-import render                       from '../plugins/template.engine.js';
-import { debounceMethod, debounce } from "../helpers/functions.js";
-import { getFunctions }             from "../helpers/function.create.js";
-import { operations }               from "../helpers/array.operations.js";
-import { clone }                    from "../helpers/objects.js";
+}                         from '../helpers/types.js';
+import intersection       from "../core/intersection.js";
+import gSVG               from '../lib/gsvg.js';
+import render             from '../plugins/template.engine.js';
+import { debounceMethod } from "../helpers/functions.js";
+import { getFunctions }   from "../helpers/function.create.js";
+import { operations }     from "../helpers/array.operations.js";
+import { clone }          from "../helpers/objects.js";
 
 const composerPlugin = (setup) => {
   setup.extendSetup({
@@ -39,9 +39,6 @@ const isNotSize   = (svg) => {
   const style = getComputedStyle(svg.el);
   return noneSize.includes(style.width) && noneSize.includes(style.height);
 };
-const delayEvent  = debounce(function fireEvent (event, detail) {
-  this[FIRE_EVENT](event, detail)
-}, 1);
 
 /**
  * Class representing a Graphane Composer.
@@ -66,6 +63,10 @@ export default class Composer extends Base {
   #isRendering   = false;
   #errorsRender  = [];
   #errorsLoading = [];
+  #delayEvent    = debounceMethod(function (event, detail) {
+    this[FIRE_EVENT](event, detail)
+  }, 1);
+
 
   /**
    * Logs an error message and triggers the 'error' event.
@@ -84,7 +85,7 @@ export default class Composer extends Base {
     };
     storage.push(errMsg);
     console.warn(`Graphane Composer - Error:\n${ errMsg }`);
-    delayEvent.call(this, 'error', this.errors);
+    this.#delayEvent.call(this, 'error', this.errors);
   }
 
   /**
