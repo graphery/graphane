@@ -1,17 +1,17 @@
 import {
   Base, define,
   RENDER, CONTEXT, FIRE_EVENT, CHANGE
-}                         from '../core/base.js';
+}                                   from '../core/base.js';
 import {
   STRING, OBJECT, jsStr2obj, csvStr2obj, isLikeObject, isLikeArray, isFunction, isArray
-}                         from '../helpers/types.js';
-import intersection       from "../core/intersection.js";
-import gSVG               from '../lib/gsvg.js';
-import render             from '../plugins/template.engine.js';
-import { debounceMethod } from "../helpers/functions.js";
-import { getFunctions }   from "../helpers/function.create.js";
-import { operations }     from "../helpers/array.operations.js";
-import { clone }          from "../helpers/objects.js";
+}                                   from '../helpers/types.js';
+import intersection                 from "../core/intersection.js";
+import gSVG                         from '../lib/gsvg.js';
+import render                       from '../plugins/template.engine.js';
+import { debounceMethod, debounce } from "../helpers/functions.js";
+import { getFunctions }             from "../helpers/function.create.js";
+import { operations }               from "../helpers/array.operations.js";
+import { clone }                    from "../helpers/objects.js";
 
 const composerPlugin = (setup) => {
   setup.extendSetup({
@@ -39,7 +39,9 @@ const isNotSize   = (el) => {
   const none  = ['0px', 'auto'];
   return none.includes(style.width) && none.includes(style.height);
 };
-
+const delayEvent   = debounce(function fireEvent (event, detail) {
+  this[FIRE_EVENT](event, detail)
+}, 1);
 
 /**
  * Class representing a Graphane Composer.
@@ -82,7 +84,7 @@ export default class Composer extends Base {
     };
     storage.push(errMsg);
     console.warn(`Graphane Composer - Error:\n${ errMsg }`);
-    this[FIRE_EVENT]('error', errMsg);
+    delayEvent.call(this, 'error', this.errors);
   }
 
   /**
