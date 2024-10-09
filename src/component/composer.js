@@ -34,12 +34,12 @@ const CONFIG      = 'config';
 const DATA        = 'data';
 const SRC         = '-src';
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
-const isNotSize   = (el) => {
-  const style = getComputedStyle(el);
-  const none  = ['0px', 'auto'];
-  return none.includes(style.width) && none.includes(style.height);
+const noneSize    = ['0px', 'auto'];
+const isNotSize   = (svg) => {
+  const style = getComputedStyle(svg.el);
+  return noneSize.includes(style.width) && noneSize.includes(style.height);
 };
-const delayEvent   = debounce(function fireEvent (event, detail) {
+const delayEvent  = debounce(function fireEvent (event, detail) {
   this[FIRE_EVENT](event, detail)
 }, 1);
 
@@ -155,13 +155,7 @@ export default class Composer extends Base {
       }
     }
     const svg = ctx.content.querySelector(SVG);
-    if (svg) {
-      this.#svg = gSVG(svg);
-      if (isNotSize(svg)) {
-        this.#svg.width('100%');
-        this.#svg.height('100%');
-      }
-    }
+    this.#svg = svg ? gSVG(svg) : null;
     return true;
   }
 
@@ -326,6 +320,9 @@ export default class Composer extends Base {
         $ : this
       };
       await this.#svg.render(renderCtx, this.#createErrorHandler(this.#errorsRender));
+      if (isNotSize(this.#svg)) {
+        this.#svg.width('100%').height('100%');
+      }
       this.#isRendering = false;
       this.rendered     = true;
     }

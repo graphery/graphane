@@ -40,7 +40,7 @@ for await (const dirent of dir) {
 
     if (!['case07', 'case08', 'case51', 'case52', 'case53'].includes(code)) {
       test('compare image', async ({page}) => {
-        const show = page.locator('g-composer');
+        const show = page.locator(code === 'case91' ? '#group': 'g-composer');
         await expect(show).toHaveScreenshot()
       });
     }

@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.0-beta.next
+
+- Fixed the default SVG size when the `viewBox` is dynamically defined.
+- Fixed the error event triggering. An event was fired for each error. Now a single event is sent
+  with all errors in an array.
+
 ## 1.0.0-beta.4 (2024-10-02)
 
 - Added the `.value` property and `value` attribute to `g-composer`. This `value` is a shortcut to
