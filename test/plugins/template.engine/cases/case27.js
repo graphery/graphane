@@ -19,18 +19,16 @@ export function script () {
 }
 
 export default `<svg id="svg" viewBox="0 0 1800 600" width="900" height="300">
-  <defs g-for="(value, idx) of data">
-    <g :transform="'translate(' + (idx * 615) + ')'">
-      <defs g-for="row of 30">
-        <defs g-for="col of 30">
-          <rect g-if="value > (row * 30) + col"
-                :x="col * 20" :y="row * 20" 
-                height="18" width="18" 
-                fill="#00D800"/>
-        </defs>
-      </defs>
+  <g g-for="(value, idx) of data" :transform="'translate(' + (idx * 615) + ')'">
+    <g g-for="row of 30">
+      <g g-for="col of 30">
+        <rect g-if="value > (row * 30) + col"
+              :x="col * 20" :y="row * 20" 
+              height="18" width="18" 
+              fill="#00D800"/>
+      </g>
     </g>
-  </defs>
+  </g>
 </svg>
 <p><label>A: <input type="number" value="450" max="900" id="updateA"></label></p>
 <p><label>B: <input type="number" value="750" max="900" id="updateB"></label></p>

@@ -283,7 +283,7 @@ defineDirective({
         if (def[CLONES][n]) {
           process(def[CLONES][n], subData, error, false);
         } else {
-          const g = def.gSVG(def.tagName().toLowerCase() === 'defs' ? 'g' : def.tagName());
+          const g = def.gSVG(def.tagName());
           g[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
           [...def.attributes()].forEach(attr => {
             if (attr.name !== 'g-for') {
@@ -307,7 +307,7 @@ defineDirective({
       }
     );
     replaceWithComment(def);
-    return true;
+    return true; // cancel other directives
   }
 });
 

@@ -2,6 +2,11 @@
 
 ## 1.0.0-beta.next
 
+- BREAKING CHANGE: Until now, `<defs g-for="">` was used to create a list of items. Now the behavior
+  of `<defs g-for=“”>` is to generate a list of invisible `<defs>`, not a list of visible `<g>`.
+  To create a list of items you must use `<g g-for="">`.
+- Added complete support to `g-for` and `g-bind` in the same element. In each iteration over the
+  `g-for` is evaluated the `g-bind`. 
 - Fixed the default SVG size when the `viewBox` is dynamically defined.
 - Fixed the error event triggering. An event was fired for each error. Now a single event is sent
   with all errors in an array.

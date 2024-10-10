@@ -9,7 +9,7 @@ export default `<g-composer style="width: 100px">
           y2="100" 
           stroke-width="1" 
           stroke="black"/>
-    <defs g-for="n of data.$count()">
+    <g g-for="n of data.$count()">
       <line :x1="(n * 20) + 10" 
             :x2="(n * 20) + 10" 
             y1="95" 
@@ -24,7 +24,7 @@ export default `<g-composer style="width: 100px">
                        data.$max('value') === data[n].value ? 
                          'green' : 
                          color(data, data[n].value) "/>
-    </defs>
+    </g>
   </svg>
   <script type="data">[
     {name: 'two', value: 2},

@@ -3,7 +3,7 @@ export const description = `Add normalized data`;
 
 export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
-    <defs g-for="(value, idx) of data">
+    <g g-for="(value, idx) of data">
         <circle   :cx="value.cx"
                   :cy="value.cy"
                     r="25"
@@ -13,7 +13,7 @@ export default `<g-composer style="width: 100px">
                   :x = "((idx + 1) * 25) - 3" 
                   :y = "((idx + 1) * 25) + 6"
                 fill = "white"></text>
-    </defs>
+    </g>
     <text x="50" y="12">circles</text>
   </svg>
   <script type="data">
