@@ -71,19 +71,22 @@ const normalizeAttribute = ((attributes) =>
 
 
 /**
- * Replaces an element with a comment element containing a reference to the original element.
- * The original element is removed from the DOM.
+ * Replaces a given HTML element with a comment node and removes the original element.
  *
- * @param {Object} element - The element to be replaced.
+ * @param {Object} element - The object containing the HTML element to be replaced.
+ *
+ * @return {Comment|null} The comment node that replaced the original HTML element or null if the
+ * action could not be completed.
  */
 function replaceWithComment (element) {
   if (!element?.el?.parentNode) {
-    return;
+    return null;
   }
   const comment = document.createComment(` ref `);
   element.parentNode().insertBefore(comment, element.el);
   element.remove();
   comment[REPLACE] = element;
+  return comment;
 }
 
 /**
@@ -275,6 +278,7 @@ defineDirective({
   tmpl : true,
   exec (def, {expr, data, error}) {
     def[CLONES] = def[CLONES] || [];
+    const ref   = def.gSVG(replaceWithComment(def));
     let n       = 0;
     evalForExpr(
       expr,
@@ -283,7 +287,7 @@ defineDirective({
         if (def[CLONES][n]) {
           process(def[CLONES][n], subData, error, false);
         } else {
-          const g = def.gSVG(def.tagName());
+          const g       = def.gSVG(def.tagName());
           g[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
           [...def.attributes()].forEach(attr => {
             if (attr.name !== 'g-for') {
@@ -294,7 +298,7 @@ defineDirective({
             g.add(child.cloneNode(true));
           });
           process(g, subData, error);
-          def.before(g.el);
+          ref.before(g);
           g[CLONED] = true;
           def[CLONES].push(g);
         }
@@ -306,7 +310,6 @@ defineDirective({
         }
       }
     );
-    replaceWithComment(def);
     return true; // cancel other directives
   }
 });
