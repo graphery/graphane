@@ -210,7 +210,6 @@ export default class Composer extends Base {
   constructor () {
     super();
     const ctx                 = this [CONTEXT];
-    // language=HTML
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -219,9 +218,8 @@ export default class Composer extends Base {
           height  : max-content;
         }
       </style>
-      <span id="content"></span>
-    `;
-    ctx.content               = this.shadowRoot.querySelector('#content');
+      <span></span>`;
+    ctx.content               = this.shadowRoot.querySelector('span');
   }
 
   /**
