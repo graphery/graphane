@@ -15,7 +15,7 @@ const REPLACE    = Symbol();
 const DYNAMIC    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = {};
-const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`)
+const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`);
 
 /**
  * Throws an error with a specified message, scope, and code context.
@@ -130,7 +130,7 @@ defineDirective({
     const result  = evalExpr(expr, context);
     const event   = new CustomEvent('load', {bubbles : true, detail : gObject});
     const norm    = c => isUndefined(c) ? '' : c;
-    if (typeof result === 'object' && result.then) {
+    if (isObject(result) && result.then) {
       result.then(result => {
         gObject.content(norm(result));
         gObject.dispatchEvent(event);
@@ -420,9 +420,9 @@ function evalExpr (code, data, context = null) {
  * @returns {*}
  */
 function evalForExpr (code, data, each, final) {
-  const iteratorName     = '__$$iterator';
-  const callbackName     = '__$$callback';
-  const finalName        = '__$$final';
+  const iteratorName     = '__$$i';
+  const callbackName     = '__$$c';
+  const finalName        = '__$$f';
   let [left, right]      = code.split(' of ');
   left                   = left.trim();
   right                  = right.trim();
