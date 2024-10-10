@@ -283,7 +283,13 @@ defineDirective({
         if (def[CLONES][n]) {
           process(def[CLONES][n], subData, error, false);
         } else {
-          const g = def.gSVG('g');
+          const g = def.gSVG(def.tagName().toLowerCase() === 'defs' ? 'g' : def.tagName());
+          g[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
+          [...def.attributes()].forEach(attr => {
+            if (attr.name !== 'g-for') {
+              g.setAttribute(attr.name, attr.value);
+            }
+          })
           def.children().forEach(child => {
             g.add(child.cloneNode(true));
           });
@@ -301,6 +307,7 @@ defineDirective({
       }
     );
     replaceWithComment(def);
+    return true;
   }
 });
 
@@ -464,8 +471,11 @@ function process (el, data, error, checkCloned = true) {
   }
   let tmpl = false;
   for (let directive of el[DIRECTIVES]) {
+    tmpl = directive.tmpl || tmpl;
     try {
-      directive.exec(el, {...directive, data, evalExpr, error, code});
+      if (directive.exec(el, {...directive, data, evalExpr, error, code})) {
+        break;
+      }
     } catch (err) {
       error(
         err.message,
@@ -482,7 +492,6 @@ function process (el, data, error, checkCloned = true) {
         code
       );
     }
-    tmpl = directive.tmpl || tmpl;
   }
   if (!tmpl) {
     for (const child of el.childNodes()) {
