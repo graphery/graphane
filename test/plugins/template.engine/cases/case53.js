@@ -1,5 +1,5 @@
-export const title       = '53) g-for in rect element with attributes';
-export const description = 'g-for and rect element behaviour';
+export const title       = '53) g-for and g-bind in same element';
+export const description = 'g-for and g-bind behaviour';
 
 export function script () {
   const svg     = gSVG(document.querySelector('#svg'));

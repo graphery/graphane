@@ -7,6 +7,10 @@
   To create a list of items you must use `<g g-for="">`.
 - Added complete support to `g-for` and `g-bind` in the same element. In each iteration over the
   `g-for` is evaluated the `g-bind`. 
+- Added support to `g-for` and `g-if` in the same element in this order. The oposite precedence 
+  (`g-if` before than `g-for`) is not supported.
+- Fixed possible side effects in the execution of directives inside `g-if` blocks evaluated as 
+  false. The evaluation of other directives inside a false `g-if` block is now bypassed.
 - Fixed the default SVG size when the `viewBox` is dynamically defined.
 - Fixed the error event triggering. An event was fired for each error. Now a single event is sent
   with all errors in an array.

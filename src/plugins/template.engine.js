@@ -152,7 +152,7 @@ defineDirective({
   name : 'g-if',
   exec (gObject, {expr, data, evalExpr}) {
     if (!evalExpr(expr, data)) {
-      replaceWithComment(gObject);
+      return replaceWithComment(gObject);
     }
   }
 });
@@ -297,8 +297,8 @@ defineDirective({
           def.children().forEach(child => {
             g.add(child.cloneNode(true));
           });
-          process(g, subData, error);
           ref.before(g);
+          process(g, subData, error);
           g[CLONED] = true;
           def[CLONES].push(g);
         }
@@ -477,7 +477,7 @@ function process (el, data, error, checkCloned = true) {
     tmpl = directive.tmpl || tmpl;
     try {
       if (directive.exec(el, {...directive, data, evalExpr, error, code})) {
-        break;
+        return;
       }
     } catch (err) {
       error(

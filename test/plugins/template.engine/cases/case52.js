@@ -1,5 +1,5 @@
-export const title       = '52) g-for in g element with attributes';
-export const description = 'g-for and g element behaviour';
+export const title       = '52) g-for and other attributes';
+export const description = 'g-for and attribute behaviour';
 
 export function script () {
   const svg     = gSVG(document.querySelector('#svg'));
