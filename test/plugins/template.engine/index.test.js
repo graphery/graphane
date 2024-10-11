@@ -66,6 +66,7 @@ const results = {
   case51       : `<svg id="svg" viewBox="0 0 400 200" width="200" height="100"> <g fill="#00D800"> <rect y="0" height="200" width="38" x="0"></rect> </g> <g fill="#00D800"> <rect y="0" height="200" width="38" x="40"></rect> </g> <g fill="#00D800"> <rect y="0" height="200" width="38" x="80"></rect> </g> <g fill="#00D800"> <rect y="0" height="200" width="38" x="120"></rect> </g> <g fill="#00D800"> <rect y="0" height="200" width="38" x="160"></rect> </g> </svg>`,
   case52       : `<svg id="svg" viewBox="0 0 400 200" width="200" height="100"> <g fill="#00D800"> <rect y="0" height="200" width="38" x="0"></rect> </g> <g fill="#00D800"> <rect y="0" height="200" width="38" x="40"></rect> </g> <g fill="#00D800"> <rect y="0" height="200" width="38" x="80"></rect> </g> <g fill="#00D800"> <rect y="0" height="200" width="38" x="120"></rect> </g> <g fill="#00D800"> <rect y="0" height="200" width="38" x="160"></rect> </g> </svg>`,
   case53       : `<svg id="svg" viewBox="0 0 400 200" width="200" height="100"> <rect y="0" height="200" width="38" fill="#00D800" x="0"></rect> <rect y="0" height="200" width="38" fill="#00D800" x="40"></rect> <rect y="0" height="200" width="38" fill="#00D800" x="80"></rect> <rect y="0" height="200" width="38" fill="#00D800" x="120"></rect> <rect y="0" height="200" width="38" fill="#00D800" x="160"></rect> </svg>`,
+  case54 : `<svg id="svg" viewBox="0 0 400 200" width="200" height="100"> <rect y="0" height="200" width="38" fill="#00D800" x="0"> <title>5</title> </rect> <rect y="0" height="200" width="38" fill="#00D800" x="40"> <title>5</title> </rect> <rect y="0" height="200" width="38" fill="#00D800" x="80"> <title>5</title> </rect> <rect y="0" height="200" width="38" fill="#00D800" x="120"> <title>5</title> </rect> <rect y="0" height="200" width="38" fill="#00D800" x="160"> <title>5</title> </rect> </svg>`,
 }
 
 const dir = await opendir(FOLDER);
@@ -79,7 +80,7 @@ for await (const dirent of dir) {
       await page.goto(`/load.html?case=${ URL }${ dirent.name }&imp=${ IMPORT_LIB }&imp=${ IMPORT_PLUGIN }`);
     });
 
-    if (!['case27', 'case28', 'case29'].includes(code)) {
+    if (!['case27', 'case28', 'case29', 'case55'].includes(code)) {
       test('compare source code result', async ({page}) => {
         const result = page.locator('#result');
         await expect(result).toHaveText(results[code]);
