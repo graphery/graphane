@@ -1,5 +1,5 @@
-import { getProperty }                     from "./objects.js";
-import { isUndefined, isString, isObject } from "./types.js";
+import { getProperty }                                 from "./objects.js";
+import { isUndefined, isString, isObject, isFunction } from "./types.js";
 
 const DIRECT  = Symbol();
 const INITIAL = Symbol();
@@ -69,12 +69,12 @@ export function operations (data = {}) {
           }
           let result = data.reduce((result, record) => {
             const value = getValue(record, prop);
-            if (typeof value === 'undefined') {
+            if (isUndefined(value)) {
               return result;
             }
             return result === INITIAL ? value : op(result, value);
           }, init);
-          result     = typeof finish === 'function' ? finish(result) : result;
+          result     = isFunction(finish) ? finish(result) : result;
           if (data !== arr) {
             cache[name][prop] = result
           }

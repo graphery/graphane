@@ -106,13 +106,13 @@ export function equal (objectA, objectB) {
     if (aType !== bType) {                       // Different type is a not equal value from this point
       return NOT_EQUAL;
     }
-    if (aType === NUMBER &&                    // Special case: Not is a Number (NaN !== NaN)
+    if (aType === NUMBER &&                      // Special case: Not is a Number (NaN !== NaN)
         isNaN(a) &&
         isNaN(b)) {
       return EQUAL;
     }
 
-    if (aType === OBJECT) {                    // Objects
+    if (aType === OBJECT) {                      // Objects
       return checkObject(a, b);
     }
     return NOT_EQUAL;                            // Not equal

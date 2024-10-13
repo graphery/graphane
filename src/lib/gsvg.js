@@ -386,7 +386,7 @@ const adaptedResult = (result) => {
       is(result, SVGElement) ?
         wrapper(result) :
         isString(result) ?
-          result === '' || Number.isNaN(Number(result)) ?
+          result === '' || isNaN(result) ?
             result :
             Number(result) :
           result

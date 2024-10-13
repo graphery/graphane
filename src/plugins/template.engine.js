@@ -1,7 +1,7 @@
 import {
   ARRAY, OBJECT, NUMBER,
-  isArray, isObject, isNumber, isFunction, isUndefined
-}                            from '../helpers/types.js';
+  isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber
+} from '../helpers/types.js';
 import { createFunction }    from '../helpers/function.create.js';
 import { isValidIdentifier } from "../helpers/identifier.js";
 import animateToPlugin       from './animateto.js';
@@ -404,7 +404,7 @@ function evalExpr (code, data, context = null) {
     `return ( ${ code } ); `
   );
   const evalResult = fn.apply(context, keys.map(key => data[key]));
-  if (Number.isNaN(evalResult)) {
+  if (!isValidNumber(evalResult)) {
     throw exprError(code, 'NaN (Not a Number)');
   }
   return evalResult;
