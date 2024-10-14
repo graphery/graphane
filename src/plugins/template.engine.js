@@ -1,7 +1,7 @@
 import {
   ARRAY, OBJECT, NUMBER,
-  isArray, isObject, isNumber, isFunction, isUndefined
-}                            from '../helpers/types.js';
+  isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber
+} from '../helpers/types.js';
 import { createFunction }    from '../helpers/function.create.js';
 import { isValidIdentifier } from "../helpers/identifier.js";
 import animateToPlugin       from './animateto.js';
@@ -15,7 +15,7 @@ const REPLACE    = Symbol();
 const DYNAMIC    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = {};
-const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`)
+const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`);
 
 /**
  * Throws an error with a specified message, scope, and code context.
@@ -71,19 +71,22 @@ const normalizeAttribute = ((attributes) =>
 
 
 /**
- * Replaces an element with a comment element containing a reference to the original element.
- * The original element is removed from the DOM.
+ * Replaces a given HTML element with a comment node and removes the original element.
  *
- * @param {Object} element - The element to be replaced.
+ * @param {Object} element - The object containing the HTML element to be replaced.
+ *
+ * @return {Comment|null} The comment node that replaced the original HTML element or null if the
+ * action could not be completed.
  */
 function replaceWithComment (element) {
   if (!element?.el?.parentNode) {
-    return;
+    return null;
   }
   const comment = document.createComment(` ref `);
   element.parentNode().insertBefore(comment, element.el);
   element.remove();
   comment[REPLACE] = element;
+  return comment;
 }
 
 /**
@@ -127,7 +130,7 @@ defineDirective({
     const result  = evalExpr(expr, context);
     const event   = new CustomEvent('load', {bubbles : true, detail : gObject});
     const norm    = c => isUndefined(c) ? '' : c;
-    if (typeof result === 'object' && result.then) {
+    if (isObject(result) && result.then) {
       result.then(result => {
         gObject.content(norm(result));
         gObject.dispatchEvent(event);
@@ -149,7 +152,7 @@ defineDirective({
   name : 'g-if',
   exec (gObject, {expr, data, evalExpr}) {
     if (!evalExpr(expr, data)) {
-      replaceWithComment(gObject);
+      return replaceWithComment(gObject);
     }
   }
 });
@@ -275,6 +278,7 @@ defineDirective({
   tmpl : true,
   exec (def, {expr, data, error}) {
     def[CLONES] = def[CLONES] || [];
+    const ref   = def.gSVG(replaceWithComment(def));
     let n       = 0;
     evalForExpr(
       expr,
@@ -283,12 +287,18 @@ defineDirective({
         if (def[CLONES][n]) {
           process(def[CLONES][n], subData, error, false);
         } else {
-          const g = def.gSVG('g');
+          const g       = def.gSVG(def.tagName());
+          g[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
+          [...def.attributes()].forEach(attr => {
+            if (attr.name !== 'g-for') {
+              g.setAttribute(attr.name, attr.value);
+            }
+          })
           def.children().forEach(child => {
             g.add(child.cloneNode(true));
           });
+          ref.before(g);
           process(g, subData, error);
-          def.before(g.el);
           g[CLONED] = true;
           def[CLONES].push(g);
         }
@@ -300,7 +310,7 @@ defineDirective({
         }
       }
     );
-    replaceWithComment(def);
+    return true; // cancel other directives
   }
 });
 
@@ -394,7 +404,7 @@ function evalExpr (code, data, context = null) {
     `return ( ${ code } ); `
   );
   const evalResult = fn.apply(context, keys.map(key => data[key]));
-  if (Number.isNaN(evalResult)) {
+  if (!isValidNumber(evalResult)) {
     throw exprError(code, 'NaN (Not a Number)');
   }
   return evalResult;
@@ -410,9 +420,9 @@ function evalExpr (code, data, context = null) {
  * @returns {*}
  */
 function evalForExpr (code, data, each, final) {
-  const iteratorName     = '__$$iterator';
-  const callbackName     = '__$$callback';
-  const finalName        = '__$$final';
+  const iteratorName     = '__$$i';
+  const callbackName     = '__$$c';
+  const finalName        = '__$$f';
   let [left, right]      = code.split(' of ');
   left                   = left.trim();
   right                  = right.trim();
@@ -464,8 +474,11 @@ function process (el, data, error, checkCloned = true) {
   }
   let tmpl = false;
   for (let directive of el[DIRECTIVES]) {
+    tmpl = directive.tmpl || tmpl;
     try {
-      directive.exec(el, {...directive, data, evalExpr, error, code});
+      if (directive.exec(el, {...directive, data, evalExpr, error, code})) {
+        return;
+      }
     } catch (err) {
       error(
         err.message,
@@ -482,7 +495,6 @@ function process (el, data, error, checkCloned = true) {
         code
       );
     }
-    tmpl = directive.tmpl || tmpl;
   }
   if (!tmpl) {
     for (const child of el.childNodes()) {

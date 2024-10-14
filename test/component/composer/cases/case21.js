@@ -8,13 +8,13 @@ export function script() {
 
 export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
-    <defs g-for="n of value">
+    <g g-for="n of value">
         <circle   :cx="(n + 1) * 25"
                   :cy="(n + 1) * 25"
                     r="25"
                 :fill="['red','green','blue'][n]">
         </circle>
-    </defs>
+    </g>
     <text x="50" y="12">circles</text>
   </svg>
 </g-composer>

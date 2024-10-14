@@ -1,5 +1,20 @@
 # Change Log
 
+## 1.0.0-beta.5 (2024-10-14)
+
+- BREAKING CHANGE: Until now, `<defs g-for="">` was used to create a list of items. Now the behavior
+  of `<defs g-for=“”>` is to generate a list of invisible `<defs>`, not a list of visible `<g>`.
+  To create a list of items you must use `<g g-for="">`.
+- Added complete support to `g-for` and `g-bind` in the same element. In each iteration over the
+  `g-for` is evaluated the `g-bind`. 
+- Added support to `g-for` and `g-if` in the same element in this order. The oposite precedence 
+  (`g-if` before than `g-for`) is not supported.
+- Fixed possible side effects in the execution of directives inside `g-if` blocks evaluated as 
+  false. The evaluation of other directives inside a false `g-if` block is now bypassed.
+- Fixed the default SVG size when the `viewBox` is dynamically defined.
+- Fixed the error event triggering. An event was fired for each error. Now a single event is sent
+  with all errors in an array.
+
 ## 1.0.0-beta.4 (2024-10-02)
 
 - Added the `.value` property and `value` attribute to `g-composer`. This `value` is a shortcut to

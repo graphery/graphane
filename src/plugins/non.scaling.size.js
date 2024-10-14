@@ -7,7 +7,7 @@ const interpreter = (s) => s?.split(/\)\s*/)
                             .reduce((o, r) => {
                               o[r.shift()] = r.pop()
                                               .split(/,/)
-                                              .map(n => Number.isNaN(Number(n)) ? n : Number(n));
+                                              .map(n => isNaN(n) ? n : Number(n));
                               return o;
                             }, {}) || {};
 

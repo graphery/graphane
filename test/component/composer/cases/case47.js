@@ -5,17 +5,17 @@ export default `
 <g-composer style="width:350px">
    <svg viewBox="0 0 100 100">
      <defs>
-       <defs g-for="r of data">
+       <g g-for="r of data">
          <g g-content="$$.fromURL(r.image)" @load="load(this, r)" ></g>
-       </defs>
+       </g>
      </defs>
-     <defs g-for="col of 10">
-       <defs g-for="row of 10">
+     <g g-for="col of 10">
+       <g g-for="row of 10">
          <use g-bind:href="'#' + (row * 10 + col < data[0].value ? data[0].id : data[1].id)"
               g-bind:x="col * 10" 
               g-bind:y="row * 10"/>
-       </defs>
-     </defs>
+       </g>
+     </g>
    </svg>
    <script type="data">[
      {id: 'dog', image: '/test/component/composer/assets/dog.svg', value: 55, color: 'chocolate'},

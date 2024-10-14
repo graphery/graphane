@@ -13,7 +13,7 @@ const errors = {
   case07: `Not Found (404): http://localhost:7200/src/g-composer/test/assets/unknown.svg in svg /src/g-composer/test/assets/unknown.svg`,
   case54: `wrong is not defined in g-bind:x="wrong" <rect :x="wrong" :y="fail" width="100" height="100" fill="red"></rect> fail is not defined in g-bind:y="fail" <rect :x="wrong" :y="fail" width="100" height="100" fill="red"></rect>`,
   case55: `wrong is not defined in g-content="wrong" <text x="0" y="0" g-content="wrong"></text>`,
-  case56: `wrong is not defined in g-for="x of wrong" <defs g-for="x of wrong"> <rect :x="x" :y="y" width="10" height="10"></rect> </defs>`,
+  case56: `wrong is not defined in g-for="x of wrong" <g g-for="x of wrong"> <rect :x="x" :y="y" width="10" height="10"></rect> </g>`,
   case57: `wrong is not defined in g-if="wrong" <g g-if="wrong"> <rect x="0" y="0" width="100" height="100" fill="red"></rect> </g> `,
   case58: `wrong is not defined in g-on:click="wrong" <rect @click="wrong" x="0" y="0" width="100" height="100" fill="red" style="cursor: pointer"></rect> `,
   case59: `Invalid or unexpected token in data {a": 10}`,
@@ -40,7 +40,7 @@ for await (const dirent of dir) {
 
     if (!['case07', 'case08', 'case51', 'case52', 'case53'].includes(code)) {
       test('compare image', async ({page}) => {
-        const show = page.locator('g-composer');
+        const show = page.locator(code === 'case91' ? '#group': 'g-composer');
         await expect(show).toHaveScreenshot()
       });
     }

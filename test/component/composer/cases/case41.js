@@ -19,7 +19,7 @@ export default `
        width="100%" 
        height="100%">
     <g style="stroke: #c0c0c0">
-      <defs g-for="column of 11">
+      <g g-for="column of 11">
         <g>
           <line :x1="(column * 20) + 1"
                 :x2="(column * 20) + 1"
@@ -27,17 +27,17 @@ export default `
                 y2="201"
                 vector-effect="non-scaling-stroke"/>
         </g>
-      </defs>
-      <defs g-for="row of 11">
+      </g>
+      <g g-for="row of 11">
         <line :y1="(row * 20) + 1"
               :y2="(row * 20) + 1"
               x1="1"
               x2="201"
               vector-effect="non-scaling-stroke"/>
-      </defs>
+      </g>
     </g>
     <g style="stroke: none; font-family: sans-serif; font-size: 8">
-      <defs g-for="n of 100">
+      <g g-for="n of 100">
         <g class="text">
           <text text-anchor="middle"
                 alignment-baseline="middle"
@@ -46,7 +46,7 @@ export default `
                 g-content="n + 1"
                 g-non-scaling-size/>
         </g>
-      </defs>
+      </g>
     </g>
   </svg>
   <script type="plugin" src="./src/plugins/non.scaling.size.js"></script>

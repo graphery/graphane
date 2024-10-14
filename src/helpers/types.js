@@ -13,16 +13,17 @@ export const COMA         = ',';
 export const COLON        = ':';
 export const SEMICOLON    = ';';
 
-export const isObject    = (v) => typeof v === OBJECT;
-export const isString    = (v) => typeof v === STRING;
-export const isFunction  = (v) => typeof v === FUNCTION;
-export const isNumber    = (v) => typeof v === NUMBER && !isNaN(v);
-export const isUndefined = (v) => typeof v === UNDEFINED;
-export const isSymbol    = (v) => typeof v === SYMBOL;
-export const isBoolean   = (v) => typeof v === BOOLEAN;
-export const isArray     = (v) => Array.isArray(v);
-export const isDate      = (v) => v instanceof Date && !isNaN(v);
-export const isNull      = (v) => v === null;
+export const isObject      = (v) => typeof v === OBJECT;
+export const isString      = (v) => typeof v === STRING;
+export const isFunction    = (v) => typeof v === FUNCTION;
+export const isNumber      = (v) => typeof v === NUMBER && !isNaN(v);
+export const isValidNumber = (v) => !Number.isNaN(v);
+export const isUndefined   = (v) => typeof v === UNDEFINED;
+export const isSymbol      = (v) => typeof v === SYMBOL;
+export const isBoolean     = (v) => typeof v === BOOLEAN;
+export const isArray       = (v) => Array.isArray(v);
+export const isDate        = (v) => v instanceof Date && !isNaN(v);
+export const isNull        = (v) => v === null;
 
 /**
  * Convert attribute name to camel property name
@@ -179,7 +180,7 @@ export function str2value (str, type, quote = false) {
       return undefined;
     }
     let value = +str;
-    if (!Number.isNaN(value) || type === NUMBER) {
+    if (isValidNumber(value) || type === NUMBER) {
       return value;
     }
   }
@@ -199,7 +200,7 @@ export function str2value (str, type, quote = false) {
   if (type === DATE) {
     try {
       let value = new Date(str);
-      if (!Number.isNaN(value.getTime())) {
+      if (isValidNumber(value.getTime())) {
         return value;
       }
     } catch (e) {

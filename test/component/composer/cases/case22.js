@@ -3,13 +3,13 @@ export const description = `Use the render template with svg and &lt;script type
 
 export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
-    <defs g-for="value of values">
+    <g g-for="value of values">
         <circle   :cx="value.cx"
                   :cy="value.cy"
                     r="25"
                 :fill="color(value.cx)">
         </circle>
-    </defs>
+    </g>
     <text x="50" y="12">circles</text>
   </svg>
   <script type="data">{

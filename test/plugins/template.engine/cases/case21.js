@@ -8,8 +8,8 @@ export function script () {
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">
-  <defs g-for="n of 5">
+  <g g-for="n of 5">
     <rect x="10" y="10" width="80" height="80" :transform="$$.translate(n * 20, 0).scale(0.2, (n * 0.2) + 0.1)"></rect>
-  </defs>
+  </g>
 </svg>
 <pre id="result"></pre>`;

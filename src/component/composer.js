@@ -34,12 +34,11 @@ const CONFIG      = 'config';
 const DATA        = 'data';
 const SRC         = '-src';
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
-const isNotSize   = (el) => {
-  const style = getComputedStyle(el);
-  const none  = ['0px', 'auto'];
-  return none.includes(style.width) && none.includes(style.height);
+const noneSize    = ['0px', 'auto'];
+const isNotSize   = (svg) => {
+  const style = getComputedStyle(svg.el);
+  return noneSize.includes(style.width) && noneSize.includes(style.height);
 };
-
 
 /**
  * Class representing a Graphane Composer.
@@ -64,6 +63,10 @@ export default class Composer extends Base {
   #isRendering   = false;
   #errorsRender  = [];
   #errorsLoading = [];
+  #delayEvent    = debounceMethod(function (event, detail) {
+    this[FIRE_EVENT](event, detail)
+  }, 1);
+
 
   /**
    * Logs an error message and triggers the 'error' event.
@@ -82,7 +85,7 @@ export default class Composer extends Base {
     };
     storage.push(errMsg);
     console.warn(`Graphane Composer - Error:\n${ errMsg }`);
-    this[FIRE_EVENT]('error', errMsg);
+    this.#delayEvent.call(this, 'error', this.errors);
   }
 
   /**
@@ -153,13 +156,7 @@ export default class Composer extends Base {
       }
     }
     const svg = ctx.content.querySelector(SVG);
-    if (svg) {
-      this.#svg = gSVG(svg);
-      if (isNotSize(svg)) {
-        this.#svg.width('100%');
-        this.#svg.height('100%');
-      }
-    }
+    this.#svg = svg ? gSVG(svg) : null;
     return true;
   }
 
@@ -213,7 +210,6 @@ export default class Composer extends Base {
   constructor () {
     super();
     const ctx                 = this [CONTEXT];
-    // language=HTML
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -222,9 +218,8 @@ export default class Composer extends Base {
           height  : max-content;
         }
       </style>
-      <span id="content"></span>
-    `;
-    ctx.content               = this.shadowRoot.querySelector('#content');
+      <span></span>`;
+    ctx.content               = this.shadowRoot.querySelector('span');
   }
 
   /**
@@ -324,6 +319,9 @@ export default class Composer extends Base {
         $ : this
       };
       await this.#svg.render(renderCtx, this.#createErrorHandler(this.#errorsRender));
+      if (isNotSize(this.#svg)) {
+        this.#svg.width('100%').height('100%');
+      }
       this.#isRendering = false;
       this.rendered     = true;
     }

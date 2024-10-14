@@ -25,12 +25,12 @@ export default `<svg
   id="svg" 
   style="width: 100px; height: 100px"
 >
-  <defs g-for="r of values">
+  <g g-for="r of values">
     <circle :cx   = "r.value" 
             :cy   = "r.value"
             :fill = "r.color"
             r     = "5">
     </circle>
-  </defs>
+  </g>
 </svg>
 <pre id="result"></pre>`;
