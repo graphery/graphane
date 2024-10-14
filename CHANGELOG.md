@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.0.0-beta.next
+## 1.0.0-beta.5 (2024-10-14)
 
 - BREAKING CHANGE: Until now, `<defs g-for="">` was used to create a list of items. Now the behavior
   of `<defs g-for=“”>` is to generate a list of invisible `<defs>`, not a list of visible `<g>`.
