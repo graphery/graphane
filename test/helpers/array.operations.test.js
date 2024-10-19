@@ -155,4 +155,42 @@ test.describe(name, () => {
     expect(data.$max()).toBe('max');
   });
 
+
+  test('empty array', () => {
+    const a = operations([]);
+    expect(a.$min()).toBe(0);
+    expect(a.$max()).toBe(0);
+    expect(a.$count()).toBe(0);
+    expect(a.$sum()).toBe(0);
+    expect(a.$avg()).toBe(0);
+    expect(a.$distinct()).toStrictEqual([]);
+  });
+
+
+  test('sub array with numeric values', () => {
+    const a = operations([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    expect(a.$minBefore(0)).toBe(0);
+    expect(a.$maxBefore(0)).toBe(0);
+    expect(a.$countBefore(0)).toBe(0);
+    expect(a.$sumBefore(0)).toBe(0);
+    expect(a.$avgBefore(0)).toBe(0);
+    expect(a.$distinctBefore(0)).toStrictEqual([]);
+
+    expect(a.$minBefore(5)).toBe(1);
+    expect(a.$maxBefore(5)).toBe(5);
+    expect(a.$countBefore(5)).toBe(5);
+    expect(a.$sumBefore(5)).toBe(15);
+    expect(a.$avgBefore(5)).toBe(3);
+    expect(a.$distinctBefore(5)).toStrictEqual([1, 2, 3, 4, 5]);
+
+    expect(a.$minBefore(a.length)).toBe(1);
+    expect(a.$maxBefore(a.length)).toBe(10);
+    expect(a.$countBefore(a.length)).toBe(10);
+    expect(a.$sumBefore(a.length)).toBe(55);
+    expect(a.$avgBefore(a.length)).toBe(5.5);
+    expect(a.$distinctBefore(a.length)).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+  });
+
 });
