@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.0-beta.6 (2024-10-21)
+
+- Added data helpers with slice functionality: `data.$sumBefore(idx [,prop])`, 
+  `data.$minBefore(idx [,prop])`, `data.$maxBefore(idx [,prop])`, `data.$avgBefore(idx [,prop])`,
+  `data.$distincBefore(idx [,prop])`, and `data.$countBefore(idx [,prop])`.
+
 ## 1.0.0-beta.5 (2024-10-14)
 
 - BREAKING CHANGE: Until now, `<defs g-for="">` was used to create a list of items. Now the behavior
