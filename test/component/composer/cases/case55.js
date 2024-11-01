@@ -6,7 +6,7 @@ export function script () {
   const result    = document.querySelector('#result');
   const component = document.querySelector('g-composer');
   const show      = () => result.innerHTML = component.errors
-                                                      .map(r => r.replace(/</g, '&lt;'))
+                                                      .map(r => String(r).replace(/</g, '&lt;'))
                                                       .join('\n');
   if (!component.rendered) {
     component.addEventListener('render', show);

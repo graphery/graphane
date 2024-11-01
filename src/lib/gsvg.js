@@ -104,9 +104,9 @@ const appendMethods = (method) => {
         b.push(...params.map(createWrap))
       }
       if (!b.every(el => el?._el)) {
-        return b[0];
+        return null;
       }
-      this[method](...[...a, ...b.map(el => el ? el._el : el), ...c]);
+      this[method](...[...a, ...b.map(el => el._el), ...c]);
       b.forEach(el => el._el.dispatchEvent(new Event(ATTACH)));
       return b.length > 1 ? b : b[0];
     } :
@@ -386,7 +386,7 @@ const adaptedResult = (result) => {
       is(result, SVGElement) ?
         wrapper(result) :
         isString(result) ?
-          result === '' || Number.isNaN(Number(result)) ?
+          result === '' || isNaN(result) ?
             result :
             Number(result) :
           result

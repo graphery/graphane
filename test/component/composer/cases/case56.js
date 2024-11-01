@@ -5,7 +5,7 @@ export function script () {
   const result    = document.querySelector('#result');
   const component = document.querySelector('g-composer');
   const show      = () => result.innerHTML = component.errors
-                                                      .map(r => r.replace(/</g, '&lt;'))
+                                                      .map(r => String(r).replace(/</g, '&lt;'))
                                                       .join('\n');
   if (!component.rendered) {
     component.addEventListener('render', show);
@@ -18,9 +18,9 @@ export default `
 <div id="container">
   <g-composer>
     <svg viewBox="0 0 100 100">
-      <defs g-for="x of wrong">
+      <g g-for="x of wrong">
         <rect :x="x" :y="y" width="10" height="10"/>
-      </defs>
+      </g>
     </svg>
   </g-composer>
 </div>

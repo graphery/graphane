@@ -1,7 +1,7 @@
 import {
   ARRAY, OBJECT, NUMBER,
-  isArray, isObject, isNumber, isFunction, isUndefined
-}                            from '../helpers/types.js';
+  isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber
+} from '../helpers/types.js';
 import { createFunction }    from '../helpers/function.create.js';
 import { isValidIdentifier } from "../helpers/identifier.js";
 import animateToPlugin       from './animateto.js';
@@ -12,8 +12,10 @@ const CLONES     = Symbol();
 const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
 const REPLACE    = Symbol();
+const DYNAMIC    = Symbol();
 const UNKNOWN    = 'unknown';
 const directives = {};
+const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`);
 
 /**
  * Throws an error with a specified message, scope, and code context.
@@ -69,19 +71,22 @@ const normalizeAttribute = ((attributes) =>
 
 
 /**
- * Replaces an element with a comment element containing a reference to the original element.
- * The original element is removed from the DOM.
+ * Replaces a given HTML element with a comment node and removes the original element.
  *
- * @param {Object} element - The element to be replaced.
+ * @param {Object} element - The object containing the HTML element to be replaced.
+ *
+ * @return {Comment|null} The comment node that replaced the original HTML element or null if the
+ * action could not be completed.
  */
 function replaceWithComment (element) {
   if (!element?.el?.parentNode) {
-    return;
+    return null;
   }
   const comment = document.createComment(` ref `);
   element.parentNode().insertBefore(comment, element.el);
   element.remove();
   comment[REPLACE] = element;
+  return comment;
 }
 
 /**
@@ -107,8 +112,8 @@ function restoreFromComment (comment) {
  */
 defineDirective({
   name : 'g-content',
-  execute (gObject, {expression, data, evalExpression}) {
-    // gObject.content(evalExpression(expression, data));
+  exec (gObject, {expr, data, evalExpr}) {
+    // gObject.content(evalExpr(expr, data));
     const context = {
       ...data,
       $$ : {
@@ -122,10 +127,10 @@ defineDirective({
         currentContent : gObject.content
       }
     };
-    const result  = evalExpression(expression, context);
+    const result  = evalExpr(expr, context);
     const event   = new CustomEvent('load', {bubbles : true, detail : gObject});
     const norm    = c => isUndefined(c) ? '' : c;
-    if (typeof result === 'object' && result.then) {
+    if (isObject(result) && result.then) {
       result.then(result => {
         gObject.content(norm(result));
         gObject.dispatchEvent(event);
@@ -145,45 +150,49 @@ defineDirective({
  */
 defineDirective({
   name : 'g-if',
-  execute (gObject, {expression, data, evalExpression}) {
-    if (!evalExpression(expression, data)) {
-      replaceWithComment(gObject);
+  exec (gObject, {expr, data, evalExpr}) {
+    if (!evalExpr(expr, data)) {
+      return replaceWithComment(gObject);
     }
   }
 });
 
 /**
  * g-bind: or :
- * Directive allowing to set attributes on elements based on the result of the expression. It is
+ * Directive allowing to set attributes on elements based on the result of the expr. It is
  * necessary to indicate the attribute name after the directive or the shorthand.
  * @example
  * <rect g-bind:x="valueX" :y="valueY"></rect>
  */
 defineDirective({
-  name     : 'g-bind',
-  alias    : ':',
-  argument : true,
-  execute (gObject, {expression, argument, data, evalExpression}) {
-    argument                = normalizeAttribute(argument);
+  name  : 'g-bind',
+  alias : ':',
+  arg   : true,
+  exec (gObject, {expr, arg, data, evalExpr}) {
+    arg                     = normalizeAttribute(arg);
     const context           = {
       ...data,
-      $$ : ['d', 'transform'].includes(argument) ?
-        gObject['$' + argument] :
+      $$ : ['d', 'transform'].includes(arg) ?
+        gObject['$' + arg] :
         {}
     };
-    context.$$.currentValue = gObject[argument];
+    context.$$.currentValue = gObject[arg];
     context.$$.dynamic      = (value, duration = 200, delay = 0) => {
       gObject.animateTo(
         (isArray(value) ? value : [value]).map(v =>
           isObject(v) && 'offset' in v ?
-            {[argument] : v.value, offset : v.offset} :
-            {[argument] : v}
+            {[arg] : v.value, offset : v.offset} :
+            {[arg] : v}
         ),
         {duration, delay}
       );
+      return DYNAMIC;
     };
-    let value               = evalExpression(expression, context);
-    if (argument === 'class') {
+    let value               = evalExpr(expr, context);
+    if (isUndefined(value)) {
+      throw exprError(expr, 'undefined');
+    }
+    if (arg === 'class') {
       if (isArray(value)) {
         gObject.classList.add(...value.filter(val => !!val));
         return;
@@ -199,12 +208,12 @@ defineDirective({
       }
       return;
     }
-    if (argument === 'style') {
+    if (arg === 'style') {
       Object.entries(value).forEach(([key, val]) => gObject.style[key](val));
       return;
     }
-    if (!isUndefined(value)) {
-      gObject[argument](value);
+    if (value !== DYNAMIC) {
+      gObject[arg](value);
     }
   }
 });
@@ -216,27 +225,38 @@ defineDirective({
  * <rect g-on:click="run"></rect>
  */
 defineDirective({
-  name     : 'g-on',
-  alias    : '@',
-  argument : true,
-  execute (gObject, {expression, argument : event, data, evalExpression, error, outerCode}) {
+  name  : 'g-on',
+  alias : '@',
+  arg   : true,
+  exec (gObject, {expr, arg : event, data, evalExpr, error, code}) {
     gObject[EVENTS] = gObject[EVENTS] || {};
     const manager   = gObject[EVENTS][event] = gObject[EVENTS][event] || new Map();
-    if (manager.has(expression)) {
-      gObject.removeEventListener(event, manager.get(expression));
+    if (manager.has(expr)) {
+      gObject.removeEventListener(event, manager.get(expr));
     }
     const handler = function (evt) {
       try {
-        let fn = evalExpression(expression, data, gObject);
+        let fn = evalExpr(expr, data, gObject);
         if (isFunction(fn)) {
           fn.call(gObject, evt);
         }
       } catch (err) {
-        error(err.message, `g-on:${ event }="${ expression }"`, outerCode);
+        error(
+          err.message,
+          {
+            directive  : 'g-on',
+            argument   : event,
+            expression : expr,
+            toString () {
+              return `g-on:${ event }="${ expr }"`
+            }
+          },
+          code
+        );
       }
     };
     gObject.addEventListener(event, handler);
-    manager.set(expression, handler);
+    manager.set(expr, handler);
     if (event === 'init' && !gObject[INIT]) {
       gObject[INIT] = true;
       gObject.dispatchEvent(new Event('init'));
@@ -254,24 +274,31 @@ defineDirective({
  * </defs>
  */
 defineDirective({
-  name     : 'g-for',
-  template : true,
-  execute (def, {expression, data, error}) {
+  name : 'g-for',
+  tmpl : true,
+  exec (def, {expr, data, error}) {
     def[CLONES] = def[CLONES] || [];
+    const ref   = def.gSVG(replaceWithComment(def));
     let n       = 0;
-    evalForExpression(
-      expression,
+    evalForExpr(
+      expr,
       data,
       (subData) => {
         if (def[CLONES][n]) {
           process(def[CLONES][n], subData, error, false);
         } else {
-          const g = def.gSVG('g');
+          const g       = def.gSVG(def.tagName());
+          g[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
+          [...def.attributes()].forEach(attr => {
+            if (attr.name !== 'g-for') {
+              g.setAttribute(attr.name, attr.value);
+            }
+          })
           def.children().forEach(child => {
             g.add(child.cloneNode(true));
           });
+          ref.before(g);
           process(g, subData, error);
-          def.before(g.el);
           g[CLONED] = true;
           def[CLONES].push(g);
         }
@@ -283,7 +310,7 @@ defineDirective({
         }
       }
     );
-    replaceWithComment(def);
+    return true; // cancel other directives
   }
 });
 
@@ -291,27 +318,27 @@ defineDirective({
 /**
  * defineDirective - add a new directive
  * @param {Object}   config
- * @param {Function} execute
+ * @param {Function} exec
  */
-function defineDirective ({name, alias, argument, template, execute}) {
+function defineDirective ({name, alias, arg, tmpl, exec}) {
 
   let source  = `^(${
     name
   }${
-    argument ? ':' : ''
+    arg ? ':' : ''
   }${
     alias ? `|${ alias })` : ')'
   }${
-    argument ? `(.*)$` : `$`
+    arg ? `(.*)$` : `$`
   }`
   const check = new RegExp(source, 'i')
 
   directives[name] = {
     name,
     alias,
-    argument,
-    template,
-    execute,
+    arg,
+    tmpl,
+    exec,
     check
   };
 
@@ -327,19 +354,19 @@ function findDirective (key) {
     const definition = directives[name];
     const match      = definition.check.exec(key);
     if (match) {
-      let argument = match[2];
-      return {...definition, argument}
+      let arg = match[2];
+      return {...definition, arg}
     }
   }
 }
 
 /**
  * getVariables - analyzes a string with destructuring and extract the final variables
- * @param {string} expression
+ * @param {string} expr
  * @returns {Array<string>}
  */
-function getVariables (expression) {
-  return expression
+function getVariables (expr) {
+  return expr
     .replace(/[{}()[\]]/g, '')
     .split(',')
     .map(k => (k.includes(':') ? k.split(':')[1].trim() : k).trim());
@@ -364,19 +391,23 @@ function toArray (v) {
 }
 
 /**
- * evalExpression - evaluate an expression with a data context
+ * evalExpr - evaluate an expression with a data context
  * @param {string} code
  * @param {object} data
  * @param {object} [context=null]
  * @returns {*}
  */
-function evalExpression (code, data, context = null) {
-  const keys = Object.keys(data).filter(isValidIdentifier);
-  const fn   = createFunction(
+function evalExpr (code, data, context = null) {
+  const keys       = Object.keys(data).filter(isValidIdentifier);
+  const fn         = createFunction(
     keys,
     `return ( ${ code } ); `
   );
-  return fn.apply(context, keys.map(key => data[key]));
+  const evalResult = fn.apply(context, keys.map(key => data[key]));
+  if (!isValidNumber(evalResult)) {
+    throw exprError(code, 'NaN (Not a Number)');
+  }
+  return evalResult;
 }
 
 /**
@@ -388,14 +419,14 @@ function evalExpression (code, data, context = null) {
  * @param {function} final
  * @returns {*}
  */
-function evalForExpression (code, data, each, final) {
-  const iteratorName     = '__$$iterator';
-  const callbackName     = '__$$callback';
-  const finalName        = '__$$final';
+function evalForExpr (code, data, each, final) {
+  const iteratorName     = '__$$i';
+  const callbackName     = '__$$c';
+  const finalName        = '__$$f';
   let [left, right]      = code.split(' of ');
   left                   = left.trim();
   right                  = right.trim();
-  const value            = evalExpression(right, data) || [];
+  const value            = evalExpr(right, data) || [];
   const {iterator, type} = toArray(value);
   if (type === OBJECT && !left.startsWith('[')) {
     left = `[${ left.replace(/(^\()|(\)$)/g, '') }]`;
@@ -430,29 +461,42 @@ function process (el, data, error, checkCloned = true) {
   if (checkCloned && el[CLONED]) {
     return
   }
-  const outerCode = el.outerHTML();
-  el[DIRECTIVES]  = el[DIRECTIVES] || [];
-  const attrs     = el.attributes();
+  const code     = el.outerHTML();
+  el[DIRECTIVES] = el[DIRECTIVES] || [];
+  const attrs    = el.attributes();
   for (let attr of [...attrs]) {
     const attributeName = attr.name;
     const result        = findDirective(attributeName);
     if (result) {
-      el[DIRECTIVES].push({...result, expression : attr.value});
+      el[DIRECTIVES].push({...result, expr : attr.value});
       el.removeAttribute(attributeName);
     }
   }
-  let template = false;
+  let tmpl = false;
   for (let directive of el[DIRECTIVES]) {
+    tmpl = directive.tmpl || tmpl;
     try {
-      directive.execute(el, {...directive, data, evalExpression, error, outerCode});
+      if (directive.exec(el, {...directive, data, evalExpr, error, code})) {
+        return;
+      }
     } catch (err) {
-      error(err.message, `${ directive.name }${ directive.argument ?
-        ':' + directive.argument :
-        '' }="${ directive.expression }"`, outerCode);
+      error(
+        err.message,
+        {
+          directive  : directive.name,
+          argument   : directive.arg,
+          expression : directive.expr,
+          toString () {
+            return `${ directive.name }${ directive.arg ?
+              ':' + directive.arg :
+              '' }="${ directive.expr }"`
+          }
+        },
+        code
+      );
     }
-    template = directive.template || template;
   }
-  if (!template) {
+  if (!tmpl) {
     for (const child of el.childNodes()) {
       if (child.el[REPLACE]) {
         process(restoreFromComment(child.el), data, error);
@@ -502,11 +546,11 @@ function install (setup) {
     source
   });
 
-  // Template plugins
+  // template plugins
   setup.extendSetup({
     extendTemplate : {
       defineDirective,
-      obtainDirective (name) {
+      getDirective (name) {
         return directives[name];
       }
     }

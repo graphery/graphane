@@ -14,12 +14,11 @@ export function script () {
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">
-  <defs g-for="value of values">
-    <circle :cx   = "value.cx" 
-            :cy   = "value.cy"
-            :fill = "value.color"
-            r     = "25">
-    </circle>
-  </defs>
+  <circle g-for="value of values"
+          :cx   = "value.cx" 
+          :cy   = "value.cy"
+          :fill = "value.color"
+          r     = "25">
+  </circle>
 </svg>
 <pre id="result"></pre>`;

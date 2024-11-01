@@ -14,7 +14,7 @@ export function script () {
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">
-  <defs g-for="(value, key) of data">
+  <g g-for="(value, key) of data">
     <circle   :id = '"circle_" + key'
               :cx = "value.cx" 
               :cy = "value.cy"
@@ -24,6 +24,6 @@ export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height:
                   :x = "value.cx - 3" 
                   :y = "value.cy + 6"
                 fill = "white"></text>
-  </defs>
+  </g>
 </svg>
 <pre id="result"></pre>`;

@@ -1,6 +1,38 @@
 # Change Log
 
-## 1.0.0-beta.next
+## 1.0.0-beta.6 (2024-10-21)
+
+- Added data helpers with slice functionality: `data.$sumBefore(idx [,prop])`, 
+  `data.$minBefore(idx [,prop])`, `data.$maxBefore(idx [,prop])`, `data.$avgBefore(idx [,prop])`,
+  `data.$distincBefore(idx [,prop])`, and `data.$countBefore(idx [,prop])`.
+
+## 1.0.0-beta.5 (2024-10-14)
+
+- BREAKING CHANGE: Until now, `<defs g-for="">` was used to create a list of items. Now the behavior
+  of `<defs g-for=“”>` is to generate a list of invisible `<defs>`, not a list of visible `<g>`.
+  To create a list of items you must use `<g g-for="">`.
+- Added complete support to `g-for` and `g-bind` in the same element. In each iteration over the
+  `g-for` is evaluated the `g-bind`. 
+- Added support to `g-for` and `g-if` in the same element in this order. The oposite precedence 
+  (`g-if` before than `g-for`) is not supported.
+- Fixed possible side effects in the execution of directives inside `g-if` blocks evaluated as 
+  false. The evaluation of other directives inside a false `g-if` block is now bypassed.
+- Fixed the default SVG size when the `viewBox` is dynamically defined.
+- Fixed the error event triggering. An event was fired for each error. Now a single event is sent
+  with all errors in an array.
+
+## 1.0.0-beta.4 (2024-10-02)
+
+- Added the `.value` property and `value` attribute to `g-composer`. This `value` is a shortcut to
+  `.data={value: v}`.
+- Added the `.version` property to `g-composer`, it allows easy access to the version information of 
+  the Composer instance.
+- Error detection and error messages have been improved.
+- Fixed a Proxy error when a primitive `data` is returned.
+- Update attribute assignment for camelCase properties.
+- The code is optimized to reduce size and increase speed.
+
+## 1.0.0-beta.3 (2024-09-16)
 
 - Fixed catastrophic backtracking in regex checks when wrong data is processed.
 - Added support for simple data (datum), i.e. `data`, in addition to objects and arrays, can be a 

@@ -7,7 +7,7 @@ const interpreter = (s) => s?.split(/\)\s*/)
                             .reduce((o, r) => {
                               o[r.shift()] = r.pop()
                                               .split(/,/)
-                                              .map(n => Number.isNaN(Number(n)) ? n : Number(n));
+                                              .map(n => isNaN(n) ? n : Number(n));
                               return o;
                             }, {}) || {};
 
@@ -116,14 +116,14 @@ function install (setup) {
   if (setup.extendTemplate) {
     setup.extendTemplate.defineDirective({
       name : 'g-keep-aspect',
-      execute (gObject, {expression}) {
+      exec (gObject, {expr}) {
         console.warn('"g-keep-aspect" directive is deprecated; use "g-non-scaling-size" instead.');
-        gObject.nonScalingSize(expression);
+        gObject.nonScalingSize(expr);
       }
     })
     setup.extendTemplate.defineDirective({
       name : 'g-non-scaling-size',
-      execute (gObject) {
+      exec (gObject) {
         // gObject.nonScalingSize('size');
         keepAspect.call(gObject, 'size')
       }

@@ -21,27 +21,27 @@ export default `
        height="100%"
        @render="render">
     <g style="stroke: #c0c0c0">
-      <defs g-for="column of 11">
+      <g g-for="column of 11">
         <line :x1="(column * 20) + 1"
               :x2="(column * 20) + 1"
               y1="1"
               y2="201"/>
-      </defs>
-      <defs g-for="row of 11">
+      </g>
+      <g g-for="row of 11">
         <line :y1="(row * 20) + 1"
               :y2="(row * 20) + 1"
               x1="1"
               x2="201"/>
-      </defs>
+      </g>
     </g>
     <g style="stroke: none; font-family: sans-serif; font-size: 8">
-      <defs g-for="n of 100">
+      <g g-for="n of 100">
         <text text-anchor="middle"
               alignment-baseline="middle"
               :x="(n % 10 * 20) + 12"
               :y="(Math.floor(n / 10) * 20) + 12"
               g-content="n + 1"/>
-      </defs>
+      </g>
     </g>
   </svg>
   <script type="plugin" src="./src/plugins/non.scaling.size.js"></script>

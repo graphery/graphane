@@ -103,11 +103,8 @@ function initValues (target) {
  */
 function observeMutation () {
   new MutationObserver((mutations) => {
-    for (let mutation of mutations) {
-      if (!mutation.attributeName) {
-        this[FIRE_EVENT]('update');
-        break;
-      }
+    if (mutations.some(m => !m.attributeName)) {
+      this[FIRE_EVENT]('update');
     }
     if (
       (isUndefined(this.ready) || this.ready) &&
@@ -191,16 +188,9 @@ function defineAttribute (Class, attribute) {
     attribute.propertyName = toCamel(attribute.name);
   }
   defineProperty(Class, {
+    ...attribute,
     name           : attribute.propertyName,
-    value          : attribute.value,
-    get            : attribute.get,
-    set            : attribute.set,
-    attribute      : attribute.name,
-    type           : attribute.type,
-    preUpdate      : attribute.preUpdate,
-    posUpdate      : attribute.posUpdate,
-    posUpdateEvent : attribute.posUpdateEvent,
-    schema         : attribute.schema
+    attribute      : attribute.name
   });
 
   // Prototype
@@ -439,7 +429,7 @@ function definePropertySet (property) {
 
     // Update attribute
     if (property.attribute && ![ARRAY, OBJECT].includes(property.type)) {
-      updateAttribute(this, property.name, value, property.type === BOOLEAN);
+      updateAttribute(this, property.attribute, value, property.type === BOOLEAN);
     }
 
     // Pos update
@@ -482,13 +472,13 @@ function definePropertyGet (property) {
 /**
  * Register the Web Component
  * @param {Function} Class - Class for this custom component
- * @param {string }name    - Tag Name
+ * @param {string } name    - Tag Name
  */
 function registreComponent (Class, name) {
 
-  // Registre custom element
-  if (!customElements.get(COMPONENT_PREFIX + name.toLowerCase())) {
-    customElements.define(COMPONENT_PREFIX + name.toLowerCase(), Class);
+  name = COMPONENT_PREFIX + name.toLowerCase();
+  if (!customElements.get(name)) {
+    customElements.define(name, Class);
   }
 
 }
@@ -500,11 +490,11 @@ function registreComponent (Class, name) {
  * @returns {object}
  */
 function define (Class, def = {}) {
-  def.property  = (...properties) => {
+  def.prop  = (...properties) => {
     properties.forEach(property => defineProperty(Class, {...property}));
     return def;
   };
-  def.attribute = (...attributes) => {
+  def.attr = (...attributes) => {
     attributes.forEach(attribute => defineAttribute(Class, {...attribute}));
     return def;
   };
@@ -512,7 +502,7 @@ function define (Class, def = {}) {
     registreComponent(Class, name);
     return def;
   };
-  def.extension = (fn) => {
+  def.extension = def.ext = (fn) => {
     fn.call(def, def, Class)
     return def
   }

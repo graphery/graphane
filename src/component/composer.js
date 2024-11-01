@@ -36,19 +36,18 @@ const CONFIG      = 'config';
 const DATA        = 'data';
 const SRC         = '-src';
 const queryScript = (kind) => `script[type=${ kind }],g-script[type=${ kind }]`;
-const isNotSize   = (el) => {
-  const style = getComputedStyle(el);
-  const none  = ['0px', 'auto'];
-  return none.includes(style.width) && none.includes(style.height);
+const noneSize    = ['0px', 'auto'];
+const isNotSize   = (svg) => {
+  const style = getComputedStyle(svg.el);
+  return noneSize.includes(style.width) && noneSize.includes(style.height);
 };
-
 
 /**
  * Class representing a Graphane Composer.
  * @fires 'load' - This event fires when the component load the external resources.
  * @fires 'update' - This event fires when the component update the content.
  * @property {object} svg - Return the gSVG object for the graph.
- * @property {boolean} [isRendering] - It's true if the component is rendering.
+ * @property {boolean} [rendered] - It's true if the component is rendering.
  * @property {boolean} [loaded] - It's true if the component is loaded.
  */
 export default class Composer extends Base {
@@ -61,24 +60,43 @@ export default class Composer extends Base {
     gSVG.install(svgPlugin);
   }
 
-  #svg        = null;
-  #loaded     = false;
-  #errors     = [];
-  isRendering = false;
+  #svg           = null;
+  #loaded        = false;
+  #isRendering   = false;
+  #errorsRender  = [];
+  #errorsLoading = [];
+  #delayEvent    = debounceMethod(function (event, detail) {
+    this[FIRE_EVENT](event, detail)
+  }, 1);
 
 
   /**
    * Logs an error message and triggers the 'error' event.
    * @param {string} message - The error message.
-   * @param {string} scope - The scope in which the error occurred.
-   * @param {string} [code=''] - Additional code related to the error. (Optional)
+   * @param {string|object} scope - The scope in which the error occurred.
+   * @param {string} code - Additional code related to the error. (Optional)
+   * @param {Array} storage - Additional code related to the error. (Optional)
    * @return {void}
    */
-  #error (message, scope = '', code = '') {
-    const errMsg = `${ message }${ scope ? ` in ${ scope }` : '' }\n${ code }`;
-    this.#errors.push(errMsg);
+  #error (message, scope, code, storage) {
+    const errMsg = {
+      message,
+      scope,
+      code,
+      toString : () => `${ message }${ scope ? ` in ${ scope }` : '' }\n${ code }`
+    };
+    storage.push(errMsg);
     console.warn(`Graphane Composer - Error:\n${ errMsg }`);
-    this[FIRE_EVENT]('error', errMsg);
+    this.#delayEvent.call(this, 'error', this.errors);
+  }
+
+  /**
+   * Initializes a new array for storing errors and returns a bound version of the error handler method.
+   * @return {Function} A bound version of the error handler method that can be used to log errors.
+   */
+  #createErrorHandler (storage) {
+    storage.length = 0;
+    return (message, scope = '', code = '') => this.#error(message, scope, code, this.#errorsRender);
   }
 
   /**
@@ -112,7 +130,7 @@ export default class Composer extends Base {
             gSVG.install(lib.default);
           }
         } catch (err) {
-          this.#error(err.message, 'plugin', url);
+          this.#error(err.message, 'plugin', src, this.#errorsLoading);
         }
       }
     }
@@ -131,7 +149,7 @@ export default class Composer extends Base {
       try {
         ctx.content.innerHTML = await this.#fetch(ctx.svgSrc);
       } catch (err) {
-        this.#error(err.message, SVG, ctx.svgSrc);
+        this.#error(err.message, SVG, ctx.svgSrc, this.#errorsLoading);
       }
     } else {
       const template = this.querySelector('template')?.content || this.querySelector(SVG);
@@ -140,13 +158,7 @@ export default class Composer extends Base {
       }
     }
     const svg = ctx.content.querySelector(SVG);
-    if (svg) {
-      this.#svg = gSVG(svg);
-      if (isNotSize(svg)) {
-        this.#svg.width('100%');
-        this.#svg.height('100%');
-      }
-    }
+    this.#svg = svg ? gSVG(svg) : null;
     return true;
   }
 
@@ -157,14 +169,15 @@ export default class Composer extends Base {
     if (el) {
       ctx[key] = el.getAttribute('src');
     }
-    let content = '';
-    try {
-      content = ctx[key] ? await this.#fetch(ctx[key]) : el?.textContent;
-      if (content) {
+    let content = ctx[key] ?
+      await this.#fetch(ctx[key]).catch(err => this.#error(err.message, kind, ctx[key], this.#errorsLoading)) :
+      el?.textContent;
+    if (content) {
+      try {
         ctx[kind] = reviver(content);
+      } catch (err) {
+        this.#error(err.message, kind, content, this.#errorsLoading);
       }
-    } catch (err) {
-      this.#error(err.message, kind, content);
     }
   }
 
@@ -199,7 +212,6 @@ export default class Composer extends Base {
   constructor () {
     super();
     const ctx                 = this [CONTEXT];
-    // language=HTML
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -208,9 +220,8 @@ export default class Composer extends Base {
           height  : max-content;
         }
       </style>
-      <span id="content"></span>
-    `;
-    ctx.content               = this.shadowRoot.querySelector('#content');
+      <span></span>`;
+    ctx.content               = this.shadowRoot.querySelector('span');
   }
 
   /**
@@ -261,7 +272,8 @@ export default class Composer extends Base {
    */
   async load () {
 
-    this.#loaded = false;
+    this.#loaded        = false;
+    this.#errorsLoading = [];
 
     // Plugins
     await this.#loadPlugins();
@@ -292,25 +304,28 @@ export default class Composer extends Base {
    * @return {Promise<void>} - A promise that resolves once the SVG is rendered.
    */
   async update (forced = false) {
-    if (this.isRendering && !forced) {
+    if (this.#isRendering && !forced) {
       return;
     }
     if (this.#svg) {
-      this.rendered    = false;
-      this.isRendering = true;
-      const ctx        = this [CONTEXT];
-      const data       = ctx.methods?.data ?
+      this.rendered     = false;
+      this.#isRendering = true;
+      const ctx         = this [CONTEXT];
+      const data        = ctx.methods?.data ?
         ctx.methods.data(operations(clone(ctx.data))) :
         operations(clone(ctx.data));
-      const renderCtx  = {
+      const renderCtx   = {
         ...ctx.methods,
         ...(isArray(data) ? {} : data),
         data,
         $ : this
       };
-      await this.#svg.render(renderCtx, this.#error.bind(this));
-      this.isRendering = false;
-      this.rendered    = true;
+      await this.#svg.render(renderCtx, this.#createErrorHandler(this.#errorsRender));
+      if (isNotSize(this.#svg)) {
+        this.#svg.width('100%').height('100%');
+      }
+      this.#isRendering = false;
+      this.rendered     = true;
     }
   }
 
@@ -336,7 +351,11 @@ export default class Composer extends Base {
    * @return {Array} An array containing the errors.
    */
   get errors () {
-    return [...this.#errors];
+    return [...this.#errorsLoading, ...this.#errorsRender];
+  }
+
+  get version () {
+    return '%VERSION%';
   }
 
 }
@@ -345,12 +364,21 @@ Composer.prototype.update = debounceMethod(Composer.prototype.update, 1)
 
 // Define the component
 define(Composer)
-  .extension(intersection)
-  .attribute({name : SVG + SRC, type : STRING, value : '', posUpdate : RENDER})
-  .attribute({name : DATA, type : OBJECT, value : [], posUpdate : UPDATE})
-  .attribute({name : DATA + SRC, type : STRING, posUpdate : RENDER})
-  .property({name : METHODS, type : OBJECT, value : {}, posUpdate : UPDATE})
-  .attribute({name : METHODS + SRC, type : STRING, posUpdate : RENDER})
-  .attribute({name : CONFIG, type : OBJECT, value : {}, posUpdate : UPDATE})
-  .attribute({name : CONFIG + SRC, type : STRING, posUpdate : RENDER})
+  .ext(intersection)
+  .attr({name : SVG + SRC, type : STRING, value : '', posUpdate : RENDER})
+  .attr({name : DATA, type : OBJECT, value : [], posUpdate : UPDATE})
+  .attr({name : DATA + SRC, type : STRING, posUpdate : RENDER})
+  .prop({name : METHODS, type : OBJECT, value : {}, posUpdate : UPDATE})
+  .attr({name : METHODS + SRC, type : STRING, posUpdate : RENDER})
+  .attr({name : CONFIG, type : OBJECT, value : {}, posUpdate : UPDATE})
+  .attr({name : CONFIG + SRC, type : STRING, posUpdate : RENDER})
+  .attr({
+    name : 'value',
+    set (v) {
+      this.data = {value : v}
+    },
+    get () {
+      return this.data?.value;
+    }
+  })
   .tag(NAME);

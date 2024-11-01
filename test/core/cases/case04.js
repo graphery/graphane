@@ -38,7 +38,7 @@ export async function script () {
   }
 
   define (MyComponent)
-    .attribute({name:'label', value: 'Hello', posUpdate: REFRESH})
+    .attr({name:'label', value: 'Hello', posUpdate: REFRESH})
     .tag ('my-component');
 
 }

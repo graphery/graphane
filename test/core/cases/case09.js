@@ -26,7 +26,7 @@ export async function script () {
   }
 
   define (MyComponent)
-    .attribute ({name : 'label', type : 'string', value : '', posUpdate : RENDER})
+    .attr ({name : 'label', type : 'string', value : '', posUpdate : RENDER})
     .tag ('my-component');
 
 }

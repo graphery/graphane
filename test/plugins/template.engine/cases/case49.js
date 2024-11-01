@@ -13,8 +13,8 @@ export default `<svg viewBox="0 0 500 50" id="svg" style="width: 500px; height: 
   <defs g-content="$$.fromURL('/test/plugins/template.engine/assets/image.svg')"
         g-on:load="event => event.detail.querySelector('svg').width(50).height(50).id('image')">
   </defs>
-  <defs g-for="n of 10">
+  <g g-for="n of 10">
     <use g-bind:transform="$$.translate(n * 50, 0)" href="#image"/>
-  </defs>
+  </g>
 </svg>
 <pre id="result"></pre>`;

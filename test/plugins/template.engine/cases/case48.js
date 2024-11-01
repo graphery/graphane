@@ -10,10 +10,10 @@ export function script () {
 }
 
 export default `<svg viewBox="0 0 500 50" id="svg" style="width: 500px; height: 100px"">
-  <defs g-for="n of 10">
+  <g g-for="n of 10">
     <g g-bind:transform="$$.translate(n * 50, 0)" 
        g-content="$$.fromURL('/test/plugins/template.engine/assets/image.svg')"
        g-on:load="event => event.detail.querySelector('svg').width(50).height(50)"></g>
-  </defs>
+  </g>
 </svg>
 <pre id="result"></pre>`;

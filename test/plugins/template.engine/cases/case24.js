@@ -16,10 +16,10 @@ export function script () {
 }
 
 export default `<svg id="svg" viewBox="0 0 200 200" width="200" height="200">
-  <defs g-for="n of value">
+  <g g-for="n of value">
     <rect id="rect" height="18" width="18" fill="#00D800"
           :x="(n - (Math.floor(n / 10) * 10)) * 20" :y="Math.floor(n / 10) * 20"/>
-  </defs>
+  </g>
 </svg>
 <p><label>value: <input type="number" value="5" max="100" id="update"></label></p>
 <pre id="result"></pre>`;
