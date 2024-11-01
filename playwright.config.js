@@ -6,6 +6,10 @@ if (process.argv.includes('--project=composer')) {
   process.env.port = '7200';
   options          = '-i /src/component/composer.js ' +
                      '-t test/component/composer/cases';
+} else if (process.argv.includes('--project=composer-shapes')) {
+  process.env.port = '7215';
+  options          = '-i /src/component/composer.js ' +
+                     '-t test/component/shapes/cases';
 } else if (process.argv.includes('--project=core')) {
   process.env.port = '7201';
   options          = '-t ./test/core/cases';
@@ -85,6 +89,7 @@ export default defineConfig({
     {name : 'helpers'},
     {name : 'core'},
     {name : 'composer'},
+    {name : 'composer-shapes'},
     {name : 'svg'},
     {name : 'animateto'},
     {name : 'debug'},
