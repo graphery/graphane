@@ -1,17 +1,28 @@
-export const title       = '6) Shape arc direction';
-export const description = `create a bar with optional direction`;
+export const title       = '6) barArc values';
+export const description = `check different barArc values`;
 
 export function script () {
-  const div  = document.querySelector('#show');
-  const code = document.querySelector('#result');
-  const svg  = gSVG().viewBox('0 0 200 200').width(200)
-  svg.add('circle').fill('red').cx(75).cy(100).r(50);
-  const path = svg.add('path').fill('none').stroke_width(1).stroke('black').id('path');
-  path.d.arc(75, 100, 60, -180, 240);
-  svg.add('text')
-     .add('textPath').href(path.ref()).method('align').content('testing the path');
+  const data = [
+    [90], [-90], [90, 180], [-90, 180], [180, -90],
+    [360], [90, 360], [270, 270], [270], [270, 90],
+    [360, 360], [400], [-400], [-180, -270], [-270, -180],
+    [0], [90, -300], [-300, 90], [-270, 60], [60, -270]
+  ];
+
+  const div   = document.querySelector('#show');
+  const svg   = gSVG().viewBox('0 0 1000 800').width(300);
+
+  data.forEach((r, i) => {
+    const line   = Math.floor(i / 5) * 200 + 100;
+    const column = i % 5 * 200 + 100;
+    svg.add('text').x(column).y(line).font_size(35).text_anchor('middle').dominant_baseline('middle')
+       .content(r)
+    svg.add('path').fill('none').stroke_width(3).stroke('black').id('path')
+       .d.barArc(column, line, 75, 10, r[0], r[1]);
+  });
+
   svg.attachTo(div);
-  code.innerHTML = sourceFormat(svg.source());
+  document.querySelector('#result').innerHTML = sourceFormat(svg.source());
 }
 
 export default `<div id="show"></div>
