@@ -1,21 +1,24 @@
-export const title = '2) Shape circle';
-export const description = `create a circle`;
+export const title = '2) Shape barArc';
+export const description = `create a bar`;
 
 export function script () {
-  const show  = document.querySelector('#show');
+  const show = document.querySelector('#show');
   const code = document.querySelector('#result');
-  show.addEventListener('render', () => {
+  if (show.rendered) {
     code.innerHTML = sourceFormat(show.svg.source());
-  });
+  } else {
+    show.addEventListener('render', () => {
+      code.innerHTML = sourceFormat(show.svg.source());
+    });
+  }
 }
-
-export default `
-<g-composer id="show">
+export default `<g-composer id="show">
   <template>
-    <svg viewBox="0 0 100 100" width="100" height="100">
-      <path stroke="black" stroke-width="3" fill="red" 
-            :d="$$.circle(50, 50, 42)"></path>
-      <rect x="20" y="40" width="60" height="20" fill="white"></rect>
+    <svg viewBox="0 0 200 500" width="200" height="200">
+      <path :d="$$.barArc(100, 250, 95, 10, -85, 0)"></path>
+      <path :d="$$.barArc(100, 250, 95, 20, 85, 5)"></path>
+      <path :d="$$.barArc(100, 250, 95, 30, 85, 95)"></path>
+      <path :d="$$.barArc(100, 250, 95, 40, -85, 270)"></path>
     </svg>
   </template>
 </g-composer>

@@ -1,21 +1,27 @@
-export const title       = '4) Shape arc';
-export const description = `create a bar`;
+export const title       = '4) Shape arc direction';
+export const description = `create a bar with optional direction`;
 
 export function script () {
-  const show  = document.querySelector('#show');
+  const show = document.querySelector('#show');
   const code = document.querySelector('#result');
-  show.addEventListener('render', () => {
+  if (show.rendered) {
     code.innerHTML = sourceFormat(show.svg.source());
-  });
+  } else {
+    show.addEventListener('render', () => {
+      code.innerHTML = sourceFormat(show.svg.source());
+    });
+  }
 }
 
 export default `<g-composer id="show">
 <template>
-<svg viewBox="0 0 200 500" width="200" height="200">
-  <path fill="none" stroke-width="10" stroke="black" :d="$$.arc(100, 250, 100, 50, 0)"/>
-  <path fill="none" stroke-width="10" stroke="black" :d="$$.arc(100, 250, 100, 60, 90)"/>
-  <path fill="none" stroke-width="10" stroke="black" :d="$$.arc(100, 250, 100, 70, 180)"/>
-  <path fill="none" stroke-width="10" stroke="black" :d="$$.arc(100, 250, 100, 80, 270)"/>
+<svg viewBox="0 0 200 200" width="200">
+  <circle fill="red" cx="75" cy="100" r="50"></circle>
+  <path fill="none" stroke-width="1" stroke="black" id="path" 
+        :d="$$.arc(75, 100, 60, -180, 240)"></path>
+  <text>
+    <textPath href="#path" method="align">testing the path</textPath>
+  </text>
 </svg>
 </template>
 </g-composer>
