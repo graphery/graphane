@@ -1,4 +1,4 @@
-export const title       = '8) square';
+export const title       = '5) square';
 export const description = `create a square with regularPolygon`;
 
 export function script () {

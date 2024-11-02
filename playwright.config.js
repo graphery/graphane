@@ -52,6 +52,11 @@ if (process.argv.includes('--project=composer')) {
   options          = '-i /src/lib/gsvg.script.js ' +
                      '-i /src/plugins/shapes.script.js ' +
                      '-t test/plugins/shapes/cases';
+} else if (process.argv.includes('--project=shapes.extra')) {
+  process.env.port = '7216';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/plugins/shapes.extra.script.js ' +
+                     '-t test/plugins/shapes.extra/cases';
 } else if (process.argv.includes('--project=load')) {
   process.env.port = '7210';
   options          = '-i /src/lib/gsvg.script.js ' +
@@ -98,6 +103,7 @@ export default defineConfig({
     {name : 'observe.style'},
     {name : 'template.engine'},
     {name : 'shapes'},
+    {name : 'shapes.extra'},
     {name : 'load'},
     {name : 'core.intersection'},
     {name : 'plugin.intersection'},
