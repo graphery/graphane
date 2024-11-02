@@ -14,20 +14,6 @@ import { getFunctions }   from "../helpers/function.create.js";
 import { operations }     from "../helpers/array.operations.js";
 import { clone }          from "../helpers/objects.js";
 
-const composerPlugin = (setup) => {
-  setup.extendSetup({
-    extendComposer (extension) {
-      isFunction(extension) ?
-        extension(Composer.prototype) :
-        Object.assign(Composer.prototype, extension);
-    }
-  })
-};
-
-gSVG.install(render)
-    .install(shapes)
-    .install(composerPlugin);
-
 const NAME        = 'composer';
 const UPDATE      = 'update';
 const SVG         = 'svg';        // Keep in lowercase for Safari
@@ -382,3 +368,17 @@ define(Composer)
     }
   })
   .tag(NAME);
+
+// Extension
+const composerPlugin = (setup) => {
+  setup.extendSetup({
+    extendComposer (extension) {
+      isFunction(extension) ?
+        extension(Composer.prototype) :
+        Object.assign(Composer.prototype, extension);
+    }
+  });
+};
+gSVG.install(composerPlugin)
+    .install(render)
+    .install(shapes);
