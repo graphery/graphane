@@ -1,13 +1,14 @@
-export const title = '2) Shape circle';
-export const description = `create a circle`;
+export const title = '2) Shape barArc';
+export const description = `create a bar`;
 
 export function script () {
   const div  = document.querySelector('#show');
   const code = document.querySelector('#result');
-  const svg  = gSVG().viewBox('0 0 100 100').width(100).height(100)
-  svg.add('path').stroke('black').stroke_width(3).fill('red')
-     .d.circle(50, 50, 42);
-  svg.add('rect').x(20).y(40).width(60).height(20).fill('white');
+  const svg  = gSVG().viewBox('0 0 200 500').width(200).height(200)
+  svg.add('path').d.barArc(100, 250, 95, 10, -85, 0)
+  svg.add('path').d.barArc(100, 250, 95, 20, 85, 5)
+  svg.add('path').d.barArc(100, 250, 95, 30, 85, 95)
+  svg.add('path').d.barArc(100, 250, 95, 40, -85, 270)
   svg.attachTo(div);
   code.innerHTML = sourceFormat(svg.source());
 }

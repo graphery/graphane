@@ -1,10 +1,5 @@
 export const title       = '39) shape plugin';
-export const description = `Add shape plugin externally`;
-
-export async function script() {
-  await import('../../../../src/plugins/shapes.script.js');
-  document.querySelector('g-composer').update();
-}
+export const description = `Add shape.extra plugin externally`;
 
 export default `<g-composer style="width: 100px">
   <svg viewBox="0 0 100 100" id="svg">
@@ -15,5 +10,6 @@ export default `<g-composer style="width: 100px">
     <path fill="none" stroke="#0000D8" stroke-width="2" 
       :d="$$.regularPolygon(30, 74, 25, 6, 30)"/>
   </svg>
+  <script type="plugin" src="/src/plugins/shapes.extra.js"></script>
 </g-composer>
 `;

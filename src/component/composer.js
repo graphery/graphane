@@ -8,23 +8,11 @@ import {
 import intersection       from "../core/intersection.js";
 import gSVG               from '../lib/gsvg.js';
 import render             from '../plugins/template.engine.js';
+import shapes             from '../plugins/shapes.js';
 import { debounceMethod } from "../helpers/functions.js";
 import { getFunctions }   from "../helpers/function.create.js";
 import { operations }     from "../helpers/array.operations.js";
 import { clone }          from "../helpers/objects.js";
-
-const composerPlugin = (setup) => {
-  setup.extendSetup({
-    extendComposer (extension) {
-      isFunction(extension) ?
-        extension(Composer.prototype) :
-        Object.assign(Composer.prototype, extension);
-    }
-  })
-};
-
-gSVG.install(render)
-    .install(composerPlugin);
 
 const NAME        = 'composer';
 const UPDATE      = 'update';
@@ -380,3 +368,17 @@ define(Composer)
     }
   })
   .tag(NAME);
+
+// Extension
+const composerPlugin = (setup) => {
+  setup.extendSetup({
+    extendComposer (extension) {
+      isFunction(extension) ?
+        extension(Composer.prototype) :
+        Object.assign(Composer.prototype, extension);
+    }
+  });
+};
+gSVG.install(composerPlugin)
+    .install(render)
+    .install(shapes);

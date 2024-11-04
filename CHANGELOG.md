@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.0-beta.7 (2024-11-04)
+
+- BREAKING CHANGE: Split `shapes` plugin into: 
+  - `shapes`: `polar2cartersian()`, `arc()`, `barArc()`, and `circleSlice()`.
+  - `shapes.extra`: `regularPolygon()`, `strart()`, and `circle()`.
+- Added `spiral()` to `shapes.extra` plugin.
+- Added `shapes` plugin into `g-composer` core.
+
 ## 1.0.0-beta.6 (2024-10-21)
 
 - Added data helpers with slice functionality: `data.$sumBefore(idx [,prop])`, 

@@ -6,6 +6,10 @@ if (process.argv.includes('--project=composer')) {
   process.env.port = '7200';
   options          = '-i /src/component/composer.js ' +
                      '-t test/component/composer/cases';
+} else if (process.argv.includes('--project=composer-shapes')) {
+  process.env.port = '7215';
+  options          = '-i /src/component/composer.js ' +
+                     '-t test/component/shapes/cases';
 } else if (process.argv.includes('--project=core')) {
   process.env.port = '7201';
   options          = '-t ./test/core/cases';
@@ -48,6 +52,11 @@ if (process.argv.includes('--project=composer')) {
   options          = '-i /src/lib/gsvg.script.js ' +
                      '-i /src/plugins/shapes.script.js ' +
                      '-t test/plugins/shapes/cases';
+} else if (process.argv.includes('--project=shapes.extra')) {
+  process.env.port = '7216';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/plugins/shapes.extra.script.js ' +
+                     '-t test/plugins/shapes.extra/cases';
 } else if (process.argv.includes('--project=load')) {
   process.env.port = '7210';
   options          = '-i /src/lib/gsvg.script.js ' +
@@ -85,6 +94,7 @@ export default defineConfig({
     {name : 'helpers'},
     {name : 'core'},
     {name : 'composer'},
+    {name : 'composer-shapes'},
     {name : 'svg'},
     {name : 'animateto'},
     {name : 'debug'},
@@ -93,6 +103,7 @@ export default defineConfig({
     {name : 'observe.style'},
     {name : 'template.engine'},
     {name : 'shapes'},
+    {name : 'shapes.extra'},
     {name : 'load'},
     {name : 'core.intersection'},
     {name : 'plugin.intersection'},
