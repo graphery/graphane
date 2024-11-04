@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.0.0-beta.next
+## 1.0.0-beta.7 (2024-11-04)
 
 - BREAKING CHANGE: Split `shapes` plugin into: 
   - `shapes`: `polar2cartersian()`, `arc()`, `barArc()`, and `circleSlice()`.
