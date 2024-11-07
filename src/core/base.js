@@ -3,7 +3,7 @@
  * Base class for Graphane web component
  *
  * @module base
- * @version 0.0.2
+ * @version 0.0.3
  * @author Pablo Almunia
  *
  */
@@ -16,7 +16,7 @@ import {
   COMPONENT_PREFIX
 } from './simple.js';
 import {
-  isUndefined, isFunction, isNull, EMPTY_STRING,
+  isUndefined, isFunction
 } from '../helpers/types.js';
 import {
   debounceMethodAsync, posExecution, preCondition
@@ -26,6 +26,25 @@ import {
 const DELAY = 1;
 
 // Public symbols
+
+
+/**
+ * Represents a unique symbol used as an identifier or key for connections.
+ * Mainly used to mark or handle events related to a connection being
+ * established. This symbol ensures there is no conflict with other
+ * property keys.
+ * @type {symbol}
+ */
+const ONCONNECT = Symbol();
+
+/**
+ * A unique symbol used to represent the event of a disconnect action.
+ * Can be utilized as a key or identifier for managing or listening to disconnect
+ * events in an application context.
+ * @type {symbol}
+ */
+const ONDISCONNECT = Symbol();
+
 /**
  * Symbol used for defines the refresh method into the class inherited from Base.
  * This method is called when the component is rendered and when some property
@@ -52,31 +71,14 @@ const RESIZE    = Symbol();
  */
 const CSS_PROPS = Symbol();
 
+
 /**
- * Update an attribute into the HTML
- * @param {HTMLElement} element
- * @param {string} attribute
- * @param {any} value
- * @param {boolean} [asBoolean=false]
- * @returns {undefined}
+ * Executes an array of callback functions associated with a given key on an element.
+ *
+ * @param {Object} el - The element object containing the callback array.
+ * @param {string} id - The key identifying the array of callbacks in the element object.
  */
-function updateAttribute (element, attribute, value, asBoolean = false) {
-  if (element.ready === false || !attribute) {
-    return;
-  }
-  if (asBoolean) {
-    if (value) {
-      element.setAttribute(attribute, EMPTY_STRING);
-    } else {
-      element.removeAttribute(attribute);
-    }
-  } else {
-    const valueNormalized = isNull(value) || isUndefined(value) ? EMPTY_STRING : value.toString();
-    if (element.hasAttribute(attribute) && element.getAttribute(attribute) !== valueNormalized) {
-      element.setAttribute(attribute, valueNormalized);
-    }
-  }
-}
+const runCallbacks = (el, id) => el[id]?.forEach(fn => isFunction(fn) && fn.apply(el));
 
 /**
  * Base class for Graphane Web Component
@@ -171,6 +173,7 @@ class Base extends Simple {
       this [CONTEXT]._resizeObserver = window.requestAnimationFrame(resize);
     };
     resize();
+    runCallbacks(this, ONCONNECT);
   }
 
   /**
@@ -180,9 +183,27 @@ class Base extends Simple {
    */
   disconnectedCallback () {
     window.cancelAnimationFrame(this [CONTEXT]._resizeObserver);
+    runCallbacks(this, ONDISCONNECT);
   }
 
 }
+
+/**
+ * Handles the ONCONNECT event for the Base prototype.
+ * This array of functions is triggered when a connection occurs.
+ * @memberof Base
+ * @property [ONCONNECT]
+ */
+Base.prototype[ONCONNECT] = [];
+
+/**
+ * Handles the ONDISCONNECT event for the Base prototype.
+ * This array of functions is triggered when a disconnection occurs.
+ * @memberof Base
+ * @property [ONCONNECT]
+ */
+Base.prototype[ONDISCONNECT] = [];
+
 
 /**
  *
@@ -296,9 +317,10 @@ function define (Class) {
   return def;
 }
 
-Base.RENDER  = RENDER;
-Base.REFRESH = REFRESH;
-Base.CHANGE  = CHANGE;
+Base.RENDER       = RENDER;
+Base.REFRESH      = REFRESH;
+Base.ONCONNECT    = ONCONNECT;
+Base.ONDISCONNECT = ONDISCONNECT;
 
 /**
  * Export
@@ -315,5 +337,7 @@ export {
   RESIZE,
   CSS_PROPS,
   FIRE_EVENT,
-  COMPONENT_PREFIX
+  COMPONENT_PREFIX,
+  ONCONNECT,
+  ONDISCONNECT
 };
