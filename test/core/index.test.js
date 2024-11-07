@@ -87,5 +87,16 @@ for await (const dirent of dir) {
       });
     }
 
+    if (['case13', 'case14'].includes(code)) {
+      test('compare before and after click', async ({page}) => {
+        const content = page.locator('#result');
+        await expect(content).toContainText('connected!')
+        await page.locator('#disconnect').click();
+        await expect(content).toContainText('disconnected!')
+        await page.locator('#connect').click();
+        await expect(content).toContainText('connected!')
+      });
+    }
+
   });
 }
