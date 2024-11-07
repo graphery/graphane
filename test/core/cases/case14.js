@@ -10,7 +10,6 @@ export async function script () {
 
     constructor () {
       super();
-      debugger
       this[ONCONNECT].push(
         function () {
           document.querySelector('#result').innerHTML = this.message;

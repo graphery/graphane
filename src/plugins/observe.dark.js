@@ -2,7 +2,6 @@ const REF                = Symbol();
 const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
 function observeDark (install) {
-  debugger
   this[REF]  = this[REF] || {};
   const html = document.documentElement;
   const body = document.body;
@@ -52,7 +51,6 @@ function install (setup) {
   if (setup.extendComposer) {
     setup.extendComposer((prototype) => {
       const {ONCONNECT, ONDISCONNECT} = prototype.constructor;
-      debugger;
       prototype[ONCONNECT].push(function () {
         console.log('connect');
         observeDark.call(this, true);
