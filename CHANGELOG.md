@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.0-beta.next
+
+- Added `observer.dark` plugin.
+
 ## 1.0.0-beta.7 (2024-11-04)
 
 - BREAKING CHANGE: Split `shapes` plugin into: 
