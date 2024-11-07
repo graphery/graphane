@@ -1,4 +1,4 @@
-import svgPlugin from './load.js';
+import svgPlugin from './observe.dark.js';
 
 if (globalThis.gSVG) {
   globalThis.gSVG.install(svgPlugin);
