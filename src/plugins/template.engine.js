@@ -3,7 +3,7 @@ import {
   isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber
 }                            from '../helpers/types.js';
 import { createFunction }    from '../helpers/function.create.js';
-import { isValidIdentifier } from "../helpers/identifier.js";
+import { isValidIdentifier } from '../helpers/identifier.js';
 import animateToPlugin       from './animateto.js';
 
 const INIT       = Symbol();
@@ -153,6 +153,10 @@ defineDirective({
   name : 'g-if',
   exec (gObject, {expr, data, evalExpr}) {
     if (!evalExpr(expr, data)) {
+      if (gObject[CLONES]) {
+        gObject[CLONES].forEach(x => x.remove());
+        delete gObject[CLONES];
+      }
       return replaceWithComment(gObject);
     }
   }
@@ -267,12 +271,12 @@ defineDirective({
 
 /**
  * g-for
- * Directive allows you to create elements by iterating through a list. It is only aceptable over
- * <defs></defs> element and clones the content for each item into the collection.
+ * Directive allows you to create elements by iterating through a list. It is aceptable over
+ * all elements and clones each tag for each item into the collection.
  * @example
- * <defs g-for="record of records">
+ * <g g-for="record of records">
  *   <rect :x="record.x" :y="record.y" :width="record.width" :height="record.height"></rect>
- * </defs>
+ * </g>
  */
 defineDirective({
   name : 'g-for',
@@ -288,20 +292,20 @@ defineDirective({
         if (def[CLONES][n]) {
           process(def[CLONES][n], subData, error, false);
         } else {
-          const g       = def.gSVG(def.tagName());
-          g[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
+          const tag       = def.gSVG(def.tagName());
+          tag[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
           [...def.attributes()].forEach(attr => {
             if (attr.name !== 'g-for') {
-              g.setAttribute(attr.name, attr.value);
+              tag.setAttribute(attr.name, attr.value);
             }
-          })
-          def.children().forEach(child => {
-            g.add(child.cloneNode(true));
           });
-          ref.before(g);
-          process(g, subData, error);
-          g[CLONED] = true;
-          def[CLONES].push(g);
+          def.children().forEach(child => {
+            tag.add(child.cloneNode(true));
+          });
+          ref.before(tag);
+          process(tag, subData, error);
+          tag[CLONED] = true;
+          def[CLONES].push(tag);
         }
         n++;
       },
@@ -374,21 +378,23 @@ function getVariables (expr) {
 }
 
 /**
- * toIterator - convert a variable into an Array
+ * toIterable - convert a variable into an Array
  * @param {any} v        - iterator, object or number
  * @param {string} kind  - 'of' or 'in'
  * @returns {{iterator: Array, type: string}}
  */
-function toArray (v, kind) {
+function toIterable (v, kind) {
   if (v[Symbol.iterator]) {
     return kind === 'of' ?
       {iterator : [...v], type : ARRAY} :
       {type : ERROR};
   }
   if (isNumber(v)) {
-    return kind === 'of' ?
-      {iterator : Array(v < 0 ? 0 : 0 | v).fill(0).map((v, i) => i), type : NUMBER} :
-      {iterator : Array(v < 0 ? 0 : 0 | v).fill(0).map((v, i) => i + 1), type : NUMBER};
+    return {
+      iterator : Array(v < 0 ? 0 : 0 | v).fill(0)
+                                         .map((v, i) => i + (kind === 'of' ? 0 : 1)),
+      type     : NUMBER
+    };
   }
   if (isObject(v)) {
     return kind === 'in' ?
@@ -440,7 +446,7 @@ function evalForExpr (code, data, each, final) {
   left                      = left.trim();
   right                     = right.trim();
   const value               = evalExpr(right, data) || [];
-  const {iterator, type}    = toArray(value, kind);
+  const {iterator, type}    = toIterable(value, kind);
   if (type === ERROR) {
     throw exprError(code, 'an invalid "g-for" expression');
   }
