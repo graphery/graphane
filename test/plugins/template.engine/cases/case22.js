@@ -1,4 +1,4 @@
-export const title       = '22) g-for <code>(key, value) of obj</code>';
+export const title       = '22) g-for <code>(key, value) in obj</code>';
 export const description = 'g-for with object';
 
 export function script () {
@@ -14,7 +14,7 @@ export function script () {
 }
 
 export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px">
-  <g g-for="(value, key) of data">
+  <g g-for="(value, key) in data">
     <circle   :id = '"circle_" + key'
               :cx = "value.cx" 
               :cy = "value.cy"

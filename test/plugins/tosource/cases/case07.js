@@ -18,7 +18,7 @@ export default `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height:
   <defs>
     <circle id="test" r="25"></circle>
   </defs>
-  <g g-for="(value, key) of data">
+  <g g-for="(value, key) in data">
     <use
        href = "#test"
         :id = '"circle_" + key'

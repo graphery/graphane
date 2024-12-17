@@ -1,7 +1,7 @@
 import {
   ARRAY, OBJECT, NUMBER,
   isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber
-} from '../helpers/types.js';
+}                            from '../helpers/types.js';
 import { createFunction }    from '../helpers/function.create.js';
 import { isValidIdentifier } from "../helpers/identifier.js";
 import animateToPlugin       from './animateto.js';
@@ -13,6 +13,7 @@ const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
 const REPLACE    = Symbol();
 const DYNAMIC    = Symbol();
+const ERROR      = 'error';
 const UNKNOWN    = 'unknown';
 const directives = {};
 const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`);
@@ -374,18 +375,25 @@ function getVariables (expr) {
 
 /**
  * toIterator - convert a variable into an Array
- * @param {any} v
+ * @param {any} v        - iterator, object or number
+ * @param {string} kind  - 'of' or 'in'
  * @returns {{iterator: Array, type: string}}
  */
-function toArray (v) {
+function toArray (v, kind) {
   if (v[Symbol.iterator]) {
-    return {iterator : [...v], type : ARRAY};
+    return kind === 'of' ?
+      {iterator : [...v], type : ARRAY} :
+      {type : ERROR};
   }
   if (isNumber(v)) {
-    return {iterator : Array(v < 0 ? 0 : 0 | v).fill(0).map((v, i) => i), type : NUMBER};
+    return kind === 'of' ?
+      {iterator : Array(v < 0 ? 0 : 0 | v).fill(0).map((v, i) => i), type : NUMBER} :
+      {iterator : Array(v < 0 ? 0 : 0 | v).fill(0).map((v, i) => i + 1), type : NUMBER};
   }
   if (isObject(v)) {
-    return {iterator : Object.entries(v).map(m => m.reverse()), type : OBJECT};
+    return kind === 'in' ?
+      {iterator : Object.entries(v).map(m => m.reverse()), type : OBJECT} :
+      {type : ERROR};
   }
   return {iterator : v, type : UNKNOWN};
 }
@@ -420,14 +428,22 @@ function evalExpr (code, data, context = null) {
  * @returns {*}
  */
 function evalForExpr (code, data, each, final) {
-  const iteratorName     = '__$$i';
-  const callbackName     = '__$$c';
-  const finalName        = '__$$f';
-  let [left, right]      = code.split(' of ');
-  left                   = left.trim();
-  right                  = right.trim();
-  const value            = evalExpr(right, data) || [];
-  const {iterator, type} = toArray(value);
+  const iteratorName = '__$$i';
+  const callbackName = '__$$c';
+  const finalName    = '__$$f';
+  // let [left, right]      = code.split(' of ');
+  const match        = code.match(/^\s*([\s\S]+?)\s*(of|in)\s*([\s\S]+?)\s*$/)
+  if (!match) {
+    throw exprError(code, 'an invalid "g-for" expression');
+  }
+  let [, left, kind, right] = match;
+  left                      = left.trim();
+  right                     = right.trim();
+  const value               = evalExpr(right, data) || [];
+  const {iterator, type}    = toArray(value, kind);
+  if (type === ERROR) {
+    throw exprError(code, 'an invalid "g-for" expression');
+  }
   if (type === OBJECT && !left.startsWith('[')) {
     left = `[${ left.replace(/(^\()|(\)$)/g, '') }]`;
   }

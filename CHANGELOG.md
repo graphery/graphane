@@ -3,6 +3,11 @@
 ## 1.0.0-beta.next
 
 - Added `observer.dark` plugin.
+- Removed the undocumented feature that allowed `g-for="n of obj"`.
+- Added support for iterating over object members using `g-for="(value, key) in obj"`.
+- Added support for iterating a numeric range with `g-for="n in 10"`, generating `1,2,3,4,5,6,7,8,9,10`.
+- Maintained support for `g-for="n of 10"`, generating `0,1,2,3,4,5,6,7,8,9`.
+- Maintained support for `g-for="n of arr"` to iterate over arrays.
 
 ## 1.0.0-beta.7 (2024-11-04)
 
