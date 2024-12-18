@@ -1,6 +1,6 @@
 import {
   ARRAY, OBJECT, NUMBER,
-  isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber
+  isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber, isString
 }                            from '../helpers/types.js';
 import { createFunction }    from '../helpers/function.create.js';
 import { isValidIdentifier } from '../helpers/identifier.js';
@@ -197,26 +197,36 @@ defineDirective({
     if (isUndefined(value)) {
       throw exprError(expr, 'undefined');
     }
+
+    // Class
     if (arg === 'class') {
+      const add = (val) => gObject.classList.add(val);
+      const del = (val) => gObject.classList.remove(val);
+      const obj = (val) => Object.entries(val).forEach(([k, v]) => v ?
+        add(k) :
+        del(k)
+      );
       if (isArray(value)) {
-        gObject.classList.add(...value.filter(val => !!val));
+        value.forEach(val => isString(val) ? add(val) : isObject(val) ? obj(val) : void (0));
         return;
       }
       if (isObject(value)) {
-        Object.entries(value).forEach(([key, val]) => {
-          val ? gObject.classList.add(key) : gObject.classList.remove(key)
-        });
+        obj(value);
         return;
       }
       if (value) {
-        gObject.classList.add(value);
+        add(value);
       }
       return;
     }
+
+    // Style
     if (arg === 'style') {
       Object.entries(value).forEach(([key, val]) => gObject.style[key](val));
       return;
     }
+
+    // Others
     if (value !== DYNAMIC) {
       gObject[arg](value);
     }

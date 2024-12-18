@@ -25,7 +25,9 @@ const results = {
   case12       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="50" cy="50" r="40" class="bordered warning"></circle> </svg>`,
   case13       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="25" cy="50" r="20" class="bordered warning"></circle> <circle cx="75" cy="50" r="20" class="bordered"></circle> </svg>`,
   case14       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="25" cy="50" r="20" class="bordered warning"></circle> <circle cx="75" cy="50" r="20" class="bordered"></circle> </svg>`,
+  case14_after : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="25" cy="50" r="20" class="bordered"></circle> <circle cx="75" cy="50" r="20" class="bordered warning"></circle> </svg>`,
   case15       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="25" cy="50" r="20" class="warning bordered"></circle> <circle cx="75" cy="50" r="20" class="bordered"></circle> </svg>`,
+  case15_after : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="25" cy="50" r="20" class="bordered"></circle> <circle cx="75" cy="50" r="20" class="bordered warning"></circle> </svg>`,
   case16       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="25" cy="50" r="20" style="stroke-width: 5; fill: orange; stroke: red;"></circle> <circle cx="75" cy="50" r="20" style="stroke-width: 5; fill: green; stroke: blue;"></circle> </svg>`,
   case17       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="25" cy="50" r="20" style="stroke-width: 5; fill: orange; stroke: red;"></circle> <circle cx="75" cy="50" r="20" style="stroke-width: 5"></circle> </svg>`,
   case18       : `<svg viewBox="0 0 100 100" id="svg" style="width: 100px; height: 100px"> <style> .bordered { stroke-width: 5; stroke: red; } .warning { fill: orange; } </style> <circle cx="25" cy="50" r="20" style="stroke-width: 5; fill: orange; stroke: red;"></circle> <circle cx="75" cy="50" r="20" style="stroke-width: 5; fill: green; stroke: blue;"></circle> </svg>`,
@@ -99,7 +101,7 @@ for await (const dirent of dir) {
       await expect(show.first()).toHaveScreenshot()
     });
 
-    if (['case39', 'case40', 'case41', 'case42', 'case43'].includes(code)) {
+    if (['case14', 'case15', 'case39', 'case40', 'case41', 'case42', 'case43'].includes(code)) {
       test('compare source code result after update', async ({page}) => {
         const run = page.locator('#update');
         await run.click();
@@ -108,7 +110,7 @@ for await (const dirent of dir) {
         await expect(result).toHaveText(results[code + '_after']);
       });
     }
-    if (['case39', 'case40', 'case41', 'case43'].includes(code)) {
+    if (['case14', 'case15', 'case39', 'case40', 'case41', 'case43'].includes(code)) {
       test('compare image after update', async ({page}) => {
         const run = page.locator('#update');
         await run.click();
