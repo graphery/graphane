@@ -463,12 +463,12 @@ function evalForExpr (code, data, each, final) {
   const iteratorName = '__$$i';
   const callbackName = '__$$c';
   const finalName    = '__$$f';
-  // let [left, right]      = code.split(' of ');
-  const match        = code.match(/^\s*([\s\S]+?)\s*(of|in)\s*([\s\S]+?)\s*$/)
+  const match        = code.match(/^\s*([\s\S]+?)[\s*|)}\]](of|in)[\s*|({[]([\s\S]+?)\s*$/)
   if (!match) {
     throw exprError(code, 'an invalid "g-for" expression');
   }
   let [, left, kind, right] = match;
+  kind                      = kind.trim();
   left                      = left.trim();
   right                     = right.trim();
   const value               = evalExpr(right, data) || [];
