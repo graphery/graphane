@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.0.0-beta.next
+## 1.0.0-beta.8 (2024-12-19)
 
 - Added `observer.dark` plugin.
 - Removed the undocumented feature that allowed `g-for="n of obj"`.
