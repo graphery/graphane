@@ -125,6 +125,7 @@ defineDirective({
           }
           console.warn(`Failed to load URL: ${ src } (${ res.status })`);
         },
+        element        : gObject,
         currentContent : gObject.content
       }
     };
@@ -174,26 +175,41 @@ defineDirective({
   alias : ':',
   arg   : true,
   exec (gObject, {expr, arg, data, evalExpr}) {
-    arg                     = normalizeAttribute(arg);
-    const context           = {
+    arg           = normalizeAttribute(arg);
+    const el      = gObject._el;
+    const context = {
       ...data,
-      $$ : ['d', 'transform'].includes(arg) ?
-        gObject['$' + arg] :
-        {}
+      $$ : ['d', 'transform'].includes(arg) ? gObject['$' + arg] : {}
     };
-    context.$$.currentValue = gObject[arg];
-    context.$$.dynamic      = (value, duration = 200, delay = 0) => {
-      gObject.animateTo(
-        (isArray(value) ? value : [value]).map(v =>
-          isObject(v) && 'offset' in v ?
-            {[arg] : v.value, offset : v.offset} :
-            {[arg] : v}
-        ),
-        {duration, delay}
-      );
-      return DYNAMIC;
-    };
-    let value               = evalExpr(expr, context);
+    Object.assign(context.$$, {
+      get element () {
+        return gObject
+      },
+      get attribute () {
+        return arg
+      },
+      currentValue () {
+        return arg === 'class' ? [...el.classList] :
+          arg === 'style' ? [...el.style].reduce((o, k) => {
+              o[k] = el.style[k];
+              return o;
+            }, {}) :
+            gObject[arg]();
+      },
+      dynamic (value, duration = 200, delay = 0) {
+        gObject.animateTo(
+          (isArray(value) ? value : [value]).map(v =>
+            isObject(v) && 'offset' in v ?
+              {[arg] : v.value, offset : v.offset} :
+              {[arg] : v}
+          ),
+          {duration, delay}
+        );
+        return DYNAMIC;
+      }
+    });
+
+    let value = evalExpr(expr, context);
     if (isUndefined(value)) {
       throw exprError(expr, 'undefined');
     }
