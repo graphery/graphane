@@ -1,5 +1,5 @@
 export const title       = '13) g-bind:class - logical evaluation';
-export const description = `g-bind:class with a logical evaluation`;
+export const description = `g-bind:class with an initial logical evaluation (not work in several renderings)`;
 
 export function script () {
   const svg = gSVG(document.querySelector('#svg'));

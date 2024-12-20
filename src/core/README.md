@@ -58,7 +58,6 @@ As a result of executing this code, we can use a new component of Graphane with 
 name `g-my-component`:
 
 ```html
-
 <g-my-component></g-my-component>
 ```
 
@@ -149,7 +148,6 @@ by which it is happening. In particular, emit the events:
 <!-- case03 -->
 
 ```html
-
 <g-my-new-component id="component"></g-my-new-component>
 <pre id="result"></pre>
 <script type="module">
@@ -202,6 +200,17 @@ by which it is happening. In particular, emit the events:
 </script>
 ```
 
+### Connect/Disconnect
+
+When the component is added to the DOM, the functions stored in the `[ ONCONNECT ]` array are
+executed.
+
+Eventually, if the component is removed from the DOM, the functions stored in the `[ ONDISCONNECT ]`
+array are executed.
+
+These callbacks are not managed as events, since they correspond to the connection and disconnection
+of the DOM, it is complicated to define event listeners.
+
 ## Attributes
 
 To define attributes in our component, we must use the function auxiliary
@@ -244,7 +253,6 @@ launches the event `refresh` automatically.
 <!-- case04 -->
 
 ```html
-
 <g-my-component id="component"></g-my-component>
 <p>click: change the label by property</p>
 <p>right click: change the label by attribute</p>
@@ -338,7 +346,6 @@ component.
 <!-- cas06 -->
 
 ```html
-
 <g-my-component id="component" value="10"></g-my-component>
 <p>click: add 1 to value</p>
 
@@ -391,7 +398,6 @@ like `<slots></slot>`, with and without name, or the methods to handle the conte
 <!-- case07 -->
 
 ```html
-
 <g-my-component id="component">
   <label><strong><em>Number</em>:</strong> <span id="num">0</span></label>
 </g-my-component>
@@ -444,7 +450,6 @@ invoked every time when is changed the local DOM content.
 <!-- case08 -->
 
 ```html
-
 <g-my-component id="component">
   <label><strong><em>Number</em>:</strong> <span id="num">0</span></label>
 </g-my-component>
@@ -500,7 +505,6 @@ changed.
 <!-- case09 -->
 
 ```html
-
 <div style="height: 300px; width: 300px; resize:both; overflow: hidden; border: 1px dotted black">
   <g-my-component style="width: 100%; height: auto;" id="component" label="Hello"></g-my-component>
 </div>
@@ -559,7 +563,6 @@ and use these functions:
 <!-- case10 -->
 
 ```html
-
 <g-my-component id="component"></g-my-component>
 <p>
   <button id="check">get CSS properties</button>
@@ -625,11 +628,9 @@ we have to pass the parameter `true` to indicate that this is a call forced.
 In this example delays the execution of `[ RENDER ]` until the method asynchronous `load()` get data
 from a remote server.
 
-
 <!-- case11 -->
 
 ```html
-
 <g-my-component delay="4"></g-my-component>
 
 <script type="module">
@@ -684,7 +685,6 @@ from `Simple`, but you cannot use ~~`define().style()`~~.
 <!-- case12 -->
 
 ```html
-
 <g-my-component href="#content"></g-my-component>
 <button onclick="document.querySelector('g-my-component').delay=1">load</button>
 <div id="content"></div>
@@ -720,6 +720,8 @@ from `Simple`, but you cannot use ~~`define().style()`~~.
 - [CHANGE :`Symbol`](#change-symbol)
 - [RESIZE :`Symbol`](#resize-symbol)
 - [CONTEXT :`Symbol`](#context-symbol)
+- [ONCONNECT :`Symbol`](#onconnect-symbol)
+- [ONDISCONNECT :`Symbol`](#ondisconnect-symbol)
 - [define(klass) :`function`](#defineklass-function)
   - [.attr(attributeDescriptor) :`function`](#defineklassattributeattributedescriptor-function)
   - [.prop(propertyDescriptor) :`function`](#defineklasspropertypropertydescriptor-function)
@@ -838,6 +840,40 @@ class X extends Base {
     super();
     const ctx = this[CONTEXT];
     /* ... */
+  }
+}
+```
+
+### ONCONNECT :`Symbol`
+
+Symbol used for get the array of handler called when the component is attached to the DOM.
+
+```js
+import { Base, ONCONNECT } from './/base.js';
+
+class X extends Base {
+  constructor () {
+    super();
+    this[ONCONNECT].push(() => {
+      /* ... */  
+    });
+  }
+}
+```
+
+### ONDISCONNECT :`Symbol`
+
+Symbol used for get the array of handler called when the component is attached to the DOM.
+
+```js
+import { Base, ONDISCONNECT } from './/base.js';
+
+class X extends Base {
+  constructor () {
+    super();
+    this[ONDISCONNECT].push(() => {
+      /* ... */  
+    });
   }
 }
 ```

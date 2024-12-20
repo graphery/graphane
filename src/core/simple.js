@@ -3,7 +3,7 @@
  * Simple class for Graphane web component
  *
  * @module simple
- * @version 0.0.2
+ * @version 0.0.3
  * @author Pablo Almunia
  *
  */
@@ -18,13 +18,6 @@ import {
 
 // Constants
 const COMPONENT_PREFIX = globalThis.GRAPHANE_PREFIX || 'g-';
-
-// private symbols
-/**
- * Symbol used for defines a private context used with `this [ CONTEXT ]`.
- * @type {symbol}
- */
-const INITIALIZERS = Symbol();
 
 // Public symbols
 /**
@@ -129,7 +122,6 @@ class Simple extends HTMLElement {
   constructor () {
     super();
     initValues.call(this, new.target);
-    new.target[INITIALIZERS]?.forEach(fn => isFunction(fn) && fn.call(this, this));
     if (isFunction(this[CHANGE])) {
       observeMutation.call(this);
     }
@@ -189,8 +181,8 @@ function defineAttribute (Class, attribute) {
   }
   defineProperty(Class, {
     ...attribute,
-    name           : attribute.propertyName,
-    attribute      : attribute.name
+    name      : attribute.propertyName,
+    attribute : attribute.name
   });
 
   // Prototype
@@ -490,11 +482,11 @@ function registreComponent (Class, name) {
  * @returns {object}
  */
 function define (Class, def = {}) {
-  def.prop  = (...properties) => {
+  def.prop      = (...properties) => {
     properties.forEach(property => defineProperty(Class, {...property}));
     return def;
   };
-  def.attr = (...attributes) => {
+  def.attr      = (...attributes) => {
     attributes.forEach(attribute => defineAttribute(Class, {...attribute}));
     return def;
   };
@@ -508,6 +500,9 @@ function define (Class, def = {}) {
   }
   return def;
 }
+
+Simple.CHANGE     = CHANGE;
+Simple.FIRE_EVENT = FIRE_EVENT;
 
 /**
  * Export

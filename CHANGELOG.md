@@ -1,5 +1,21 @@
 # Change Log
 
+## 1.0.0-beta.8 (2024-12-19)
+
+- Added `observer.dark` plugin.
+- Removed the undocumented feature that allowed `g-for="n of obj"`.
+- Added support for iterating over object members using `g-for="(value, key) in obj"`.
+- Added support for iterating a numeric range with `g-for="n in 10"`, generating `1,2,3,4,5,6,7,8,9,10`.
+- Maintained support for `g-for="n of 10"`, generating `0,1,2,3,4,5,6,7,8,9`.
+- Maintained support for `g-for="n of arr"` to iterate over arrays.
+- Added support for conditional objects within an array in the `g-bind` of `class` attribute. 
+- Added `$$.element` and `$$.attribute` helpers in `g-bind`.
+- Refactored `$$.currentValue()` in `g-bind` for the `style` attribute, now returns an object, 
+  and for the `class` attribute, now returns an array.
+- Added `$$.element` as a helper in `g-content`.
+- Fixed a bug when `g-if` and `g-for` are in the same element in that order and the `g-if` condition 
+  changes.
+
 ## 1.0.0-beta.7 (2024-11-04)
 
 - BREAKING CHANGE: Split `shapes` plugin into: 

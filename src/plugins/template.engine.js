@@ -1,9 +1,9 @@
 import {
   ARRAY, OBJECT, NUMBER,
-  isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber
-} from '../helpers/types.js';
+  isArray, isObject, isNumber, isFunction, isUndefined, isValidNumber, isString
+}                            from '../helpers/types.js';
 import { createFunction }    from '../helpers/function.create.js';
-import { isValidIdentifier } from "../helpers/identifier.js";
+import { isValidIdentifier } from '../helpers/identifier.js';
 import animateToPlugin       from './animateto.js';
 
 const INIT       = Symbol();
@@ -13,6 +13,7 @@ const DIRECTIVES = Symbol();
 const EVENTS     = Symbol();
 const REPLACE    = Symbol();
 const DYNAMIC    = Symbol();
+const ERROR      = 'error';
 const UNKNOWN    = 'unknown';
 const directives = {};
 const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`);
@@ -124,6 +125,7 @@ defineDirective({
           }
           console.warn(`Failed to load URL: ${ src } (${ res.status })`);
         },
+        element        : gObject,
         currentContent : gObject.content
       }
     };
@@ -152,6 +154,10 @@ defineDirective({
   name : 'g-if',
   exec (gObject, {expr, data, evalExpr}) {
     if (!evalExpr(expr, data)) {
+      if (gObject[CLONES]) {
+        gObject[CLONES].forEach(x => x.remove());
+        delete gObject[CLONES];
+      }
       return replaceWithComment(gObject);
     }
   }
@@ -169,49 +175,74 @@ defineDirective({
   alias : ':',
   arg   : true,
   exec (gObject, {expr, arg, data, evalExpr}) {
-    arg                     = normalizeAttribute(arg);
-    const context           = {
+    arg           = normalizeAttribute(arg);
+    const el      = gObject._el;
+    const context = {
       ...data,
-      $$ : ['d', 'transform'].includes(arg) ?
-        gObject['$' + arg] :
-        {}
+      $$ : ['d', 'transform'].includes(arg) ? gObject['$' + arg] : {}
     };
-    context.$$.currentValue = gObject[arg];
-    context.$$.dynamic      = (value, duration = 200, delay = 0) => {
-      gObject.animateTo(
-        (isArray(value) ? value : [value]).map(v =>
-          isObject(v) && 'offset' in v ?
-            {[arg] : v.value, offset : v.offset} :
-            {[arg] : v}
-        ),
-        {duration, delay}
-      );
-      return DYNAMIC;
-    };
-    let value               = evalExpr(expr, context);
+    Object.assign(context.$$, {
+      get element () {
+        return gObject
+      },
+      get attribute () {
+        return arg
+      },
+      currentValue () {
+        return arg === 'class' ? [...el.classList] :
+          arg === 'style' ? [...el.style].reduce((o, k) => {
+              o[k] = el.style[k];
+              return o;
+            }, {}) :
+            gObject[arg]();
+      },
+      dynamic (value, duration = 200, delay = 0) {
+        gObject.animateTo(
+          (isArray(value) ? value : [value]).map(v =>
+            isObject(v) && 'offset' in v ?
+              {[arg] : v.value, offset : v.offset} :
+              {[arg] : v}
+          ),
+          {duration, delay}
+        );
+        return DYNAMIC;
+      }
+    });
+
+    let value = evalExpr(expr, context);
     if (isUndefined(value)) {
       throw exprError(expr, 'undefined');
     }
+
+    // Class
     if (arg === 'class') {
+      const add = (val) => gObject.classList.add(val);
+      const del = (val) => gObject.classList.remove(val);
+      const obj = (val) => Object.entries(val).forEach(([k, v]) => v ?
+        add(k) :
+        del(k)
+      );
       if (isArray(value)) {
-        gObject.classList.add(...value.filter(val => !!val));
+        value.forEach(val => isString(val) ? add(val) : isObject(val) ? obj(val) : void (0));
         return;
       }
       if (isObject(value)) {
-        Object.entries(value).forEach(([key, val]) => {
-          val ? gObject.classList.add(key) : gObject.classList.remove(key)
-        });
+        obj(value);
         return;
       }
       if (value) {
-        gObject.classList.add(value);
+        add(value);
       }
       return;
     }
+
+    // Style
     if (arg === 'style') {
       Object.entries(value).forEach(([key, val]) => gObject.style[key](val));
       return;
     }
+
+    // Others
     if (value !== DYNAMIC) {
       gObject[arg](value);
     }
@@ -266,12 +297,12 @@ defineDirective({
 
 /**
  * g-for
- * Directive allows you to create elements by iterating through a list. It is only aceptable over
- * <defs></defs> element and clones the content for each item into the collection.
+ * Directive allows you to create elements by iterating through a list. It is aceptable over
+ * all elements and clones each tag for each item into the collection.
  * @example
- * <defs g-for="record of records">
+ * <g g-for="record of records">
  *   <rect :x="record.x" :y="record.y" :width="record.width" :height="record.height"></rect>
- * </defs>
+ * </g>
  */
 defineDirective({
   name : 'g-for',
@@ -287,20 +318,20 @@ defineDirective({
         if (def[CLONES][n]) {
           process(def[CLONES][n], subData, error, false);
         } else {
-          const g       = def.gSVG(def.tagName());
-          g[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
+          const tag       = def.gSVG(def.tagName());
+          tag[DIRECTIVES] = def[DIRECTIVES].filter(directive => directive.name !== 'g-for');
           [...def.attributes()].forEach(attr => {
             if (attr.name !== 'g-for') {
-              g.setAttribute(attr.name, attr.value);
+              tag.setAttribute(attr.name, attr.value);
             }
-          })
-          def.children().forEach(child => {
-            g.add(child.cloneNode(true));
           });
-          ref.before(g);
-          process(g, subData, error);
-          g[CLONED] = true;
-          def[CLONES].push(g);
+          def.children().forEach(child => {
+            tag.add(child.cloneNode(true));
+          });
+          ref.before(tag);
+          process(tag, subData, error);
+          tag[CLONED] = true;
+          def[CLONES].push(tag);
         }
         n++;
       },
@@ -373,19 +404,28 @@ function getVariables (expr) {
 }
 
 /**
- * toIterator - convert a variable into an Array
- * @param {any} v
+ * toIterable - convert a variable into an Array
+ * @param {any} v        - iterator, object or number
+ * @param {string} kind  - 'of' or 'in'
  * @returns {{iterator: Array, type: string}}
  */
-function toArray (v) {
+function toIterable (v, kind) {
   if (v[Symbol.iterator]) {
-    return {iterator : [...v], type : ARRAY};
+    return kind === 'of' ?
+      {iterator : [...v], type : ARRAY} :
+      {type : ERROR};
   }
   if (isNumber(v)) {
-    return {iterator : Array(v < 0 ? 0 : 0 | v).fill(0).map((v, i) => i), type : NUMBER};
+    return {
+      iterator : Array(v < 0 ? 0 : 0 | v).fill(0)
+                                         .map((v, i) => i + (kind === 'of' ? 0 : 1)),
+      type     : NUMBER
+    };
   }
   if (isObject(v)) {
-    return {iterator : Object.entries(v).map(m => m.reverse()), type : OBJECT};
+    return kind === 'in' ?
+      {iterator : Object.entries(v).map(m => m.reverse()), type : OBJECT} :
+      {type : ERROR};
   }
   return {iterator : v, type : UNKNOWN};
 }
@@ -420,14 +460,22 @@ function evalExpr (code, data, context = null) {
  * @returns {*}
  */
 function evalForExpr (code, data, each, final) {
-  const iteratorName     = '__$$i';
-  const callbackName     = '__$$c';
-  const finalName        = '__$$f';
-  let [left, right]      = code.split(' of ');
-  left                   = left.trim();
-  right                  = right.trim();
-  const value            = evalExpr(right, data) || [];
-  const {iterator, type} = toArray(value);
+  const iteratorName = '__$$i';
+  const callbackName = '__$$c';
+  const finalName    = '__$$f';
+  const match        = code.match(/^\s*([\s\S]+?)[\s*|)}\]](of|in)[\s*|({[]([\s\S]+?)\s*$/)
+  if (!match) {
+    throw exprError(code, 'an invalid "g-for" expression');
+  }
+  let [, left, kind, right] = match;
+  kind                      = kind.trim();
+  left                      = left.trim();
+  right                     = right.trim();
+  const value               = evalExpr(right, data) || [];
+  const {iterator, type}    = toIterable(value, kind);
+  if (type === ERROR) {
+    throw exprError(code, 'an invalid "g-for" expression');
+  }
   if (type === OBJECT && !left.startsWith('[')) {
     left = `[${ left.replace(/(^\()|(\)$)/g, '') }]`;
   }

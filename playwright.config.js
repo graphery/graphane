@@ -32,6 +32,11 @@ if (process.argv.includes('--project=composer')) {
   options          = '-i /src/lib/gsvg.script.js ' +
                      '-i /src/plugins/non.scaling.size.script.js ' +
                      '-t test/plugins/non.scaling.size/cases';
+} else if (process.argv.includes('--project=observe.dark')) {
+  process.env.port = '7216';
+  options          = '-i /src/lib/gsvg.script.js ' +
+                     '-i /src/plugins/observe.dark.js ' +
+                     '-t test/plugins/observe.dark/cases';
 } else if (process.argv.includes('--project=observe.resize')) {
   process.env.port = '7206';
   options          = '-i /src/lib/gsvg.script.js ' +
@@ -99,6 +104,7 @@ export default defineConfig({
     {name : 'animateto'},
     {name : 'debug'},
     {name : 'non.scaling.size'},
+    {name : 'observe.dark'},
     {name : 'observe.resize'},
     {name : 'observe.style'},
     {name : 'template.engine'},

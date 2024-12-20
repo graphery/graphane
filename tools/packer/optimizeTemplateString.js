@@ -2,7 +2,6 @@ const esprima = require('esprima-next');
 
 module.exports = function optimizeTemplateString (source) {
   try {
-    debugger;
     const ast       = esprima.parseModule(source, {range : true});
     const templates = findTemplateLiteral(ast);
     return buildSource(source, templates);
