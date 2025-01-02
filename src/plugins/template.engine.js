@@ -6,17 +6,22 @@ import { createFunction }    from '../helpers/function.create.js';
 import { isValidIdentifier } from '../helpers/identifier.js';
 import animateToPlugin       from './animateto.js';
 
-const INIT       = Symbol();
-const CLONED     = Symbol();
-const CLONES     = Symbol();
-const DIRECTIVES = Symbol();
-const EVENTS     = Symbol();
-const REPLACE    = Symbol();
-const DYNAMIC    = Symbol();
-const ERROR      = 'error';
-const UNKNOWN    = 'unknown';
-const directives = {};
-const exprError  = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`);
+const directives          = {};
+const INIT                = Symbol();
+const CLONED              = Symbol();
+const CLONES              = Symbol();
+const DIRECTIVES          = Symbol();
+const EVENTS              = Symbol();
+const REPLACE             = Symbol();
+const DYNAMIC             = Symbol();
+const TYPE_ERROR          = 'error';
+const TYPE_UNKNOWN        = 'unknown';
+const ERROR_INVALID_G_FOR = 'an invalid "g-for" expression';
+const ERROR_UNDEFINED     = 'undefined';
+const ERROR_NAN           = 'NaN (Not a Number)';
+const exprError           = (expr, type) => new Error(`The expression "${ expr }" return ${ type } value`);
+const CLASS               = 'class';
+const STYLE               = 'style';
 
 /**
  * Throws an error with a specified message, scope, and code context.
@@ -114,7 +119,6 @@ function restoreFromComment (comment) {
 defineDirective({
   name : 'g-content',
   exec (gObject, {expr, data, evalExpr}) {
-    // gObject.content(evalExpr(expr, data));
     const context = {
       ...data,
       $$ : {
@@ -189,8 +193,8 @@ defineDirective({
         return arg
       },
       currentValue () {
-        return arg === 'class' ? [...el.classList] :
-          arg === 'style' ? [...el.style].reduce((o, k) => {
+        return arg === CLASS ? [...el.classList] :
+          arg === STYLE ? [...el.style].reduce((o, k) => {
               o[k] = el.style[k];
               return o;
             }, {}) :
@@ -211,11 +215,11 @@ defineDirective({
 
     let value = evalExpr(expr, context);
     if (isUndefined(value)) {
-      throw exprError(expr, 'undefined');
+      throw exprError(expr, ERROR_UNDEFINED);
     }
 
     // Class
-    if (arg === 'class') {
+    if (arg === CLASS) {
       const add = (val) => gObject.classList.add(val);
       const del = (val) => gObject.classList.remove(val);
       const obj = (val) => Object.entries(val).forEach(([k, v]) => v ?
@@ -237,7 +241,7 @@ defineDirective({
     }
 
     // Style
-    if (arg === 'style') {
+    if (arg === STYLE) {
       Object.entries(value).forEach(([key, val]) => gObject.style[key](val));
       return;
     }
@@ -413,7 +417,7 @@ function toIterable (v, kind) {
   if (v[Symbol.iterator]) {
     return kind === 'of' ?
       {iterator : [...v], type : ARRAY} :
-      {type : ERROR};
+      {type : TYPE_ERROR};
   }
   if (isNumber(v)) {
     return {
@@ -425,9 +429,9 @@ function toIterable (v, kind) {
   if (isObject(v)) {
     return kind === 'in' ?
       {iterator : Object.entries(v).map(m => m.reverse()), type : OBJECT} :
-      {type : ERROR};
+      {type : TYPE_ERROR};
   }
-  return {iterator : v, type : UNKNOWN};
+  return {iterator : v, type : TYPE_UNKNOWN};
 }
 
 /**
@@ -445,7 +449,7 @@ function evalExpr (code, data, context = null) {
   );
   const evalResult = fn.apply(context, keys.map(key => data[key]));
   if (!isValidNumber(evalResult)) {
-    throw exprError(code, 'NaN (Not a Number)');
+    throw exprError(code, ERROR_NAN);
   }
   return evalResult;
 }
@@ -465,7 +469,7 @@ function evalForExpr (code, data, each, final) {
   const finalName    = '__$$f';
   const match        = code.match(/^\s*([\s\S]+?)[\s*|)}\]](of|in)[\s*|({[]([\s\S]+?)\s*$/)
   if (!match) {
-    throw exprError(code, 'an invalid "g-for" expression');
+    throw exprError(code, ERROR_INVALID_G_FOR);
   }
   let [, left, kind, right] = match;
   kind                      = kind.trim();
@@ -473,8 +477,8 @@ function evalForExpr (code, data, each, final) {
   right                     = right.trim();
   const value               = evalExpr(right, data) || [];
   const {iterator, type}    = toIterable(value, kind);
-  if (type === ERROR) {
-    throw exprError(code, 'an invalid "g-for" expression');
+  if (type === TYPE_ERROR) {
+    throw exprError(code, ERROR_INVALID_G_FOR);
   }
   if (type === OBJECT && !left.startsWith('[')) {
     left = `[${ left.replace(/(^\()|(\)$)/g, '') }]`;

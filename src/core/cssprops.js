@@ -12,7 +12,7 @@ const buildName = (name) => name.startsWith('--') ? name : `--${ COMPONENT_PREFI
  * @returns {*}                      - Current CSS property value
  */
 export function getCSSPropertyValue (component, cssProps, name) {
-  name         = typeof name === 'object' ? name.name : name;
+  name         = isObject(name) ? name.name : name;
   const result = getComputedStyle(component).getPropertyValue(name);
   if ((isUndefined(result) || result === '') &&
       cssProps &&

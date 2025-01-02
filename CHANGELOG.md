@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.0 (2025-01-02)
+
+- First stable version.
+- Reorganized the content of the `dist` folder.
+- Optimized code.
+
 ## 1.0.0-beta.8 (2024-12-19)
 
 - Added `observer.dark` plugin.

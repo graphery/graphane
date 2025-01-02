@@ -1,6 +1,6 @@
 import {
   EMPTY_STRING, COMA,
-  isSymbol, isObject, isString, isUndefined, isFunction, isBoolean, isNull
+  isSymbol, isObject, isString, isUndefined, isFunction, isBoolean, isNull, is
 } from '../helpers/types.js';
 
 const NAME                    = 'gSVGObject';
@@ -24,14 +24,6 @@ const readonlyProp = new Set();
  * @returns {boolean}
  */
 const directAccess = (prop) => isSymbol(prop) || prop.startsWith('_') || ['el', 'gSVG', 'then'].includes(prop);
-
-/**
- * Check the instance
- * @param {object} o
- * @param {object} p
- * @returns {boolean}
- */
-const is = (o, p) => o instanceof p;
 
 /**
  * Create a random id

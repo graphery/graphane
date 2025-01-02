@@ -13,16 +13,18 @@ export const COMA         = ',';
 export const COLON        = ':';
 export const SEMICOLON    = ';';
 
-export const isObject      = (v) => typeof v === OBJECT;
-export const isString      = (v) => typeof v === STRING;
-export const isFunction    = (v) => typeof v === FUNCTION;
-export const isNumber      = (v) => typeof v === NUMBER && !isNaN(v);
+export const isType        = (v, type) => typeof v === type;
+export const is            = (v, parent) => v instanceof parent;
+export const isObject      = (v) => isType(v, OBJECT);
+export const isString      = (v) => isType(v, STRING);
+export const isFunction    = (v) => isType(v, FUNCTION);
+export const isNumber      = (v) => isType(v, NUMBER) && !isNaN(v);
 export const isValidNumber = (v) => !Number.isNaN(v);
-export const isUndefined   = (v) => typeof v === UNDEFINED;
-export const isSymbol      = (v) => typeof v === SYMBOL;
-export const isBoolean     = (v) => typeof v === BOOLEAN;
+export const isUndefined   = (v) => isType(v, UNDEFINED);
+export const isSymbol      = (v) => isType(v, SYMBOL);
+export const isBoolean     = (v) => isType(v, BOOLEAN);
 export const isArray       = (v) => Array.isArray(v);
-export const isDate        = (v) => v instanceof Date && !isNaN(v);
+export const isDate        = (v) => is(v, Date) && !isNaN(v);
 export const isNull        = (v) => v === null;
 
 /**
@@ -69,19 +71,16 @@ export function object2attribute (value) {
 export function attribute2object (value) {
   if (isString(value)) {
     try {
-      const normalized = value
-        .replace(/^\s*{/, '')
-        .replace(/}\s*$/, '')
-        .split(/((?:[^;^,"']|"[^"]*"|'[^']*')+)/)
-        .filter(partial => !['', ';', ','].includes(partial.trim()))
-        .map(partial => partial.split(':'))
-        .map(partial => `"${ partial[0].trim() }":${ str2value(
-          partial[1].trim(),
-          undefined,
-          true
-        ) }`)
-        .join(',');
-      return JSON.parse(`{${ normalized }}`);
+      return JSON.parse(`{${
+        value
+          .replace(/^\s*{/, '')
+          .replace(/}\s*$/, '')
+          .split(/((?:[^;^,"']|"[^"]*"|'[^']*')+)/)
+          .filter(partial => !['', ';', ','].includes(partial.trim()))
+          .map(partial => partial.split(':'))
+          .map(partial => `"${ partial[0].trim() }":${ str2value(partial[1].trim(), undefined, true) }`)
+          .join(',')
+      }}`);
     } catch (err) {
       try {
         return str2value(value);
@@ -90,7 +89,8 @@ export function attribute2object (value) {
         return undefined;
       }
     }
-  } else if (isObject(value)) {
+  }
+  if (isObject(value)) {
     return value;
   }
   return undefined;
@@ -111,7 +111,8 @@ export function attribute2array (value) {
     } else {
       return value.split(/[,;]/).map(str => str2value(str.trim()));
     }
-  } else if (isArray(value)) {
+  }
+  if (isArray(value)) {
     return value;
   }
   return undefined;
@@ -132,7 +133,8 @@ export function attribute2arrayObject (value) {
     } else {
       return [attribute2object(value)];
     }
-  } else if (isArray(Array)) {
+  }
+  if (isArray(Array)) {
     return value;
   }
   return undefined;
@@ -150,7 +152,8 @@ export function array2attribute (value) {
     return str.substring(1, str.length - 1)
               .replace(/,/g, ', ')
               .replace(/"/g, '');
-  } else if (isString(value)) {
+  }
+  if (isString(value)) {
     return value;
   }
   return undefined;
@@ -229,7 +232,7 @@ function removeDoubleQuote (str) {
  * @returns {boolean}
  */
 export function isLikeObject (str) {
-  // // Catastrophic backtracking with /^\s*{(.|\s)*}\s*$/.test(str);
+  // Catastrophic backtracking with /^\s*{(.|\s)*}\s*$/.test(str);
   return /^\s*{/.test(str) && /}\s*$/.test(str);
 }
 
@@ -280,7 +283,7 @@ export function csvStr2obj (str) {
 export function jsStr2obj (str) {
   const code = `return (${ str });`
   const ret  = (new Function(code))();
-  return typeof ret === 'function' ? ret() : ret;
+  return isFunction(ret) ? ret() : ret;
 }
 
 export function funcStr2obj (str, $) {

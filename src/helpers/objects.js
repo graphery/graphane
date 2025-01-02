@@ -54,18 +54,18 @@ export function equal (objectA, objectB) {
    * @returns {boolean}
    */
   function checkObject (a, b) {
-    if (a === null || b === null) {              // if one is null, they are different
+    if (isNull(a) || isNull(b)) {               // if one is null, they are different
       return NOT_EQUAL;
     }
 
     if (
-      isFunction(a.valueOf) &&         // valueOf() is a function in both values
+      isFunction(a.valueOf) &&                  // valueOf() is a function in both values
       isFunction(b.valueOf) &&
       (a !== a.valueOf() || b !== b.valueOf())
     ) {
       return (
         a.valueOf() === b.valueOf() &&
-        a.constructor === b.constructor);        // Check if equal
+        a.constructor === b.constructor);       // Check if equal
     }
 
     if (aStack.indexOf(a) > -1 &&               // Check if the object has been previously processed
@@ -74,14 +74,14 @@ export function equal (objectA, objectB) {
     }
     let aKeys = Object.keys(a);                 // Get property keys
     let bKeys = Object.keys(b);
-    if (aKeys.length !== bKeys.length) {         // Check the number of properties
+    if (aKeys.length !== bKeys.length) {        // Check the number of properties
       return NOT_EQUAL;
     }
     if (aKeys.length > 0) {
       aStack.push(a);                           // Storage objects into stacks for recursive references
       bStack.push(b);
       let i = aKeys.length;
-      while (i--) {                              // Check each property value (recursive call)
+      while (i--) {                             // Check each property value (recursive call)
         const key = aKeys[i];
         if (!check(a[key], b[key])) {
           return NOT_EQUAL;
@@ -219,7 +219,7 @@ export function Schema (schema) {
  */
 
 /**
- * Walk a object keys
+ * Walk an object keys
  * @param {object} obj
  * @param {walkerCallback} callback
  */

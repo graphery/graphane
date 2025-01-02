@@ -1,3 +1,5 @@
+import { isFunction } from "./types.js";
+
 /**
  * Returns a function, that, as long as it continues to be invoked, will not be triggered.
  * The function will be called after it stops being called for N milliseconds.
@@ -135,7 +137,7 @@ export function preCondition (condition, fn) {
 export function posExecution (fn, pos) {
   return function (...args) {
     const result = fn.apply(this, args);
-    if (result instanceof Promise) {
+    if (isFunction(result.then)) {
       return result.then((res) => {
         return pos.call(this, res) || res
       });
