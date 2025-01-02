@@ -61,7 +61,7 @@ to the Graphane file.
 You can use the CDN directly:
 
 ```html
-<script src="https://cdn.graphery.online/graphane/1.0.0-beta/component/composer.js"></script>
+<script src="https://cdn.graphery.online/graphane/1.0.0/composer.js"></script>
 ```
 
 You can install locally the Graphane package with:
@@ -79,12 +79,6 @@ support and help. If you have any questions or need support, feel free to reach 
 
 We appreciate any contributions to the project! Whether it's reporting bugs, suggesting new
 features, or submitting pull requests, your input is valuable.
-
-## Project status
-
-Please note that Graphane is currently in beta. While the core features are fully functional, there
-may still be bugs, and the API is subject to change. We welcome feedback and contributions from the
-community to help improve and refine the library.
 
 ## License
 
