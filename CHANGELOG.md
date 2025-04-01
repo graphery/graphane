@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.1 (2025-04-01)
+
+- Fixed a bug when `data.$distinc('key')` is called twice with different keys.
+- Added `lib/component.js` with `defineComponent()` function for create a Web Component from 
+  `g-composer` content.
+- Change the local `tools/workbench/` for `graphane-workbench` package.
+- Change the local `tools/packer/` for `graphane-packer` package.
+
 ## 1.0.0 (2025-01-02)
 
 - First stable version.

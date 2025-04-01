@@ -92,7 +92,7 @@ export function operations (data = {}) {
     result.i += Number(value);
     return result;
   }, (result) => isNaN(result.i / result.n) ? 0 : (result.i / result.n));
-  operation('$distinct', new Set(), (result, value) => {
+  operation('$distinct', () => new Set(), (result, value) => {
     result.add(value);
     return result;
   }, (result) => [...result]);

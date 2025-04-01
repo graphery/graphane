@@ -248,3 +248,49 @@ function getType (value) {
   }
   return value.constructor.name
 }
+
+
+/**
+ * Performs a deep assignment of properties from one or more source objects to a target object.
+ * Copies all nested properties and arrays recursively while maintaining immutability of the source objects.
+ *
+ * @param {Object} target The target object to which properties will be assigned. Must be a non-null object.
+ * @param {...Object} sources One or more source objects whose properties will be deeply assigned to the target object.
+ * @return {Object} The modified target object with the deeply assigned properties.
+ * @throws {TypeError} If the target is not a non-null object.
+ */
+export function deepObjectAssign(target, ...sources) {
+  // Ensure target is an object
+  if (typeof target !== 'object' || target === null) {
+    throw new TypeError('Target must be a non-null object');
+  }
+
+  // Iterate over each source object
+  sources.forEach(source => {
+    // Skip not object and null
+    if (typeof source !== 'object' || source === null) {
+      return;
+    }
+
+    // Iterate over the source's own properties
+    Object.keys(source).forEach(key => {
+      const sourceValue = source[key];
+      const targetValue = target[key];
+
+      // If sourceValue is an object, recurse
+      if (sourceValue && typeof sourceValue === 'object') {
+        // Initialize the nested structure in the target if it doesn't exist or isn't an object
+        if (!targetValue || typeof targetValue !== 'object') {
+          target[key] = Array.isArray(sourceValue) ? [] : {};
+        }
+        // Recursively assign nested objects
+        deepObjectAssign(target[key], sourceValue);
+      } else {
+        // Otherwise, copy the value
+        target[key] = sourceValue;
+      }
+    });
+  });
+
+  return target;
+}

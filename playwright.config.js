@@ -10,13 +10,17 @@ if (process.argv.includes('--project=composer')) {
   process.env.port = '7215';
   options          = '-i /src/component/composer.js ' +
                      '-t test/component/shapes/cases';
+} else if (process.argv.includes('--project=component')) {
+  process.env.port = '7217';
+  options          = '-i /src/lib/component.script.js ' +
+                     '-t test/lib/component/cases';
 } else if (process.argv.includes('--project=core')) {
   process.env.port = '7201';
   options          = '-t ./test/core/cases';
 } else if (process.argv.includes('--project=svg')) {
   process.env.port = '7202';
   options          = '-i /src/lib/gsvg.script.js ' +
-                     '-t test/lib/cases';
+                     '-t test/lib/gsvg/cases';
 } else if (process.argv.includes('--project=animateto')) {
   process.env.port = '7203';
   options          = '-i /src/lib/gsvg.script.js ' +
@@ -88,7 +92,7 @@ if (process.argv.includes('--project=composer')) {
                      '-t test/plugins/tosource/cases';
 }
 const webServer = process.env.port ? {
-  command             : `node ./tools/workbench ${ options } -p ${ process.env.port }`,
+  command             : `g-workbench ${ options } -p ${ process.env.port }`,
   url                 : `http://localhost:${ process.env.port }/`,
   timeout             : 120000,
   reuseExistingServer : !process.env.CI,
@@ -100,6 +104,7 @@ export default defineConfig({
     {name : 'core'},
     {name : 'composer'},
     {name : 'composer-shapes'},
+    {name : 'component'},
     {name : 'svg'},
     {name : 'animateto'},
     {name : 'debug'},

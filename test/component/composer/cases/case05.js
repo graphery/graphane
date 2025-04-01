@@ -8,13 +8,17 @@ export function script () {
   document.querySelector('#run').addEventListener('click', () => {
     component.svgSrc = component.svgSrc === initSrc ? altSrc : initSrc;
   });
-  component.addEventListener('render', () => {
+  const update = () => {
     if (component.svgSrc === altSrc) {
       component.svg.fill('green');
     } else {
       component.svg.fill('red');
     }
-  })
+  };
+  component.addEventListener('render', update);
+  if (component.rendered) {
+    update();
+  }
 }
 
 export default `<g-composer svg-src="/test/component/composer/assets/image.svg" style="width: 200px; height: 200px;"></g-composer>
